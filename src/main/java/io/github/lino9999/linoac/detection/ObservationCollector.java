@@ -30,13 +30,18 @@ import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 
 public final class ObservationCollector {
     private static final List<String> ACK_STATE_KEYS = List.of("protocol-flight-allowed", "protocol-movement-speed", "protocol-attack-range", "protocol-levitation-amplifier", "protocol-jump-amplifier", "protocol-conduit-power", "protocol-speed-amplifier", "protocol-jump-strength", "protocol-last-speed-amplifier", "protocol-cached-creative", "protocol-cached-spectator",
-            "protocol-slow-falling", "protocol-metadata-gliding", "protocol-gliding-revision", "protocol-metadata-riptide", "protocol-metadata-swimming");
+            "protocol-slow-falling", "protocol-metadata-gliding", "protocol-gliding-revision", "protocol-metadata-riptide", "protocol-metadata-swimming",
+            "protocol-step-height", "protocol-gravity", "protocol-previous-gravity", "protocol-gravity-revision", "protocol-previous-jump-strength", "protocol-jump-revision",
+            "protocol-air-drag", "protocol-bounciness", "protocol-friction-modifier", "protocol-slowness");
     private static final Set<String> WORLD_POSITION_FACTS = worldPositionFacts();
     private final LinoAC plugin;
     private final BiConsumer<Player, Observation> sink;
     private final Map<UUID, Tracking> tracking = new HashMap<>();
+    private final Map<UUID, Location> registrationPositions = new HashMap<>();
     private final Map<UUID, Long> worldTokens = new HashMap<>();
     private long nextWorldToken;
+    private final io.github.lino9999.linoac.detection.collector.HookedVehicleState hookedVehicles = new io.github.lino9999.linoac.detection.collector.HookedVehicleState(4096, 40);
+    private final Map<UUID, HookFrame> hookFrames = new HashMap<>();
 
     private static Set<String> worldPositionFacts() {
         var keys = new HashSet<>(io.github.lino9999.linoac.packet.ServerWorldSnapshot.materialFactKeys());
@@ -49,8 +54,9 @@ public final class ObservationCollector {
         this.sink = sink;
     }
 
-    public void remove(UUID id) { tracking.remove(id); }
-    public void clear() { tracking.clear(); }
+    public void registerJoin(Player player) { registrationPositions.put(player.getUniqueId(), player.getLocation().clone()); tracking.remove(player.getUniqueId()); }
+    public void remove(UUID id) { tracking.remove(id); registrationPositions.remove(id); }
+    public void clear() { tracking.clear(); hookedVehicles.clear(); hookFrames.clear(); }
     public void reset(UUID id) { tracking.remove(id); }
 
     public void connection(Player player, int pending, double oldestAgeMs, boolean tracked) {
@@ -90,6 +96,7 @@ public final class ObservationCollector {
     }
 
     public void bucketInteraction(Player player) { tracking.computeIfAbsent(player.getUniqueId(), ignored -> new Tracking(player.getLocation())).protocolContext.bucketInteraction(); }
+    public void blockBreakAnchor(Player player, int x, int y, int z) { tracking.computeIfAbsent(player.getUniqueId(), ignored -> new Tracking(player.getLocation())).movementInputs.broken(x, y, z); }
 
     public void startMining(Player player, Block block) {
         if (player.getGameMode() != GameMode.SURVIVAL || io.github.lino9999.linoac.detection.world.MiningContext.materialExempt(block.getType().name())
@@ -109,13 +116,91 @@ public final class ObservationCollector {
                 nearby.stream().anyMatch(entity -> entity.getType().name().contains("BOAT") || entity.getType().name().contains("RAFT")),
                 nearby.stream().anyMatch(entity -> entity.getType().name().equals("SHULKER")), nearby.stream().anyMatch(entity -> entity.getType().name().equals("HAPPY_GHAST")));
         state.serverWorld = sampleWorld(player, destination, nearby.size(), ++state.worldGeneration, types);
+        if (state.serverWorld.complete()) state.cachedWorld.observe(state.serverWorld.generation(), state.serverWorld.waterlogged());
+        Entity mount = player.getVehicle();
+        if (mount != null) state.mounted.geometry(state.serverWorld.geometryKnown() ? state.serverWorld.cells() : null,
+                (int) nearby.stream().filter(entity -> entity instanceof Boat).count(),
+                nearby.stream().anyMatch(entity -> entity instanceof LivingEntity && entity != mount && !mount.getPassengers().contains(entity)), types.happyGhast());
         return state.serverWorld;
     }
+
+    public void vehicleHook(UUID vehicle, UUID hook) { hookedVehicles.caught(vehicle, hook, plugin.tick()); }
+
+    public void mountedMovement(Player player, Location destination, boolean cancelled) {
+        Tracking t = tracking.computeIfAbsent(player.getUniqueId(), ignored -> new Tracking(player.getLocation()));
+        if (!t.transportComplete) return;
+        var values = new HashMap<>(t.context); values.putAll(t.lastMotion);
+        var states = new HashSet<>(t.states); states.add("bukkit-event"); states.add("source-mounted-bukkit");
+        if (cancelled) states.add("cancelled");
+        stateValues(player, t, values, states); mountedValues(player, t, values, states);
+        sink.accept(player, new Observation(Observation.Kind.PACKET, plugin.tick(), System.nanoTime(), values, states));
+    }
+
+    private void mountedValues(Player player, Tracking t, Map<String, Double> values, Set<String> states) {
+        t.mounted.values(values); states.removeIf(state -> state.startsWith("source-mounted-type:"));
+        Entity mount = player.getVehicle();
+        values.put("source-mounted-present", mount == null ? 0d : 1d);
+        if (mount == null) return;
+        states.add("source-mounted-type:" + mount.getType().name());
+        values.put("source-mounted-boat", mount instanceof Boat ? 1d : 0d);
+        values.put("source-mounted-camel", mount instanceof Camel ? 1d : 0d);
+        values.put("source-mounted-llama", mount instanceof Llama ? 1d : 0d);
+        values.put("source-mounted-gravity", mount.hasGravity() ? 1d : 0d);
+        values.put("source-mounted-living", mount instanceof LivingEntity ? 1d : 0d);
+        hookedVehicles.prune(plugin.tick(), id -> org.bukkit.Bukkit.getEntity(id) instanceof FishHook hook && hook.isValid() && hook.getHookedEntity() != null,
+                id -> org.bukkit.Bukkit.getEntity(id) instanceof Boat boat && boat.isValid());
+        Boolean hooked = hookedVehicles.hooked(mount.getUniqueId(), plugin.tick(), id -> {
+            Entity entity = org.bukkit.Bukkit.getEntity(id);
+            return entity instanceof FishHook hook && hook.isValid() && hook.getHookedEntity() == mount;
+        });
+        if (hooked == null) {
+            hooked = liveHooked(player.getWorld(), mount.getUniqueId());
+            if (Boolean.FALSE.equals(hooked)) {
+                hookedVehicles.confirmedAbsence(mount.getUniqueId(), plugin.tick());
+                hooked = hookedVehicles.hooked(mount.getUniqueId(), plugin.tick(), ignored -> false);
+            }
+        }
+        if (hooked != null) values.put("source-mounted-hooked", hooked ? 1d : 0d);
+        if (mount instanceof LivingEntity living) {
+            values.put("source-mounted-leashed", living.isLeashed() ? 1d : 0d);
+            values.put("source-mounted-levitation", living.hasPotionEffect(PotionEffectType.LEVITATION) ? 1d : 0d);
+            values.put("source-mounted-slow-falling", living.hasPotionEffect(PotionEffectType.SLOW_FALLING) ? 1d : 0d);
+            values.put("source-mounted-speed-level", (double) living.getActivePotionEffects().stream().filter(effect -> effect.getType().toString().toLowerCase(Locale.ROOT).contains("speed"))
+                    .mapToInt(effect -> effect.getAmplifier() + 1).findFirst().orElse(0));
+            var attribute = living.getAttribute(org.bukkit.attribute.Attribute.MOVEMENT_SPEED);
+            if (attribute != null) values.put("source-mounted-base-speed", attribute.getBaseValue());
+        }
+        values.put("source-mounted-cosmetic", mount instanceof Horse && mount.hasMetadata("PROCOSMETICS_ENTITY") ? 1d : 0d);
+        values.put("source-mounted-dashing", mount instanceof Camel camel && camel.isDashing() ? 1d : 0d);
+        if (mount instanceof Horse horse) values.put("source-mounted-saddled", horse.getInventory().getSaddle() != null ? 1d : 0d);
+    }
+
+    private Boolean liveHooked(org.bukkit.World world, UUID vehicle) {
+        HookFrame frame = hookFrames.get(world.getUID());
+        if (frame == null || frame.tick != plugin.tick()) {
+            if (hookFrames.size() >= 64) hookFrames.clear();
+            var vehicles = new HashSet<UUID>(); int examined = 0; boolean complete = true;
+            for (FishHook hook : world.getEntitiesByClass(FishHook.class)) {
+                if (++examined > 4096) { complete = false; break; }
+                Entity target = hook.getHookedEntity();
+                if (hook.isValid() && target != null) vehicles.add(target.getUniqueId());
+            }
+            frame = new HookFrame(plugin.tick(), Set.copyOf(vehicles), complete); hookFrames.put(world.getUID(), frame);
+        }
+        return frame.vehicles.contains(vehicle) ? Boolean.TRUE : frame.complete ? Boolean.FALSE : null;
+    }
+
+    private record HookFrame(long tick, Set<UUID> vehicles, boolean complete) {}
 
     private io.github.lino9999.linoac.packet.ServerWorldSnapshot sampleWorld(Player player, Location destination, int nearby, long generation, io.github.lino9999.linoac.packet.ServerWorldSnapshot.Nearby types) {
         int centerX = destination.getBlockX(), centerY = destination.getBlockY(), centerZ = destination.getBlockZ();
         if (!player.getWorld().equals(destination.getWorld())) return io.github.lino9999.linoac.packet.ServerWorldSnapshot.unknown(nearby);
         for (int depth = 1; depth <= 3; depth++) if (!loaded(player, centerX, centerY - depth, centerZ)) return io.github.lino9999.linoac.packet.ServerWorldSnapshot.unknown(nearby);
+        boolean lowerPlaneAir = true;
+        for (int x = centerX - 1; x <= centerX + 1; x++) for (int z = centerZ - 1; z <= centerZ + 1; z++) {
+            if (!loaded(player, x, centerY - 2, z)) return io.github.lino9999.linoac.packet.ServerWorldSnapshot.unknown(nearby);
+            if (!player.getWorld().getBlockAt(x, centerY - 2, z).getType().isAir()) lowerPlaneAir = false;
+        }
         int air = 0; boolean cobweb = false;
         var cells = new ArrayList<io.github.lino9999.linoac.packet.ServerWorldSnapshot.Cell>(36);
         for (int x = centerX - 1; x <= centerX + 1; x++) for (int y = centerY - 1; y <= centerY + 2; y++) for (int z = centerZ - 1; z <= centerZ + 1; z++) {
@@ -134,7 +219,9 @@ public final class ObservationCollector {
         }
         return new io.github.lino9999.linoac.packet.ServerWorldSnapshot(nearby, true, cobweb, air, player.getWorld().getBlockAt(centerX, centerY - 2, centerZ).getType().isAir(),
                 cells, borderCenter.getX(), borderCenter.getZ(), border.getSize(), generation, waterlogged,
-                player.getWorld().getBlockAt(centerX, centerY - 3, centerZ).getType() == Material.SLIME_BLOCK, types);
+                player.getWorld().getBlockAt(centerX, centerY - 3, centerZ).getType() == Material.SLIME_BLOCK, types, lowerPlaneAir,
+                player.getWorld().getBlockAt(centerX, centerY - 3, centerZ).getType().isAir(), null,
+                player.getWorld().getBlockAt(centerX, centerY - 2, centerZ).getType().name());
     }
 
     public ClickContext clickContext(Player player) {
@@ -310,6 +397,7 @@ public final class ObservationCollector {
             for (String key : ACK_STATE_KEYS) {
                 if (packet.values().containsKey(key)) t.acknowledgedState.put(key, packet.values().get(key));
             }
+            t.movementInputs.acknowledge(t.acknowledgedState.get("protocol-gravity-revision"), t.acknowledgedState.get("protocol-jump-revision"));
             t.abilities.metadata(t.acknowledgedState.containsKey("protocol-metadata-gliding") ? t.acknowledgedState.get("protocol-metadata-gliding") == 1 : null,
                     t.acknowledgedState.getOrDefault("protocol-gliding-revision", Double.NaN));
         }
@@ -320,6 +408,12 @@ public final class ObservationCollector {
         blockGrace(t, states);
         states.addAll(packet.states());
         values.putAll(packet.values());
+        if (packet.type().equals("VEHICLE_MOVE") && !packet.state("nonfinite-position") && packet.values().keySet().containsAll(Set.of("vehicle-x", "vehicle-y", "vehicle-z"))) {
+            Entity mount = player.getVehicle();
+            t.mounted.raw(mount, packet.values().get("vehicle-x"), packet.values().get("vehicle-y"), packet.values().get("vehicle-z"),
+                    packet.values().containsKey("source-mounted-sulfur-contact") ? packet.values().get("source-mounted-sulfur-contact") == 1 : null);
+            states.add("source-mounted-raw");
+        }
         if (t.lastPacketNanos > 0 && packet.nanos() >= t.lastPacketNanos) values.put("packet-interval-ms", (packet.nanos() - t.lastPacketNanos) / 1_000_000d);
         values.put("packets-since-move", (double) t.packetsSinceMove);
         values.put("attack-age-ticks", (double) Math.max(0, plugin.tick() - t.attackTick));
@@ -345,15 +439,10 @@ public final class ObservationCollector {
             return;
         }
         if (packet.kind() == Observation.Kind.MOVE) {
-            if (packet.state("position-packet")) t.sourceVelocity.position(packet.state("client-ground"));
+            t.movementInputs.packet(packet.state("position-packet"));
             if (packet.values().keySet().containsAll(Set.of("server-world-generation", "server-world-waterlogged"))) {
                 t.cachedWorld.observe(packet.values().get("server-world-generation").longValue(), packet.values().get("server-world-waterlogged") == 1);
             }
-            t.totalMoves = Math.min(Integer.MAX_VALUE - 1, t.totalMoves) + 1;
-            t.attackMovementAge = Math.min(Integer.MAX_VALUE - 1, t.attackMovementAge) + 1;
-            t.events.flying();
-            t.bukkitTeleportMoves = Math.min(Integer.MAX_VALUE - 1, t.bukkitTeleportMoves) + 1;
-            if (++t.ghostCorrectionMoves >= 100) { t.ghostCorrectionMoves = 0; t.ghostCorrections = 0; }
             if (packet.states().contains("position-packet")) t.mirroredNearbyEntities = packet.values().getOrDefault("mirrored-nearby-entities", -1d).intValue();
             if (packet.state("position-packet") && packet.values().keySet().containsAll(Set.of("x", "y", "z"))) {
                 int nearby = packet.values().getOrDefault("server-nearby-entities", -1d).intValue();
@@ -370,6 +459,9 @@ public final class ObservationCollector {
                         player.isRiptiding() ? true : t.acknowledgedState.containsKey("protocol-metadata-riptide") ? t.acknowledgedState.get("protocol-metadata-riptide") == 1 : null,
                         player.hasPotionEffect(PotionEffectType.DOLPHINS_GRACE), t.cachedChestElytra,
                         t.acknowledgedState.containsKey("protocol-metadata-swimming") ? t.acknowledgedState.get("protocol-metadata-swimming") == 1 : null);
+                t.abilities.jumpContact(t.acknowledgedState.containsKey("protocol-jump-amplifier") ? t.acknowledgedState.get("protocol-jump-amplifier") > 0 : null,
+                        false);
+                t.abilities.flightContact(player.isSwimming());
                 t.positionGeometry.clear();
                 for (String key : WORLD_POSITION_FACTS) {
                     if (packet.values().containsKey(key)) t.positionGeometry.put(key, packet.values().get(key));
@@ -383,13 +475,45 @@ public final class ObservationCollector {
                         t.positionGeometry.getOrDefault("source-slime-below", 0d) == 1, t.positionGeometry.getOrDefault("source-ceiling-obstructed", 0d) == 1);
                 boolean soulSpeed = t.cachedBootsSoulSpeed && t.positionGeometry.getOrDefault("source-soul-sand", 0d) == 1;
                 t.cachedWorld.contacts(io.github.lino9999.linoac.detection.collector.CachedWorldState.Contacts.from(t.positionGeometry, soulSpeed));
+                Double airReset = t.positionGeometry.keySet().containsAll(Set.of("source-air-counter-reset-material", "source-nearby-boat-contact", "source-nearby-shulker-contact", "source-nearby-happy-ghast-contact"))
+                        ? t.positionGeometry.get("source-air-counter-reset-material") == 1 || t.positionGeometry.get("source-nearby-boat-contact") == 1
+                        || t.positionGeometry.get("source-nearby-shulker-contact") == 1 || t.positionGeometry.get("source-nearby-happy-ghast-contact") == 1 ? 1d : 0d : null;
+                t.cachedWorld.movement(t.positionGeometry.get("protocol-exempt-CLIMBABLE"), t.positionGeometry.get("protocol-air-volume27"), airReset,
+                        t.positionGeometry.get("source-bed-surface-contact"), t.positionGeometry.get("source-body-obstructed"));
+                t.surface.position(t.positionGeometry, player.isSwimming() ? Boolean.TRUE : t.acknowledgedState.containsKey("protocol-metadata-swimming")
+                        ? t.acknowledgedState.get("protocol-metadata-swimming") == 1 : null);
+                var rawPosition = t.positionState.snapshot();
+                t.surface.glidePosition(t.movementInputs.physicalGliding(), t.abilities.logicalGliding(), player.isGliding(),
+                        Math.sqrt(rawPosition.dx() * rawPosition.dx() + rawPosition.dz() * rawPosition.dz()),
+                        t.acknowledgedState.containsKey("protocol-speed-amplifier") ? t.acknowledgedState.get("protocol-speed-amplifier") > 0 : null);
+                var leggings = player.getInventory().getLeggings();
+                t.swiftSneak = leggings != null && leggings.containsEnchantment(Enchantment.SWIFT_SNEAK);
+                t.movementInputs.worldPosition(packet.values().get("y"), player.isGliding());
+                t.mounted.playerPosition(player.getVehicle() != null);
                 if (t.positionGeometry.containsKey("source-ceiling-obstructed")) {
                     t.ceilingPositionAge = t.positionGeometry.get("source-ceiling-obstructed") == 1 ? 0 : Math.min(Integer.MAX_VALUE - 1, t.ceilingPositionAge) + 1;
                 }
+                stateValues(player, t, values, states);
+                t.cachedExemptions.position(new Observation(Observation.Kind.MOVE, plugin.tick(), packet.nanos(), values, states));
+            }
+            t.movementInputs.flying();
+            t.totalMoves = Math.min(Integer.MAX_VALUE - 1, t.totalMoves) + 1;
+            t.attackMovementAge = Math.min(Integer.MAX_VALUE - 1, t.attackMovementAge) + 1;
+            t.events.flying();
+            t.bukkitTeleportMoves = Math.min(Integer.MAX_VALUE - 1, t.bukkitTeleportMoves) + 1;
+            if (++t.ghostCorrectionMoves >= 100) { t.ghostCorrectionMoves = 0; t.ghostCorrections = 0; }
+            if (packet.state("position-packet")) t.sourceVelocity.position(packet.state("client-ground"));
+            if (packet.state("position-packet")) {
+                t.movementInputs.sulfur(packet.values().containsKey("source-sulfur-contact") ? packet.values().get("source-sulfur-contact") == 1 : null);
+                t.movementInputs.firework(t.serverNearbyFirework, player.getInventory().getItemInMainHand().getType().name().contains("FIREWORK")
+                        || player.getInventory().getItemInOffHand().getType().name().contains("FIREWORK"));
             }
             if (packet.states().contains("position-packet")) t.mirroredNearbyBoats = packet.values().getOrDefault("mirrored-nearby-boats", -1d).intValue();
             if (packet.values().containsKey("teleport-movement-age")) t.teleportMovementAge = packet.values().get("teleport-movement-age").intValue();
             t.serverTeleportMatch = packet.state("server-teleport-match");
+            var retainedPosition = t.positionState.snapshot();
+            if (packet.state("position-packet")) t.movementInputs.updatePlacementDistance(retainedPosition.rawX(), retainedPosition.rawY(), retainedPosition.rawZ());
+            if (packet.state("position-packet")) t.movementInputs.position(packet.state("client-ground"), t.positionState.snapshot().signedDy(), t.serverTeleportMatch);
             for (String key : List.of("predicted-horizontal-min", "predicted-horizontal-max", "predicted-vertical-min", "predicted-vertical-max", "predicted-projection-min", "predicted-projection-max")) values.remove(key);
             double x = packet.values().getOrDefault("x", t.position.getX());
             double y = packet.values().getOrDefault("y", t.position.getY());
@@ -442,11 +566,15 @@ public final class ObservationCollector {
             t.sourcePreviousPreviousGround = t.previousClientGround;
             t.previousClientGround = t.clientGround; t.clientGround = packet.states().contains("client-ground");
             t.moveNanos = packet.nanos();
-            var currentBoots = player.getInventory().getBoots();
-            t.cachedBootsSoulSpeed = currentBoots != null && currentBoots.getEnchantmentLevel(Enchantment.SOUL_SPEED) > 0;
-            var currentChest = player.getInventory().getChestplate();
-            t.cachedChestElytra = currentChest != null && currentChest.getType() == Material.ELYTRA;
-            t.abilities.flying();
+            if (packet.state("position-packet")) {
+                var currentBoots = player.getInventory().getBoots();
+                t.cachedBootsSoulSpeed = currentBoots != null && currentBoots.getEnchantmentLevel(Enchantment.SOUL_SPEED) > 0;
+                var currentChest = player.getInventory().getChestplate();
+                t.cachedChestElytra = currentChest != null && currentChest.getType() == Material.ELYTRA;
+                t.movementInputs.equipmentPosition(t.cachedChestElytra, player.isGliding());
+                t.movementInputs.sprintPosition(t.sourceSprinting);
+            }
+            t.abilities.flying(packet.state("position-packet"));
             t.packetsSinceMove = t.placementsSinceMove = t.digsSinceMove = t.actionsSinceMove = t.attacksSinceMove = t.slotsSinceMove = 0;
         } else if (packet.kind() == Observation.Kind.SWING) {
             boolean holdingFirework = player.getInventory().getItemInMainHand().getType().name().contains("FIREWORK")
@@ -470,6 +598,8 @@ public final class ObservationCollector {
             attack(player, t, target, values, states);
             if (states.contains("target-player")) t.targetHistory.selectPlayer(target);
         } else if (packet.kind() == Observation.Kind.PLACE || packet.kind() == Observation.Kind.DIG || packet.kind() == Observation.Kind.BREAK) {
+            if (packet.kind() == Observation.Kind.PLACE && packet.values().keySet().containsAll(Set.of("block-x", "block-y", "block-z")))
+                t.movementInputs.placement(packet.values().get("block-x"), packet.values().get("block-y"), packet.values().get("block-z"));
             long millis = packet.values().getOrDefault("packet-time-ms", (double) System.currentTimeMillis()).longValue();
             double blockX = packet.values().getOrDefault("block-x", 0d), blockZ = packet.values().getOrDefault("block-z", 0d);
             if (packet.state("dig:START_DIGGING")) t.clicks.digging(plugin.tick(), millis, ClickContext.DigAction.START, blockX, blockZ);
@@ -519,6 +649,11 @@ public final class ObservationCollector {
             }
         }
         if (packet.type().equals("STEER_VEHICLE") || packet.type().equals("PLAYER_INPUT")) {
+            if (packet.type().equals("PLAYER_INPUT") && values.getOrDefault("client-at-least-1-21-2", 0d) == 1) {
+                boolean sneaking = packet.state("input-sneak");
+                if (sneaking != t.sourceSneaking) states.add(sneaking ? "action:START_SNEAKING" : "action:STOP_SNEAKING");
+                t.sourceSneaking = sneaking;
+            }
             t.inputKnown = packet.values().containsKey("steer-sideways") && packet.values().containsKey("steer-forward");
             if (t.inputKnown) { t.strafeInput = packet.values().get("steer-sideways"); t.forwardInput = packet.values().get("steer-forward"); }
             if (t.inputKnown) {
@@ -528,9 +663,10 @@ public final class ObservationCollector {
             if (Math.abs(values.getOrDefault("steer-forward", 0d)) + Math.abs(values.getOrDefault("steer-sideways", 0d)) > 0) t.vehicleSteeredTick = plugin.tick();
         }
         stateValues(player, t, values, states);
+        if (states.contains("source-mounted-raw")) mountedValues(player, t, values, states);
         var collected = combatGeometry(player, t, t.protocolContext.update(new Observation(packet.kind(), plugin.tick(), packet.nanos(), values, states)));
         collected = t.combatExemptions.update(collected, t.sourceVelocity.snapshot());
-        var observation = t.sequenceContext.update(t.velocityPrediction.update(collected, t.sourceVelocity.snapshot()));
+        var observation = io.github.lino9999.linoac.detection.collector.MovementEnvironment.update(t.sequenceContext.update(t.velocityPrediction.update(collected, t.sourceVelocity.snapshot())));
         if (packet.kind() == Observation.Kind.MOVE && packet.state("rotation-changed")) sink.accept(player, new Observation(Observation.Kind.ROTATION, observation.tick(), observation.nanos(), observation.values(), observation.states()));
         sink.accept(player, observation);
         if (packet.kind() == Observation.Kind.MOVE && packet.state("position-packet")) t.sourceVelocity.afterPosition();
@@ -584,6 +720,9 @@ public final class ObservationCollector {
         if (states.contains("ghosthand-callback")) ghostHand(player, t, measurements, flags);
         else if (!states.contains("fastbreak-callback") && (kind == Observation.Kind.PLACE || kind == Observation.Kind.BREAK || states.contains("block-interaction"))) block(player, measurements, flags);
         if (kind == Observation.Kind.PLACE) placement(player, t, measurements, flags);
+        if (kind == Observation.Kind.PLACE) t.lastPlacementBridge = io.github.lino9999.linoac.detection.world.PlacementContext.bridge(
+                new Observation(kind, plugin.tick(), System.nanoTime(), measurements, flags));
+        if (t.lastPlacementBridge == null) measurements.remove("source-last-placement-bridge"); else measurements.put("source-last-placement-bridge", t.lastPlacementBridge ? 1d : 0d);
         if (states.contains("fastbreak-callback")) {
             if (t.acknowledgedState.containsKey("protocol-conduit-power")) flags.add("fastbreak-context-known");
             measurements.put("mining-deadline-difference-ms", t.mining.difference(measurements.get("event-time-ms").longValue()));
@@ -603,6 +742,7 @@ public final class ObservationCollector {
 
     private void attack(Player player, Tracking t, int entityId, Map<String, Double> values, Set<String> states) {
         states.remove("target-player"); states.remove("living-target");
+        states.removeIf(value -> value.startsWith("source-angular-target:"));
         for (String key : List.of("reach-distance","reach-limit","hitbox-distance","reach-current-distance","target-distance","target-width","target-horizontal","aim-angle")) values.remove(key);
         Entity target = player.getWorld().getPlayers().stream().filter(entity -> entity.getEntityId() == entityId).findFirst().map(entity -> (Entity) entity)
                 .orElseGet(() -> player.getNearbyEntities(16, 16, 16).stream().filter(entity -> entity.getEntityId() == entityId).findFirst().orElse(null));
@@ -622,6 +762,7 @@ public final class ObservationCollector {
         values.put("target-width", target.getBoundingBox().getWidthX());
         if (target instanceof Player other) {
             states.add("target-player");
+            if (other.isOnline() && !other.isDead()) states.add(io.github.lino9999.linoac.detection.combat.AngularTarget.token(other.getUniqueId()));
             values.put("source-target-max-no-damage-ticks", (double) other.getMaximumNoDamageTicks());
             values.put("target-max-no-damage-ticks", (double) other.getMaximumNoDamageTicks());
             Tracking targetTracking = tracking.get(other.getUniqueId());
@@ -647,6 +788,9 @@ public final class ObservationCollector {
         if (input.kind() != Observation.Kind.MOVE || !input.hasAll("packet-time-ms", "observation-server-tick")) return input;
         var values = new HashMap<>(input.values());
         var flags = new HashSet<>(input.states());
+        flags.removeIf(value -> value.startsWith("source-angular-target:"));
+        flags.remove("source-hitbox-b-known"); flags.remove("source-hitbox-b-exempt");
+        values.remove("source-hitbox-b-angle"); values.remove("source-hitbox-b-range");
         var rawPosition = state.positionState.snapshot();
         double x = rawPosition.rawX(), y = rawPosition.rawY(), z = rawPosition.rawZ();
         long tick = (long) input.value("observation-server-tick");
@@ -683,6 +827,20 @@ public final class ObservationCollector {
         }
         Player currentTarget = player.getWorld().getPlayers().stream().filter(target -> target.getEntityId() == state.targetId).findFirst().orElse(null);
         Tracking currentData = currentTarget == null ? null : tracking.get(currentTarget.getUniqueId());
+        if (rawPosition.positionKnown() && currentTarget != null && currentTarget.isOnline() && !currentTarget.isDead()
+                && currentData != null && currentData.transportComplete && currentData.positionState.snapshot().positionKnown()) {
+            var targetPosition = currentData.positionState.snapshot();
+            var angular = io.github.lino9999.linoac.detection.combat.AngularTarget.measure(x, z, state.cinematic.rawYaw(), targetPosition.rawX(), targetPosition.rawZ());
+            flags.add(io.github.lino9999.linoac.detection.combat.AngularTarget.token(currentTarget.getUniqueId()));
+            boolean targetVehicle = targetPosition.vehiclePositionAge() < 25 || currentTarget.isInsideVehicle() || currentTarget.getVehicle() != null;
+            Double targetBoat = currentData.cachedWorld.snapshot().boatContact(currentData.positionGeometry.get("source-nearby-boat-contact"));
+            var exemptions = io.github.lino9999.linoac.detection.combat.AngularTarget.exemptions(input, targetVehicle, targetBoat == null ? null : targetBoat == 1);
+            if (angular.known() && state.targetHistory.target() == currentTarget.getEntityId() && exemptions.known()) flags.add("source-hitbox-b-known");
+            if (exemptions.active()) flags.add("source-hitbox-b-exempt");
+            if (angular.known()) values.put("source-hitbox-b-angle", angular.angleDegrees());
+            if (state.targetHistory.target() == currentTarget.getEntityId()) values.put("source-hitbox-b-range", historicalDistance);
+            values.put("source-hitbox-b-modern-minimum", 1d);
+        }
         if (currentData != null && currentData.transportComplete && currentData.positionState.snapshot().positionKnown() && input.hasAll("protocol-attack-range", "protocol-speed-amplifier", "source-horizontal", "protocol-ground-run", "protocol-cached-creative")) {
             var targetPosition = currentData.positionState.snapshot();
             double dx = x - targetPosition.rawX(), dz = z - targetPosition.rawZ();
@@ -706,6 +864,8 @@ public final class ObservationCollector {
     }
 
     private void placement(Player player, Tracking tracking, Map<String, Double> values, Set<String> states) {
+        var raw = tracking.positionState.snapshot();
+        values.put("x", raw.rawX()); values.put("y", raw.rawY()); values.put("z", raw.rawZ());
         values.put("world-token", (double) worldTokens.computeIfAbsent(player.getWorld().getUID(), ignored -> ++nextWorldToken));
         if (player.getAllowFlight() || player.isFlying()) states.add("source-flight"); else states.remove("source-flight");
         if (player.getGameMode() == GameMode.CREATIVE) states.add("source-creative"); else states.remove("source-creative");
@@ -912,12 +1072,63 @@ public final class ObservationCollector {
         var world = tracking.cachedWorld.snapshot();
         var abilities = tracking.abilities.snapshot();
         var velocity = tracking.sourceVelocity.snapshot();
-        for (String key : List.of("source-explosion-pending", "source-explosion-sum-y", "source-last-positive-explosion-y", "source-explosion-position-age", "source-velocity-position-age",
+        var movement = tracking.movementInputs.snapshot();
+        var protocol = tracking.protocolContext.snapshot();
+        tracking.movementInputs.physicalValues(values);
+        tracking.surface.values(values);
+        tracking.cachedExemptions.values(values);
+        if (tracking.lastPlacementBridge == null) values.remove("source-last-placement-bridge"); else values.put("source-last-placement-bridge", tracking.lastPlacementBridge ? 1d : 0d);
+        for (String key : List.of("source-gravity-change-movement-age", "source-jump-change-movement-age", "source-climb-position-age", "source-cached-air-position-age", "source-cached-air",
+                "source-bed-surface-position-age", "source-flight-direct-position-age", "source-flight-surface-position-age", "source-flight-event-movement-age")) values.remove(key);
+        if (movement.gravityKnown()) values.put("source-gravity-change-movement-age", (double) movement.gravityAge());
+        if (movement.gravityKnown()) values.put("source-wallclimb-gate-age", (double) movement.gravityAge()); else values.remove("source-wallclimb-gate-age");
+        if (movement.jumpKnown()) values.put("source-jump-change-movement-age", (double) movement.jumpAge());
+        values.put("source-client-air-position-age", (double) movement.clientAir());
+        values.put("source-client-air-movement-age", (double) protocol.airRun());
+        values.put("source-client-ground-movement-age", (double) protocol.groundRun());
+        values.put("source-position-count", (double) movement.positions());
+        values.put("source-unassigned-contact-movement-age", Math.min(Integer.MAX_VALUE, 100d + tracking.totalMoves));
+        values.put("source-previous-position-packet", tracking.movementInputs.previousPositionPacket() ? 1d : 0d);
+        values.put("source-previous-previous-position-packet", tracking.movementInputs.previousPreviousPositionPacket() ? 1d : 0d);
+        values.put("source-client-ground", movement.current().ground() ? 1d : 0d);
+        values.put("source-history-current-dy", movement.current().dy()); values.put("source-history-previous-dy", movement.previous().dy());
+        values.put("source-history-current-ground", movement.current().ground() ? 1d : 0d); values.put("source-history-previous-ground", movement.previous().ground() ? 1d : 0d);
+        values.put("source-history-current-matched", movement.current().matched() ? 1d : 0d); values.put("source-history-previous-matched", movement.previous().matched() ? 1d : 0d);
+        values.put("source-swift-sneak", tracking.swiftSneak ? 1d : 0d);
+        values.put("source-server-position-movement-age", (double) tracking.teleportMovementAge);
+        values.put("source-air-drag-supported", PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(com.github.retrooper.packetevents.manager.server.ServerVersion.V_26_1) ? 1d : 0d);
+        values.put("protocol-server-at-least-26-1", values.get("source-air-drag-supported"));
+        values.put("source-last-break-distance", tracking.movementInputs.breakDistance());
+        values.put("source-jump-disabled", 0d);
+        values.put("source-unassigned-effect-active", 0d); values.put("source-unassigned-effect-level", 0d);
+        values.put("source-position-x", position.rawX()); values.put("source-position-y", position.rawY()); values.put("source-position-z", position.rawZ());
+        values.put("source-position-observed", position.positionKnown() ? 1d : 0d);
+        values.put("protocol-exempt-LENIENT_SCAFFOLDING", plugin.settings().enabled("movement-exemptions.nearby-placement")
+                && tracking.movementInputs.placementDistance() > 0 && tracking.movementInputs.placementDistance() < 3 ? 1d : 0d);
+        if (world.movementKnown()) {
+            values.put("source-climb-position-age", (double) world.climbAge());
+            values.put("source-climbable-contact-position-age", (double) world.climbAge());
+            values.put("source-cached-air-position-age", (double) world.cachedAirAge());
+            values.put("source-bed-surface-position-age", (double) world.bedSurfaceAge());
+            values.put("source-flight-direct-position-age", (double) world.bodyObstructedAge());
+        }
+        else values.remove("source-climbable-contact-position-age");
+        if (abilities.flightContactKnown()) values.put("source-flight-surface-position-age", (double) abilities.flightContactAge());
+        if (abilities.glidingKnown()) values.put("source-flight-event-movement-age", (double) abilities.glidingAge());
+        Location registration = registrationPositions.get(player.getUniqueId());
+        if (registration != null) {
+            values.put("source-join-x", registration.getX()); values.put("source-join-y", registration.getY()); values.put("source-join-z", registration.getZ());
+        } else for (String key : List.of("source-join-x", "source-join-y", "source-join-z")) values.remove(key);
+        for (String key : List.of("source-explosion-pending", "source-explosion-sum-y", "source-last-positive-explosion-y", "source-explosion-sum-horizontal", "source-last-positive-explosion-horizontal", "source-explosion-position-age", "source-velocity-position-age",
                 "source-maximum-horizontal-velocity", "source-maximum-vertical-velocity", "source-velocity-x", "source-velocity-z", "source-velocity-y", "source-velocity-vertical-age",
-                "source-velocity-pending", "source-pending-velocity-count", "source-pending-explosion-count")) values.remove(key);
+                "source-velocity-pending", "source-pending-velocity-count", "source-pending-explosion-count", "source-retained-velocity-y", "protocol-exempt-PACKET_EXPLOSION", "protocol-exempt-EXPLOSION")) values.remove(key);
         if (velocity.complete()) {
+            values.put("protocol-exempt-PACKET_EXPLOSION", velocity.explosionPositionAge() < 16 ? 1d : 0d);
+            values.put("protocol-exempt-EXPLOSION", velocity.explosionPositionAge() < 50 ? 1d : 0d);
+            values.put("source-retained-velocity-y", velocity.velocityY());
             values.put("source-explosion-pending", velocity.explosionPending() ? 1d : 0d);
             values.put("source-explosion-sum-y", velocity.explosionSumY()); values.put("source-last-positive-explosion-y", velocity.lastPositiveExplosionY());
+            values.put("source-explosion-sum-horizontal", velocity.explosionSumHorizontal()); values.put("source-last-positive-explosion-horizontal", velocity.lastPositiveExplosionHorizontal());
             values.put("source-explosion-position-age", (double) velocity.explosionPositionAge());
             values.put("source-velocity-position-age", (double) velocity.velocityPositionAge());
             values.put("source-maximum-horizontal-velocity", velocity.maximumHorizontal()); values.put("source-maximum-vertical-velocity", velocity.maximumVertical());
@@ -931,8 +1142,14 @@ public final class ObservationCollector {
         values.put("eligible-swing-cps", plugin.data(player).clicksPerSecond);
         long packetMillis = values.getOrDefault("packet-time-ms", (double) System.currentTimeMillis()).longValue();
         long joinedAge = Math.max(0, packetMillis - plugin.data(player).joinedMillis);
+        values.put("source-join-age-ms", (double) joinedAge);
+        values.put("protocol-exempt-JOINED_CHUNK_LOAD", joinedAge < 30000 && position.signedDy() < -.05000000074505806 && position.signedDy() > -.10000000149011612 ? 1d : 0d);
+        values.put("protocol-exempt-SERVER_POSITION_FAST", tracking.teleportMovementAge < 5 ? 1d : 0d);
+        values.put("protocol-exempt-NOT_MOVING", position.dx() == 0 && position.signedDy() == 0 && position.dz() == 0 ? 1d : 0d);
+        values.put("source-jump-event-movement-age", (double) tracking.events.age(Age.HOGLIN_DAMAGE));
         values.put("join-age-ms", (double) joinedAge); values.put("total-movement-packets", (double) tracking.totalMoves);
-        if (joinedAge < plugin.settings().integer("settings.join-check-wait-time") || tracking.totalMoves < plugin.settings().integer("settings.min-ticks-existed")) states.add("joined");
+        values.put("source-joined-position-count", (double) movement.positions());
+        if (joinedAge < plugin.settings().integer("settings.join-check-wait-time") || movement.positions() < plugin.settings().integer("settings.min-ticks-existed")) states.add("joined");
         else states.remove("joined");
         values.put("protocol-exempt-JOINED", states.contains("joined") ? 1d : 0d);
         values.put("protocol-exempt-PLUGIN_LOAD", packetMillis - plugin.startedMillis() < 10000 ? 1d : 0d);
@@ -959,6 +1176,8 @@ public final class ObservationCollector {
         values.put("source-server-position-match", tracking.serverTeleportMatch ? 1d : 0d);
         values.put("protocol-ghost-corrections", (double) tracking.ghostCorrections);
         values.put("protocol-server-at-least-1-9", 1d);
+        values.put("protocol-server-after-1-13", PacketEvents.getAPI().getServerManager().getVersion().isNewerThan(com.github.retrooper.packetevents.manager.server.ServerVersion.V_1_13) ? 1d : 0d);
+        values.put("protocol-server-at-least-1-16", PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(com.github.retrooper.packetevents.manager.server.ServerVersion.V_1_16) ? 1d : 0d);
         values.put("source-server-at-least-1-9", 1d);
         values.put("protocol-server-at-least-1-21-2", 1d);
         values.put("protocol-bukkit-flight-allowed", player.getAllowFlight() ? 1d : 0d);
@@ -972,6 +1191,9 @@ public final class ObservationCollector {
         if (abilities.riptideKnown()) values.put("protocol-exempt-RIPTIDE", abilities.riptideAge() < 80 ? 1d : 0d);
         if (abilities.glidingKnown()) values.put("protocol-exempt-GLIDING", abilities.glidingAge() < 10 ? 1d : 0d);
         if (abilities.swimmingKnown()) values.put("protocol-exempt-SWIMMING", abilities.swimmingAge() < 40 ? 1d : 0d);
+        values.remove("protocol-exempt-JUMP_BOOST");
+        if (abilities.jumpKnown()) values.put("protocol-exempt-JUMP_BOOST", abilities.jumpAge() < 40 ? 1d : 0d);
+        values.put("protocol-exempt-CINEMATIC", plugin.settings().enabled("settings.cinematic") && camera.cinematic() ? 1d : 0d);
         boolean elytra = tracking.cachedChestElytra || abilities.elytraAge() < 100;
         values.put("protocol-exempt-ELYTRA", elytra ? 1d : 0d);
         values.put("protocol-exempt-DOLPHINS_GRACE", abilities.dolphinAge() < 50 || player.hasPotionEffect(PotionEffectType.DOLPHINS_GRACE) ? 1d : 0d);
@@ -984,12 +1206,27 @@ public final class ObservationCollector {
         values.put("source-max-no-damage-ticks", (double) player.getMaximumNoDamageTicks());
         values.put("max-no-damage-ticks", (double) player.getMaximumNoDamageTicks());
         values.put("source-walk-speed", (double) .2f);
+        Boolean logicalGliding = tracking.abilities.logicalGliding();
+        if (logicalGliding == null) values.remove("source-gliding-active"); else values.put("source-gliding-active", logicalGliding ? 1d : 0d);
+        values.put("source-firework-position-age", (double) tracking.movementInputs.fireworkAge());
+        if (tracking.movementInputs.sulfurAge() == null) values.remove("source-sulfur-position-age"); else values.put("source-sulfur-position-age", tracking.movementInputs.sulfurAge().doubleValue());
+        if (abilities.riptideKnown()) values.put("source-riptide-position-age", (double) abilities.riptideAge()); else values.remove("source-riptide-position-age");
+        values.put("source-elytra-position-age", (double) abilities.elytraAge());
+        values.put("movement-ignore-liquid-motion", plugin.settings().enabled("movement-exemptions.liquid-residuals") ? 1d : 0d);
+        values.put("movement-ignore-low-altitude", plugin.settings().enabled("movement-exemptions.low-altitude-translations") ? 1d : 0d);
+        for (String id : List.of("a", "c", "d", "e")) values.put("movement-ignore-ghost-blocks-flight-" + id, plugin.settings().enabled("checks.flight-" + id + ".ignore-unconfirmed-ground") ? 1d : 0d);
         if (tracking.acknowledgedState.containsKey("protocol-speed-amplifier")) values.put("source-speed-amplifier", tracking.acknowledgedState.get("protocol-speed-amplifier"));
         else values.remove("source-speed-amplifier");
         values.put("source-sprinting", tracking.sourceSprinting ? 1d : 0d);
+        values.put("source-equipped-elytra", tracking.cachedChestElytra ? 1d : 0d);
+        values.put("source-bukkit-gliding", player.isGliding() ? 1d : 0d);
+        values.put("source-y-aligned", position.rawY() % .015625 == 0 ? 1d : 0d);
+        values.put("source-dolphin-contact-position-age", (double) abilities.dolphinAge());
         values.put("source-sneaking", tracking.sourceSneaking ? 1d : 0d);
         values.put("source-yaw", (double) tracking.cinematic.rawYaw()); values.put("source-pitch", (double) tracking.cinematic.rawPitch());
         values.put("source-previous-ground", tracking.previousClientGround ? 1d : 0d);
+        values.put("source-previous-client-ground", tracking.previousClientGround ? 1d : 0d);
+        values.put("source-previous-previous-client-ground", tracking.sourcePreviousPreviousGround ? 1d : 0d);
         values.put("source-previous-previous-ground", tracking.sourcePreviousPreviousGround ? 1d : 0d);
         if (tracking.acknowledgedState.containsKey("protocol-jump-strength")) values.put("source-jump-motion", tracking.acknowledgedState.get("protocol-jump-strength"));
         else values.remove("source-jump-motion");
@@ -1004,6 +1241,12 @@ public final class ObservationCollector {
         values.put("source-fastbow-exempt", elytra || abilities.glidingKnown() && abilities.glidingAge() < 10 ? 1d : 0d);
         for (String key : WORLD_POSITION_FACTS) values.remove(key);
         values.putAll(tracking.positionGeometry);
+        if (world.initialStateKnown()) {
+            values.putIfAbsent("protocol-exempt-FULLY_SUBMERGED", 0d);
+            values.putIfAbsent("protocol-exempt-NEAR_SOLID", 0d);
+        }
+        if (tracking.positionGeometry.containsKey("protocol-air-volume27")) values.put("source-cached-air", tracking.positionGeometry.get("protocol-air-volume27"));
+        else if (world.initialStateKnown()) values.put("source-cached-air", 0d);
         if (!plugin.settings().enabled("settings.velocity-world-border")) values.put("source-world-border", 0d);
         if (world.geometryKnown()) {
             values.put("protocol-exempt-LIQUID", world.bubbleAge() < 25 ? 1d : 0d);
@@ -1011,22 +1254,29 @@ public final class ObservationCollector {
             values.put("protocol-exempt-COLLIDING_VERTICALLY", world.ceilingAge() < 20 ? 1d : 0d);
             values.put("source-bubble-position-age", (double) world.bubbleAge());
             values.put("source-slime-below-position-age", (double) world.slimeBelowAge());
+            values.put("source-piston-position-age", (double) world.pistonAge());
             values.put("source-bubble-contact-position-age", (double) world.bubbleAge());
             values.put("protocol-exempt-BUBBLE_COLUMN", world.bubbleAge() < 40 ? 1d : 0d);
             var boots = player.getInventory().getBoots();
             values.put("protocol-exempt-DEPTH_STRIDER", boots != null && boots.containsEnchantment(Enchantment.DEPTH_STRIDER) && world.bubbleAge() < 30 ? 1d : 0d);
-        } else for (String key : List.of("protocol-exempt-LIQUID", "protocol-exempt-SLIME", "protocol-exempt-COLLIDING_VERTICALLY", "source-bubble-position-age", "source-slime-below-position-age", "source-bubble-contact-position-age", "protocol-exempt-BUBBLE_COLUMN", "protocol-exempt-DEPTH_STRIDER")) values.remove(key);
+        } else for (String key : List.of("protocol-exempt-LIQUID", "protocol-exempt-SLIME", "protocol-exempt-COLLIDING_VERTICALLY", "source-bubble-position-age", "source-slime-below-position-age", "source-piston-position-age", "source-bubble-contact-position-age", "protocol-exempt-BUBBLE_COLUMN", "protocol-exempt-DEPTH_STRIDER")) values.remove(key);
         if (world.initialStateKnown()) {
             values.put("protocol-exempt-LIQUID", world.bubbleAge() < 25 ? 1d : 0d);
             values.put("source-bubble-position-age", (double) world.bubbleAge());
         }
+        if (values.containsKey("source-liquid-contact-position-age")) values.put("protocol-exempt-LIQUID", values.get("source-liquid-contact-position-age") < 25 ? 1d : 0d);
+        else values.remove("protocol-exempt-LIQUID");
         if (world.waterloggedKnown()) {
             values.put("protocol-exempt-WATERLOGGED", world.waterloggedAge() < 30 ? 1d : 0d);
             values.put("source-waterlogged-position-age", (double) world.waterloggedAge());
         } else { values.remove("protocol-exempt-WATERLOGGED"); values.remove("source-waterlogged-position-age"); }
-        for (String key : List.of("source-ice-position-age", "source-trapdoor-position-age", "source-bed-position-age", "source-fence-position-age", "source-soul-speed-position-age", "source-body-slime-position-age", "source-body-slab-position-age", "source-nearby-living-position-age")) values.remove(key);
-        for (String key : List.of("protocol-exempt-HONEY", "protocol-exempt-ICE", "protocol-exempt-TRAPDOOR", "protocol-exempt-FENCE", "protocol-exempt-BED", "protocol-exempt-SHULKER_BOX", "protocol-exempt-SCAFFOLDING", "protocol-exempt-FARMLAND", "protocol-exempt-SHULKER", "protocol-exempt-HAPPY_GHAST", "protocol-exempt-PISTON", "source-ice-contact-position-age")) values.remove(key);
+        for (String key : List.of("source-ice-position-age", "source-trapdoor-position-age", "source-bed-position-age", "source-fence-position-age", "source-soul-speed-position-age", "source-body-slime-position-age", "source-body-slab-position-age", "source-nearby-living-position-age", "source-jump-support-position-age", "source-jump-surface-position-age", "source-honey-position-age")) values.remove(key);
+        for (String key : List.of("protocol-exempt-HONEY", "protocol-exempt-ICE", "protocol-exempt-TRAPDOOR", "protocol-exempt-FENCE", "protocol-exempt-BED", "protocol-exempt-SHULKER_BOX", "protocol-exempt-SCAFFOLDING", "protocol-exempt-FARMLAND", "protocol-exempt-SHULKER", "protocol-exempt-HAPPY_GHAST", "protocol-exempt-PISTON", "source-ice-contact-position-age", "protocol-exempt-AROUND_SLIME")) values.remove(key);
         if (world.contactsKnown()) {
+            values.put("source-honey-position-age", (double) world.honeyAge());
+            values.put("protocol-exempt-AROUND_SLIME", world.bodySlimeAge() < 20 ? 1d : 0d);
+            values.put("source-jump-support-position-age", (double) world.farmlandAge());
+            values.put("source-jump-surface-position-age", (double) world.fenceAge());
             values.put("source-ice-position-age", (double) world.iceAge()); values.put("source-trapdoor-position-age", (double) world.trapdoorAge());
             values.put("source-bed-position-age", (double) world.bedAge()); values.put("source-fence-position-age", (double) world.fenceAge());
             values.put("source-soul-speed-position-age", (double) world.soulSpeedAge()); values.put("source-body-slime-position-age", (double) world.bodySlimeAge());
@@ -1056,6 +1306,7 @@ public final class ObservationCollector {
             values.put("source-position-dx", position.dx()); values.put("source-position-dy", position.signedDy()); values.put("source-position-dz", position.dz());
             values.put("source-position-horizontal", Math.sqrt(position.dx() * position.dx() + position.dz() * position.dz()));
             values.put("source-delta-y", position.signedDy()); values.put("source-horizontal", Math.sqrt(position.dx() * position.dx() + position.dz() * position.dz()));
+            values.put("source-previous-delta-y", position.previousDy());
             values.put("source-previous-position-dx", position.previousDx()); values.put("source-previous-position-dy", position.previousDy()); values.put("source-previous-position-dz", position.previousDz());
             values.put("source-previous-position-horizontal", Math.sqrt(position.previousDx() * position.previousDx() + position.previousDz() * position.previousDz()));
             values.put("source-previous-horizontal", Math.sqrt(position.previousDx() * position.previousDx() + position.previousDz() * position.previousDz()));
@@ -1110,6 +1361,10 @@ public final class ObservationCollector {
         values.put("mouse-step", (double) camera.mouseStep());
         values.put("mouse-yaw-count", (double) camera.yawCount());
         values.put("mouse-pitch-count", (double) camera.pitchCount());
+        var server = PacketEvents.getAPI().getServerManager().getVersion();
+        tracking.surface.exemptions(values, server.isNewerThanOrEquals(com.github.retrooper.packetevents.manager.server.ServerVersion.V_1_9),
+                server.isOlderThan(com.github.retrooper.packetevents.manager.server.ServerVersion.V_1_13));
+        io.github.lino9999.linoac.detection.collector.MovementEnumInputs.populate(values, world.initialStateKnown());
     }
 
     private void protocolStates(Player player, Set<String> states) {
@@ -1175,6 +1430,12 @@ public final class ObservationCollector {
     }
 
     private static final class Tracking {
+        private final io.github.lino9999.linoac.detection.collector.CachedExemptionState cachedExemptions = new io.github.lino9999.linoac.detection.collector.CachedExemptionState();
+        private Boolean lastPlacementBridge = false;
+        private final io.github.lino9999.linoac.detection.collector.MovementInputState movementInputs = new io.github.lino9999.linoac.detection.collector.MovementInputState();
+        private final io.github.lino9999.linoac.detection.collector.MountedInputState mounted = new io.github.lino9999.linoac.detection.collector.MountedInputState();
+        private final io.github.lino9999.linoac.detection.collector.SurfaceInputState surface = new io.github.lino9999.linoac.detection.collector.SurfaceInputState();
+        private boolean swiftSneak;
         private Location position, serverLocation, serverDestination, vehicleLocation;
         private UUID vehicleId;
         private Map<String, Double> context = Map.of();

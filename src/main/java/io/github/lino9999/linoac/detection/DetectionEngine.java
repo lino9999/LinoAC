@@ -46,11 +46,21 @@ public final class DetectionEngine {
         values.put("placement-limit", plugin.settings().number("checks.fastplace-a.max-blocks"));
         values.put("bridge-placement-limit", plugin.settings().number("limits.bridge-placements"));
         values.put("minimum-break-difference", plugin.settings().number("limits.minimum-break-difference"));
-        values.put("elytra-speed-limit", plugin.settings().number("limits.elytra-speed"));
+        values.put("source-elytra-a-max-speed", plugin.settings().number("limits.elytra-speed"));
+        values.put("source-entity-collision-allowance-enabled", plugin.settings().enabled("settings.entity-collision") ? 1d : 0d);
+        for (String id : List.of("speed-b", "speed-c", "speed-d", "entityspeed-a")) {
+            values.put("source-" + id + "-min-difference", plugin.settings().number("checks." + id + ".min-difference"));
+        }
         values.put("cps-limit", plugin.settings().number("checks.autoclicker-a.max-cps"));
         values.put("click-tail-weight-minimum", plugin.settings().number("checks.autoclicker-t.min-kurtosis"));
         values.put("timer-speed-limit", plugin.settings().number("checks.timer-a.max-speed"));
         values.put("timer-balance-limit", plugin.settings().number("checks.timer-d.max-balance"));
+        values.put("source-hitbox-b-max-angle", plugin.settings().number("checks.hitbox-b.maximum-angle"));
+        values.put("movement-ignore-liquid-motion", plugin.settings().enabled("movement-exemptions.liquid-residuals") ? 1d : 0d);
+        values.put("movement-ignore-low-altitude", plugin.settings().enabled("movement-exemptions.low-altitude-translations") ? 1d : 0d);
+        for (String id : List.of("flight-a", "flight-c", "flight-d", "flight-e")) {
+            values.put("movement-ignore-ghost-blocks-" + id, plugin.settings().enabled("checks." + id + ".ignore-unconfirmed-ground") ? 1d : 0d);
+        }
         Observation enriched = new Observation(observation.kind(), observation.tick(), observation.nanos(), values, observation.states());
         boolean corrupt = observation.state("nonfinite-position") || observation.state("nonfinite-rotation") || observation.state("outside-world") || observation.state("invalid-pitch");
         for (RuleModule module : modules) {
@@ -79,6 +89,11 @@ public final class DetectionEngine {
                 public void reset(String id, String detail) {
                     CheckType type = CheckType.find(id).orElseThrow();
                     data.buffers.remove(type);
+                }
+                public void accumulate(String id, String detail) {
+                    if (CheckExemptions.exempt(id, enriched)) return;
+                    CheckType type = CheckType.find(id).orElseThrow();
+                    if (type.available()) data.buffers.compute(type, (key, current) -> FindingBuffer.accumulated(current == null ? 0 : current));
                 }
                 public void sampleAbove(String id, boolean suspicious, String detail) {
                     if (CheckExemptions.exempt(id, enriched)) return;

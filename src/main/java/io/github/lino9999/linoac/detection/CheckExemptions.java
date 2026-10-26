@@ -14,6 +14,8 @@ public final class CheckExemptions {
     private CheckExemptions() {}
 
     public static boolean exempt(String id, Observation observation) {
+        if (io.github.lino9999.linoac.detection.movement.MovementRules.ownsExemptions(id)
+                || io.github.lino9999.linoac.detection.world.WorldRules.ownsExemptions(id)) return false;
         if (id.equals("timer-a") || id.equals("timer-d") || id.startsWith("badpackets-") || id.startsWith("invalid-") || id.startsWith("groundspoof-")) return false;
         if (observation.state("sequence-context-known") && observation.state("source-" + id + "-known")
                 && (id.equals("criticals-a") || id.equals("criticals-b") || id.equals("reach-b") || id.equals("velocity-d"))) return false;

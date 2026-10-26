@@ -105,6 +105,16 @@ final class SequenceCombatRules implements RuleModule {
     private boolean marked(Observation input, String key) { return input.state(key) || input.has(key) && input.value(key) == 1; }
 
     private void reach(Observation input, FindingSink sink) {
+        if (ready(input, "hitbox-b") && input.hasAll("source-hitbox-b-angle", "source-hitbox-b-range", "source-hitbox-b-max-angle", "source-hitbox-b-modern-minimum")) {
+            double angle = input.value("source-hitbox-b-angle"), range = input.value("source-hitbox-b-range");
+            double maximum = input.value("source-hitbox-b-max-angle"), modern = input.value("source-hitbox-b-modern-minimum");
+            if (Double.isFinite(angle) && angle >= 0 && Double.isFinite(range)
+                    && Double.isFinite(maximum) && maximum >= 0 && maximum <= 180 && (modern == 0 || modern == 1)) {
+                double limit = maximum + (range < 1 ? .45 : 0);
+                sink.sampleAbove("hitbox-b", angle > limit && range > (modern == 1 ? .3 : .8) && range < 10
+                        && !input.state("source-hitbox-b-exempt"), "current-horizontal-angle-degrees=" + angle + " historical-range=" + range);
+            }
+        }
         if (ready(input, "reach-a") && input.has("source-reach-a-distance")) {
             double distance = input.value("source-reach-a-distance");
             if (distance == -1) sink.decay("reach-a", .025, "no-matching-target-history");

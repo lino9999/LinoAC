@@ -10,6 +10,7 @@ public final class ProtocolContext {
     private int inactiveResetPositionAge = 100;
     private long lastFlyingMillis;
     private long lastFastMoveMillis;
+    private long flyingIntervalMillis;
     private boolean fastMove;
     private boolean placement;
     private boolean entityAction;
@@ -29,7 +30,8 @@ public final class ProtocolContext {
             placement = entityAction = digging = arm = false;
             if (observation.has("packet-time-ms")) {
                 long now = (long) observation.value("packet-time-ms");
-                fastMove = now - lastFlyingMillis <= 5;
+                flyingIntervalMillis = now - lastFlyingMillis;
+                fastMove = flyingIntervalMillis <= 5;
                 if (fastMove) lastFastMoveMillis = now;
                 lastFlyingMillis = now;
             }
@@ -41,11 +43,14 @@ public final class ProtocolContext {
         }
         var values = new HashMap<>(observation.values());
         values.put("protocol-ground-run", (double) groundRun);
+        values.put("source-client-ground-movement-age", (double) groundRun);
         values.put("source-inactive-reset-position-age", (double) inactiveResetPositionAge);
         values.put("protocol-air-run", (double) airRun);
+        values.put("source-client-air-movement-age", (double) airRun);
         values.put("protocol-bucket-age", (double) bucketAge);
         values.put("protocol-last-fast-move-ms", (double) lastFastMoveMillis);
         values.put("protocol-fast-move", fastMove ? 1d : 0d);
+        values.put("protocol-flying-interval-ms", (double) flyingIntervalMillis);
         values.put("protocol-frame-placement", placement ? 1d : 0d);
         values.put("protocol-frame-entity-action", entityAction ? 1d : 0d);
         values.put("protocol-frame-digging", digging ? 1d : 0d);

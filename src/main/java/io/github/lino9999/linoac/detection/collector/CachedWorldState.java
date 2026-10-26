@@ -14,6 +14,30 @@ public final class CachedWorldState {
     private int bodySlimeAge = 500, bodySlabAge = 100, nearbyLivingAge = 100;
     private int honeyAge = 100, iceContactAge = 100, shulkerBoxAge = 100, scaffoldingAge = 100, farmlandAge = 100, shulkerAge = 100, happyGhastAge = 100;
     private int pistonAge = 100;
+    private int climbAge = 1000, cachedAirAge;
+    private int bedSurfaceAge = 100, bodyObstructedAge = 100;
+    private boolean movementKnown = true;
+
+    public void movement(Double climbable, Double airVolume) {
+        movement(climbable, airVolume, 0d, null, null);
+    }
+
+    public void movement(Double climbable, Double airVolume, Double airReset, Double bedSurface, Double bodyObstructed) {
+        movementKnown = climbable != null && airVolume != null;
+        if (movementKnown) {
+            climbAge = climbable == 1 ? 0 : increment(climbAge);
+            if (airReset == null) movementKnown = false;
+            else cachedAirAge = airVolume == 1 ? airReset == 1 ? 1 : increment(cachedAirAge) : 0;
+            if (bedSurface != null) bedSurfaceAge = bedSurface == 1 ? 0 : increment(bedSurfaceAge);
+            if (bodyObstructed != null) bodyObstructedAge = bodyObstructed == 1 ? 0 : increment(bodyObstructedAge);
+        } else if (!hadKnownGeometry) {
+            climbAge = increment(climbAge);
+            cachedAirAge = 0;
+            bedSurfaceAge = increment(bedSurfaceAge);
+            bodyObstructedAge = increment(bodyObstructedAge);
+            movementKnown = true;
+        }
+    }
 
     public void observe(long sampleGeneration, boolean waterlogged) {
         if (sampleGeneration < 0) throw new IllegalArgumentException("World generation must be nonnegative.");
@@ -62,7 +86,8 @@ public final class CachedWorldState {
 
     public Snapshot snapshot() { return new Snapshot(geometryKnown, waterloggedKnown, bubbleAge, slimeBelowAge, ceilingAge, waterloggedAge,
             contactsKnown, iceAge, trapdoorAge, fenceAge, bedAge, soulSpeedAge, bodySlimeAge, bodySlabAge, nearbyLivingAge,
-            honeyAge, iceContactAge, shulkerBoxAge, scaffoldingAge, farmlandAge, shulkerAge, happyGhastAge, pistonAge, !hadKnownGeometry); }
+            honeyAge, iceContactAge, shulkerBoxAge, scaffoldingAge, farmlandAge, shulkerAge, happyGhastAge, pistonAge, !hadKnownGeometry,
+            movementKnown, climbAge, cachedAirAge, bedSurfaceAge, bodyObstructedAge); }
     private static int increment(int value) { return value == Integer.MAX_VALUE ? value : value + 1; }
     public record Contacts(boolean ice, boolean trapdoor, boolean fence, boolean bed, boolean soulSpeed, boolean bodySlime, boolean bodySlab, boolean nearbyLiving,
                            boolean honey, boolean iceContact, boolean shulkerBox, boolean scaffolding, boolean farmland, boolean shulker, boolean happyGhast, boolean piston) {
@@ -81,7 +106,8 @@ public final class CachedWorldState {
     }
     public record Snapshot(boolean geometryKnown, boolean waterloggedKnown, int bubbleAge, int slimeBelowAge, int ceilingAge, int waterloggedAge,
                            boolean contactsKnown, int iceAge, int trapdoorAge, int fenceAge, int bedAge, int soulSpeedAge, int bodySlimeAge, int bodySlabAge, int nearbyLivingAge,
-                           int honeyAge, int iceContactAge, int shulkerBoxAge, int scaffoldingAge, int farmlandAge, int shulkerAge, int happyGhastAge, int pistonAge, boolean initialStateKnown) {
+                           int honeyAge, int iceContactAge, int shulkerBoxAge, int scaffoldingAge, int farmlandAge, int shulkerAge, int happyGhastAge, int pistonAge, boolean initialStateKnown,
+                           boolean movementKnown, int climbAge, int cachedAirAge, int bedSurfaceAge, int bodyObstructedAge) {
         public Double boatContact(Double measured) { return measured != null ? measured : initialStateKnown ? Double.valueOf(0) : null; }
     }
 }

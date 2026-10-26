@@ -52,7 +52,13 @@ public final class Settings {
         require("checks.timer-d.max-balance", 0, 600000);
         require("checks.reach-a.max-reach", 0, 8);
         require("checks.hitbox-a.max-angle", 0, Math.PI);
-        require("checks.speed-b.min-difference", 0, 100);
+        require("checks.hitbox-b.maximum-angle", 0, 180);
+        for (String id : List.of("speed-b", "speed-c", "speed-d", "entityspeed-a")) require("checks." + id + ".min-difference", 0, 100);
+        for (String path : List.of("checks.airplace-a.cancel", "movement-exemptions.nearby-placement", "movement-exemptions.liquid-residuals", "movement-exemptions.low-altitude-translations",
+                "checks.flight-a.ignore-unconfirmed-ground", "checks.flight-c.ignore-unconfirmed-ground", "checks.flight-d.ignore-unconfirmed-ground", "checks.flight-e.ignore-unconfirmed-ground",
+                "checks.boatfly-a.dismount", "checks.boatfly-b.dismount", "checks.entityflight-a.dismount", "checks.entityspeed-a.dismount", "checks.nosaddle-a.dismount")) {
+            if (!(yaml.get(path) instanceof Boolean)) throw new IllegalArgumentException("Invalid " + path + ": expected a boolean.");
+        }
         excludedWorlds = Set.copyOf(yaml.getStringList("settings.excluded-worlds"));
         require("settings.minimum-tps", 1, 20);
         require("settings.maximum-ping", 0, 100000);

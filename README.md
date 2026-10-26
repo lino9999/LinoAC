@@ -8,21 +8,22 @@
 
 **LinoAC by Lino** is an open-source Java Minecraft anti-cheat for **Spigot and Paper 1.21.11–26.3**. It combines packet-based combat and movement analysis, world-action checks, configurable staff alerts, persistent punishment waves and an integration API.
 
-Version **0.5.0** adds acknowledged combat prediction, packet-order state, mining authority and event-specific exemptions, with **175 independently implemented rule paths across 203 catalog entries**. Static inspection of the supplied artifact found 179 registered classes: 175 contain detection behavior, four are no-ops, and 24 additional configuration entries have no registered implementation. The previous count of 195 omitted eight numeric variants. [Every entry and its applicability](docs/CHECKS.md) is documented. Legacy-only rules remain protocol-gated; 175 is a code-coverage count, not 175 simultaneously active rules on modern clients.
+Version **0.6.0** completes the independent movement and world evaluators, restores Hitbox B and adds mounted movement, elytra phase budgets and acknowledged modern sulfur handling, with **175 independently implemented rule paths across 203 catalog entries**. Static inspection of the supplied artifact found 179 registered classes: 175 contain detection behavior, four are no-ops, and 24 additional configuration entries have no registered implementation. The previous count of 195 omitted eight numeric variants. [Every entry and its applicability](docs/CHECKS.md) is documented. Legacy-only rules remain protocol-gated; 175 is a code-coverage count, not 175 simultaneously active rules on modern clients.
 
-The reconstruction covers recovered detection cores and staff workflows. The complete reconstruction objective remains open: several movement/world branches and history boundaries still need reconciliation. See the explicit [fidelity ledger](docs/FIDELITY.md). Field accuracy and exact behavioral equivalence remain unverified. Automatic punishments and setbacks are disabled by default. GhostHand can cancel enclosed-bed breaks; set `checks.ghosthand-a.cancel: false` for monitoring without that interception. See [validation](docs/VALIDATION.md) and [reconstruction evidence](docs/REVERSE_ENGINEERING.md).
+All nonempty registered rule paths have independent evaluators. Recovered packet authority, state cadence, buffers and exemptions guide the implementation; documented repairs address defective reference behavior. See the [fidelity ledger](docs/FIDELITY.md). Field accuracy and exact original-versus-reconstruction equivalence remain unverified. Automatic punishments and setbacks are disabled by default. GhostHand can cancel enclosed-bed breaks; set `checks.ghosthand-a.cancel: false` for monitoring without that interception. See [validation](docs/VALIDATION.md) and [reconstruction evidence](docs/REVERSE_ENGINEERING.md).
 
 ## Features
 
 - Aim and arm-swing statistics; attack sequences, reach, hitbox, criticals, bow speed and acknowledged velocity response.
-- Speed, flight, jump, step, climbing, ground claims, liquids, strafe, elytra and mounted-entity checks with attributes and environmental exemptions.
+- Speed, flight, jump, step, climbing, ground claims, liquids, strafe, elytra and mounted-entity checks with acknowledged attributes, phase budgets and environmental exemptions.
+- Client-acknowledged sulfur contact on modern servers, separate physical/metadata gliding state and explicit vehicle packet/event authority. Optional per-check dismount actions default off.
 - Accepted block-placement and mining checks, scaffold patterns, tower, bed-enclosure heuristics, automation patterns and combined-violation checks.
 - Wire-level packet order, hotbar, abilities, timing, malformed movement and connection acknowledgement checks. Invalid numeric movement is discarded before Bukkit receives it.
 - A startup-verified rule registry, bounded packet queues, independently configurable buffers, decay, VL thresholds, ping/TPS gates, alerts, setbacks and actions.
 - Rich clickable alerts with configurable hover, severity and commands; verbose samples, category rankings, detailed profiles and acknowledgement diagnostics.
 - Paginated check GUI, freeze and frozen-disconnect actions, teleport, knockback, random rotation and hotbar shuffle.
 - Optional zero-damage or event-cancel hit suppression, delayed punishment with reset/logout/reload cancellation, broadcasts and persistent punishment waves with configurable spacing.
-- Bounded asynchronous logs, retention, independent channel switches, configurable formats and in-game pages; persisted punishment statistics.
+- Bounded asynchronous logs, retention, independent channel switches, configurable formats and accurate in-game page totals; persisted punishment statistics.
 - LinoAC two-field proxy alert/punishment messaging, with separate automatic and manual command formats.
 - Client brand notices, blocklist/allowlist, optional ghost-block resynchronization and separate HTTPS alert/punishment webhooks.
 - PlaceholderAPI, Floodgate exemptions, a domain-specific mcMMO BERSERK hook, immutable API snapshots and synchronous lifecycle events. No remote licensing, downloaded code or telemetry.
@@ -32,7 +33,7 @@ The reconstruction covers recovered detection cores and staff workflows. The com
 1. Use Spigot or Paper **1.21.11 through 26.3**. Folia is unsupported.
 2. Use Java **21** for 1.21.11 and Java **25** for 26.x, according to your server distribution.
 3. Install [PacketEvents 2.14.0](https://github.com/retrooper/packetevents/releases/tag/v2.14.0) in `plugins/`.
-4. Download **LinoAC-0.5.0.jar** from [GitHub Releases](https://github.com/lino9999/LinoAC/releases), place it in `plugins/`, then restart.
+4. Download **LinoAC-0.6.0.jar** from [GitHub Releases](https://github.com/lino9999/LinoAC/releases), place it in `plugins/`, then restart.
 5. Review `plugins/LinoAC/config.yml` and run `/lac status`. Start with monitoring and evaluate your own mechanics before enabling enforcement.
 
 The same Java 21 plugin JAR serves the full target range. [VALIDATION.md](docs/VALIDATION.md) distinguishes startup/command, protocol-client and synthetic evaluator tests. Other forks, client translators and custom mechanics need their own validation.
@@ -87,6 +88,10 @@ Player parameters require an online player except for log lookup and wave remova
 
 ## Configuration
 
+`checks.boatfly-a.dismount`, `checks.boatfly-b.dismount`, `checks.entityflight-a.dismount`, `checks.entityspeed-a.dismount` and `checks.nosaddle-a.dismount` are independent options under `checks`; all default to false. An accepted finding schedules dismount only for the same player session and mount. Reset, logout and accepted reload cancel pending actions.
+
+`checks.airplace-a.cancel` controls placement cancellation. `checks.hitbox-b.maximum-angle` defaults to 45 degrees. Per-check speed margins, flight ground-confirmation exclusions and shared movement exemptions are independently configurable.
+
 Missing textual keys inherit shipped defaults, including during upgrades from earlier configurations. `checks.fastplace-a.max-blocks` inherits an explicitly customized legacy `limits.maximum-placements` value when absent.
 
 The [default configuration](src/main/resources/config.yml) is the authoritative reference. `checks.defaults` contains shared policy values; `checks.<id>` overrides individual fields. This avoids repeating the same policy 203 times. Unavailable catalog slots cannot be enabled by configuration, command or API. Version 1 configurations migrate to canonical variant IDs with a `config-v1-backup.yml` backup.
@@ -108,7 +113,7 @@ The [default configuration](src/main/resources/config.yml) is the authoritative 
 | `webhook` | HTTPS endpoints, notification switches and presentation |
 | `messages` | Prefix and configurable lifecycle messages; `&` colors supported |
 
-Join exclusion uses `settings.join-check-wait-time` milliseconds or fewer than `settings.min-ticks-existed` actual movement packets, only for the recovered consumers. `settings.cinematic` enables the scoped cinematic estimate exemption; the estimator still collects its inputs while disabled. Entity-crowding exemption defaults off; its age and vehicle/web ages advance only on position-containing packets. On Spigot/Paper, crowding uses the cached Bukkit nearby-entity count. `grace-ticks` in this integration counts position packets.
+Join exclusion uses `settings.join-check-wait-time` milliseconds or fewer than `settings.min-ticks-existed` position-containing packets, only for the recovered consumers. `settings.cinematic` enables the scoped cinematic estimate exemption; the estimator still collects its inputs while disabled. The optional entity-crowding integration defaults off; its age and player vehicle-grace/web ages advance only on position-containing packets. Mounted pose and contact clocks advance on VEHICLE_MOVE. On Spigot/Paper, crowding uses the cached Bukkit nearby-entity count. `grace-ticks` in this integration counts position packets.
 
 Automatic commands require both `settings.automatic-punishments: true` and the check's `punishable: true`. Setbacks and optional ghost repair are independently off by default. Staff manual commands and waves remain explicit actions. Reset, reload or logout revokes pending delayed punishments. Automatic dispatch runs no earlier than the next server tick. A successful automatic dispatch clears current per-check VL while preserving cumulative history and buffers; rejected or cancelled dispatches retain VL and do not consume its cooldown. Explicit reset clears both VL and cumulative history.
 
@@ -130,6 +135,6 @@ Proxy messaging uses two modified-UTF fields on `linoac:proxy`, with delimiter `
 
 ## Build and maintenance
 
-Use `./mvnw -B -ntp clean verify` or `mvnw.cmd -B -ntp clean verify` with JDK 21+. Output: `target/LinoAC-0.5.0.jar`. PacketEvents and PlaceholderAPI are provided dependencies and are not bundled.
+Use `./mvnw -B -ntp clean verify` or `mvnw.cmd -B -ntp clean verify` with JDK 21+. Output: `target/LinoAC-0.6.0.jar`. PacketEvents and PlaceholderAPI are provided dependencies and are not bundled.
 
 Read [docs/AGENTS.md](docs/AGENTS.md) for a compact source map, [CHECKS.md](docs/CHECKS.md) for rule coverage and [SpigotMC BBCode](docs/spigot/) for ready-to-use resource text. Temporary test fixtures are removed after validation as requested; CI builds source and does not rerun the deleted local harnesses. Source and new assets use the MIT license; dependency and original-artifact rights remain separate.

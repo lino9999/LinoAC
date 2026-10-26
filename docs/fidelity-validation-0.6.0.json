@@ -1,0 +1,736 @@
+{
+  "version": "0.6.0",
+  "date": "2026-10-26",
+  "artifact": {
+    "file": "LinoAC-0.6.0.jar",
+    "sha256": "55d46c95d32208d4b52775a1e7360df85be55cf8b87727fae3210df3d1309f32",
+    "bytes": 577002,
+    "classes": 205,
+    "classVersions": [
+      65
+    ],
+    "javaSources": 125
+  },
+  "reference": {
+    "sha256": "0560adb0045b123c081caf606accbece66c4c8898a47af1d970ad9a2530177ed",
+    "originalExecuted": false,
+    "derivativeExecuted": false,
+    "catalogue": 203,
+    "registered": 179,
+    "nonempty": 175,
+    "noops": 4,
+    "unregistered": 24
+  },
+  "artifactAudit": {
+    "javaComments": [],
+    "missingConfigIds": [],
+    "extraConfigIds": [],
+    "identicalReferenceMembers": [],
+    "oldBrandMembers": [],
+    "foreignClasses": [],
+    "temporaryMembers": [],
+    "identicalReferenceAnnotationDescriptions": []
+  },
+  "pure": {
+    "compiler": "Java25 javac --release21 -encodingUTF8",
+    "runtime": "Java25.0.1",
+    "passed": 2987,
+    "failedSuites": 0,
+    "suites": [
+      {
+        "name": "ProducerChecks",
+        "assertions": 1469,
+        "exitCode": 0,
+        "fixtureSha256": "13adadbdfe1b04b734fab0f99cc4242de2ffcc6b802139f1cff6cc125490022d"
+      },
+      {
+        "name": "io.github.lino9999.linoac.detection.movement.Movement06Tests",
+        "assertions": 225,
+        "exitCode": 0,
+        "fixtureSha256": "07227a16b387e654d17ffb78d7fe0b025ac1eda8e66435b6879259fc26a87268"
+      },
+      {
+        "name": "io.github.lino9999.linoac.detection.world.WorldBehaviorTests",
+        "assertions": 139,
+        "exitCode": 0,
+        "fixtureSha256": "af5a3715c8a1ba8c9c9ebce75b9d8166b090f6e315130a75f465d132769f582a"
+      },
+      {
+        "name": "io.github.lino9999.linoac.detection.combat.AngularTargetTests",
+        "assertions": 41,
+        "exitCode": 0,
+        "fixtureSha256": "aa7ef994114fc3ab7c1c7efabb4f0e662a96d26680a2c0af7d1e88ec6db90bf6"
+      },
+      {
+        "name": "Staff06Tests",
+        "assertions": 43,
+        "exitCode": 0,
+        "fixtureSha256": "5f0f360334034435b5c517205a0af3039fe87bc5c6f6e63dba283b6c2383113f"
+      },
+      {
+        "name": "io.github.lino9999.linoac.detection.movement.Mounted07Tests",
+        "assertions": 72,
+        "exitCode": 0,
+        "fixtureSha256": "426f595d593db9d9b7f392a6b19fe4d905802c200defda6f102a186128daa5f5"
+      },
+      {
+        "name": "io.github.lino9999.linoac.detection.movement.Surface07Tests",
+        "assertions": 86,
+        "exitCode": 0,
+        "fixtureSha256": "04b5aa5b667fe87a14ddf0aaac64eb7646631b56b236a1c8c0f172c19ae76648"
+      },
+      {
+        "name": "Event07Tests",
+        "assertions": 11,
+        "exitCode": 0,
+        "fixtureSha256": "68c5b7e8af38da55cf32d3d4f45e15049afc271e6cd348056dc3cb0946a98e8c"
+      },
+      {
+        "name": "io.github.lino9999.linoac.detection.movement.Glide07Harness",
+        "assertions": 240,
+        "exitCode": 0,
+        "fixtureSha256": "235f845d8a56aae0efd847cdf99a60282d0e00a637969d5f55419bb5152a7f04"
+      },
+      {
+        "name": "ProducerChecks07",
+        "assertions": 398,
+        "exitCode": 0,
+        "fixtureSha256": "9ecf57159f0087e1c5ed65e074fe85d6a9b01ca9b412339f52b8ced9f971e777"
+      },
+      {
+        "name": "MountedPacketChecks",
+        "assertions": 10,
+        "exitCode": 0,
+        "fixtureSha256": "5207c9fe371593c44ac0488ec8fe2067ec4e377bcd64d5b030fcf058cabc8099"
+      },
+      {
+        "name": "MovementEnumChecks",
+        "assertions": 94,
+        "exitCode": 0,
+        "fixtureSha256": "3872129e7f9169dd882e2b409a8b80d92b19b87b686f8c49ad49c328603511b7"
+      },
+      {
+        "name": "SurfaceEnumChecks",
+        "assertions": 159,
+        "exitCode": 0,
+        "fixtureSha256": "804e5624a2cf3c5e260460dff226f2811c8c7d2515a3cc44f105dfc298c0d88d"
+      }
+    ]
+  },
+  "runtime": {
+    "passed": 756,
+    "failed": 0,
+    "spigotPassed": 511,
+    "paperPassed": 245,
+    "rows": [
+      {
+        "minecraft": "1.21.11",
+        "platform": "spigot",
+        "runtimeInfo": {
+          "server": "4598-Spigot-56165ca-d74c5d8 (MC: 1.21.11 Unobfuscated)",
+          "java": "21.0.7",
+          "catalogue": 203,
+          "tps": 20,
+          "plugin": "0.6.0",
+          "name": "CraftBukkit"
+        },
+        "serverSha256": "4fbfbda1ed6db150275c291059e3aac65d9619b907d3f2a8407dd96dcab746fd",
+        "packetEventsSha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+        "passed": 240,
+        "failed": 0,
+        "positiveMovementIds": [
+          "antilevitation-a",
+          "boatfly-a",
+          "boatfly-b",
+          "boatfly-c",
+          "elytra-a",
+          "elytra-b",
+          "elytra-c",
+          "elytra-f",
+          "elytra-g",
+          "elytra-i",
+          "elytra-k",
+          "elytra-l",
+          "elytra-m",
+          "elytra-n",
+          "entityflight-a",
+          "entityflight-b",
+          "entityspeed-a",
+          "fastclimb-a",
+          "flight-a",
+          "flight-b",
+          "flight-c",
+          "flight-d",
+          "flight-e",
+          "flight-f",
+          "jesus-a",
+          "jesus-b",
+          "jesus-c",
+          "jesus-d",
+          "jesus-e",
+          "jump-a",
+          "jump-b",
+          "jump-c",
+          "motion-a",
+          "motion-b",
+          "motion-c",
+          "motion-e",
+          "nosaddle-a",
+          "noslow-b",
+          "noslow-c",
+          "speed-a",
+          "speed-b",
+          "speed-c",
+          "speed-d",
+          "speed-e",
+          "sprint-a",
+          "step-a",
+          "step-c",
+          "strafe-a",
+          "vclip-a",
+          "wallclimb-a"
+        ],
+        "cleanMovementIds": [
+          "antilevitation-a",
+          "boatfly-a",
+          "boatfly-b",
+          "boatfly-c",
+          "elytra-a",
+          "elytra-b",
+          "elytra-c",
+          "elytra-f",
+          "elytra-g",
+          "elytra-i",
+          "elytra-k",
+          "elytra-l",
+          "elytra-m",
+          "elytra-n",
+          "entityflight-a",
+          "entityflight-b",
+          "entityspeed-a",
+          "fastclimb-a",
+          "flight-a",
+          "flight-b",
+          "flight-c",
+          "flight-d",
+          "flight-e",
+          "flight-f",
+          "jesus-a",
+          "jesus-b",
+          "jesus-c",
+          "jesus-d",
+          "jesus-e",
+          "jump-a",
+          "jump-b",
+          "jump-c",
+          "motion-a",
+          "motion-b",
+          "motion-c",
+          "motion-e",
+          "nosaddle-a",
+          "noslow-b",
+          "noslow-c",
+          "speed-a",
+          "speed-b",
+          "speed-c",
+          "speed-d",
+          "speed-e",
+          "sprint-a",
+          "step-a",
+          "step-c",
+          "strafe-a",
+          "vclip-a",
+          "wallclimb-a"
+        ],
+        "shutdown": {
+          "requested": true,
+          "forced": false,
+          "exitCode": 0,
+          "pluginDisabled": true,
+          "worldSaving": true
+        },
+        "mainTps": {
+          "minimum": 19.996707132986764,
+          "maximum": 20,
+          "last": 20
+        },
+        "timerTps": {
+          "minimum": 19.996707132986764,
+          "maximum": 20,
+          "last": 20
+        },
+        "shutdownSavingLines": [
+          "[14:12:02] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld",
+          "[14:12:02] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_nether]'/minecraft:the_nether",
+          "[14:12:02] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_the_end]'/minecraft:the_end"
+        ],
+        "allDimensionsSavedMarker": true
+      },
+      {
+        "minecraft": "26.3",
+        "platform": "spigot",
+        "runtimeInfo": {
+          "plugin": "0.6.0",
+          "name": "Spigot",
+          "server": "4663-Spigot-bed90fc-c4db4c3 (MC: 26.3)",
+          "java": "25.0.1",
+          "catalogue": 203,
+          "tps": 20
+        },
+        "serverSha256": "e8d7542b1dc152fa24765c33947c4eb90b91a705449a0d1433c9b341864ec122",
+        "packetEventsSha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+        "passed": 243,
+        "failed": 0,
+        "positiveMovementIds": [
+          "antilevitation-a",
+          "boatfly-a",
+          "boatfly-b",
+          "boatfly-c",
+          "elytra-a",
+          "elytra-b",
+          "elytra-c",
+          "elytra-f",
+          "elytra-g",
+          "elytra-i",
+          "elytra-k",
+          "elytra-l",
+          "elytra-m",
+          "elytra-n",
+          "entityflight-a",
+          "entityflight-b",
+          "entityspeed-a",
+          "fastclimb-a",
+          "flight-a",
+          "flight-b",
+          "flight-c",
+          "flight-d",
+          "flight-e",
+          "flight-f",
+          "jesus-a",
+          "jesus-b",
+          "jesus-c",
+          "jesus-d",
+          "jesus-e",
+          "jump-a",
+          "jump-b",
+          "jump-c",
+          "motion-a",
+          "motion-b",
+          "motion-c",
+          "motion-e",
+          "nosaddle-a",
+          "noslow-b",
+          "noslow-c",
+          "speed-a",
+          "speed-b",
+          "speed-c",
+          "speed-d",
+          "speed-e",
+          "sprint-a",
+          "step-a",
+          "step-c",
+          "strafe-a",
+          "vclip-a",
+          "wallclimb-a"
+        ],
+        "cleanMovementIds": [
+          "antilevitation-a",
+          "boatfly-a",
+          "boatfly-b",
+          "boatfly-c",
+          "elytra-a",
+          "elytra-b",
+          "elytra-c",
+          "elytra-f",
+          "elytra-g",
+          "elytra-i",
+          "elytra-k",
+          "elytra-l",
+          "elytra-m",
+          "elytra-n",
+          "entityflight-a",
+          "entityflight-b",
+          "entityspeed-a",
+          "fastclimb-a",
+          "flight-a",
+          "flight-b",
+          "flight-c",
+          "flight-d",
+          "flight-e",
+          "flight-f",
+          "jesus-a",
+          "jesus-b",
+          "jesus-c",
+          "jesus-d",
+          "jesus-e",
+          "jump-a",
+          "jump-b",
+          "jump-c",
+          "motion-a",
+          "motion-b",
+          "motion-c",
+          "motion-e",
+          "nosaddle-a",
+          "noslow-b",
+          "noslow-c",
+          "speed-a",
+          "speed-b",
+          "speed-c",
+          "speed-d",
+          "speed-e",
+          "sprint-a",
+          "step-a",
+          "step-c",
+          "strafe-a",
+          "vclip-a",
+          "wallclimb-a"
+        ],
+        "shutdown": {
+          "requested": true,
+          "forced": false,
+          "exitCode": 0,
+          "pluginDisabled": true,
+          "worldSaving": true
+        },
+        "mainTps": {
+          "minimum": 19.997453923066153,
+          "maximum": 20,
+          "last": 20
+        },
+        "timerTps": {
+          "minimum": 19.997453923066153,
+          "maximum": 20,
+          "last": 20
+        },
+        "shutdownSavingLines": [
+          "[14:16:32] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld",
+          "[14:16:33] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_nether]'/minecraft:the_nether",
+          "[14:16:33] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_the_end]'/minecraft:the_end"
+        ],
+        "allDimensionsSavedMarker": false
+      },
+      {
+        "minecraft": "26.3",
+        "platform": "paper",
+        "runtimeInfo": {
+          "plugin": "0.6.0",
+          "name": "Paper",
+          "server": "26.3-223-e415f5e (MC: 26.3)",
+          "java": "25.0.1",
+          "catalogue": 203,
+          "tps": 19.994456082631633
+        },
+        "serverSha256": "f8e684a4fef2a8b46d03aac049b49d59275e9ce5367dba7c6075cb5780f38470",
+        "packetEventsSha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+        "passed": 245,
+        "failed": 0,
+        "positiveMovementIds": [
+          "antilevitation-a",
+          "boatfly-a",
+          "boatfly-b",
+          "boatfly-c",
+          "elytra-a",
+          "elytra-b",
+          "elytra-c",
+          "elytra-f",
+          "elytra-g",
+          "elytra-i",
+          "elytra-k",
+          "elytra-l",
+          "elytra-m",
+          "elytra-n",
+          "entityflight-a",
+          "entityflight-b",
+          "entityspeed-a",
+          "fastclimb-a",
+          "flight-a",
+          "flight-b",
+          "flight-c",
+          "flight-d",
+          "flight-e",
+          "flight-f",
+          "jesus-a",
+          "jesus-b",
+          "jesus-c",
+          "jesus-d",
+          "jesus-e",
+          "jump-a",
+          "jump-b",
+          "jump-c",
+          "motion-a",
+          "motion-b",
+          "motion-c",
+          "motion-e",
+          "nosaddle-a",
+          "noslow-b",
+          "noslow-c",
+          "speed-a",
+          "speed-b",
+          "speed-c",
+          "speed-d",
+          "speed-e",
+          "sprint-a",
+          "step-a",
+          "step-c",
+          "strafe-a",
+          "vclip-a",
+          "wallclimb-a"
+        ],
+        "cleanMovementIds": [
+          "antilevitation-a",
+          "boatfly-a",
+          "boatfly-b",
+          "boatfly-c",
+          "elytra-a",
+          "elytra-b",
+          "elytra-c",
+          "elytra-f",
+          "elytra-g",
+          "elytra-i",
+          "elytra-k",
+          "elytra-l",
+          "elytra-m",
+          "elytra-n",
+          "entityflight-a",
+          "entityflight-b",
+          "entityspeed-a",
+          "fastclimb-a",
+          "flight-a",
+          "flight-b",
+          "flight-c",
+          "flight-d",
+          "flight-e",
+          "flight-f",
+          "jesus-a",
+          "jesus-b",
+          "jesus-c",
+          "jesus-d",
+          "jesus-e",
+          "jump-a",
+          "jump-b",
+          "jump-c",
+          "motion-a",
+          "motion-b",
+          "motion-c",
+          "motion-e",
+          "nosaddle-a",
+          "noslow-b",
+          "noslow-c",
+          "speed-a",
+          "speed-b",
+          "speed-c",
+          "speed-d",
+          "speed-e",
+          "sprint-a",
+          "step-a",
+          "step-c",
+          "strafe-a",
+          "vclip-a",
+          "wallclimb-a"
+        ],
+        "shutdown": {
+          "requested": true,
+          "forced": false,
+          "exitCode": 0,
+          "pluginDisabled": true,
+          "worldSaving": true
+        },
+        "mainTps": {
+          "minimum": 19.285168031398705,
+          "maximum": 20,
+          "last": 19.99969742339535
+        },
+        "timerTps": {
+          "minimum": 19.285168031398705,
+          "maximum": 20,
+          "last": 19.99969742339535
+        },
+        "shutdownSavingLines": [
+          "> \r  \r[14:31:16 INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld",
+          "> \r  \r[14:31:17 INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether",
+          "> \r  \r[14:31:17 INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end"
+        ],
+        "allDimensionsSavedMarker": false
+      },
+      {
+        "minecraft": "26.1.1",
+        "platform": "spigot",
+        "runtimeInfo": {
+          "plugin": "0.6.0",
+          "name": "Spigot",
+          "server": "dev-Spigot-4a90bec-d74c5d8 (MC: 26.1.1)",
+          "java": "25.0.1",
+          "catalogue": 203,
+          "tps": 20
+        },
+        "serverSha256": "8e41fa7b93ccd88b97039a65c599f3ba14112689e1b2baab65f91759269beea1",
+        "packetEventsSha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+        "passed": 10,
+        "failed": 0,
+        "positiveMovementIds": [],
+        "cleanMovementIds": [],
+        "shutdown": {
+          "requested": true,
+          "forced": false,
+          "exitCode": 0,
+          "pluginDisabled": true,
+          "worldSaving": true
+        },
+        "mainTps": {
+          "minimum": 20,
+          "maximum": 20,
+          "last": 20
+        },
+        "timerTps": {
+          "minimum": 20,
+          "maximum": 20,
+          "last": 20
+        },
+        "shutdownSavingLines": [
+          "[14:32:40] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld",
+          "[14:32:40] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_nether]'/minecraft:the_nether",
+          "[14:32:40] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_the_end]'/minecraft:the_end"
+        ],
+        "allDimensionsSavedMarker": true
+      },
+      {
+        "minecraft": "26.1.2",
+        "platform": "spigot",
+        "runtimeInfo": {
+          "name": "Spigot",
+          "plugin": "0.6.0",
+          "tps": 20,
+          "catalogue": 203,
+          "java": "25.0.1",
+          "server": "4632-Spigot-566f972-690a402 (MC: 26.1.2)"
+        },
+        "serverSha256": "dde74eae05a861525ff6907abc9a80e0367eb1dc120c077354400f77e04cd544",
+        "packetEventsSha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+        "passed": 10,
+        "failed": 0,
+        "positiveMovementIds": [],
+        "cleanMovementIds": [],
+        "shutdown": {
+          "requested": true,
+          "forced": false,
+          "exitCode": 0,
+          "pluginDisabled": true,
+          "worldSaving": true
+        },
+        "mainTps": {
+          "minimum": 20,
+          "maximum": 20,
+          "last": 20
+        },
+        "timerTps": {
+          "minimum": 20,
+          "maximum": 20,
+          "last": 20
+        },
+        "shutdownSavingLines": [
+          "[14:33:05] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld",
+          "[14:33:05] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_nether]'/minecraft:the_nether",
+          "[14:33:05] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_the_end]'/minecraft:the_end"
+        ],
+        "allDimensionsSavedMarker": true
+      },
+      {
+        "minecraft": "26.2",
+        "platform": "spigot",
+        "runtimeInfo": {
+          "server": "4637-Spigot-8db49a2-f5fed68 (MC: 26.2)",
+          "name": "Spigot",
+          "plugin": "0.6.0",
+          "tps": 20,
+          "catalogue": 203,
+          "java": "25.0.1"
+        },
+        "serverSha256": "694300a650e490757287d793fd040a9aec2df88f9ab7690839c4cc5fa91067cc",
+        "packetEventsSha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+        "passed": 8,
+        "failed": 0,
+        "positiveMovementIds": [],
+        "cleanMovementIds": [],
+        "shutdown": {
+          "requested": true,
+          "forced": false,
+          "exitCode": 0,
+          "pluginDisabled": true,
+          "worldSaving": true
+        },
+        "mainTps": null,
+        "timerTps": null,
+        "shutdownSavingLines": [
+          "[14:33:46] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld",
+          "[14:33:47] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_nether]'/minecraft:the_nether",
+          "[14:33:47] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_the_end]'/minecraft:the_end"
+        ],
+        "allDimensionsSavedMarker": true
+      }
+    ],
+    "scopeLimits": [
+      "Clients send actual protocol packets over loopback; selected movement traces do not simulate complete vanilla physics or establish field false-positive rates.",
+      "World placement, interaction, damage and selected PlayerMoveEvent controls use actual Bukkit event dispatch against real online players and world blocks. Synthetic callback authority is explicitly distinguished in raw evidence.",
+      "Optional dismount veto/reset/mount-swap tests invoke the public finding API, separate from native vehicle detector findings.",
+      "Temporary fixture policies use buffer1, core16 multiplier0 and new-family/combat multiplier1, decay0, TPS1, ping100000, punishablefalse and automatic punishments disabled without changing packaged shipping configuration.",
+      "Spigot26.2 has actual startup/API/reload/status/shutdown coverage without a native776 gameplay client.",
+      "Missing all-dimensions marker on modern servers is reported literally; saving-line and graceful-exit checks are not disk-integrity claims."
+    ],
+    "priorAttemptFindings": [
+      {
+        "case": "candidate05 initial1.21.11",
+        "classification": "Fixture qualification and fixture module preparation",
+        "detail": "MotionA/B/C correctly preserved unknown LIQUID before100 consecutive proven-negative positions. The initial dynamic-family module was not present when reached. Final fixture waits actual liquid age>=100 and LIQUID0 and has the module before launch."
+      },
+      {
+        "case": "candidate05 native26.3 diagnostics",
+        "classification": "Production producer closure plus fixture predicates",
+        "detail": "Eight newly consumed exemption enums had no producer: FIREWORK, CAMPFIRE, FLOWER_POT, PROJECTILE_DAMAGE, SWIMMING_JESUS, FULLY_SUBMERGED, SWIMMING_ON_OLD_VERSION and NEAR_SOLID. Candidate07 closes them. AntiLev collided with prior world support blocks; ElytraA requested H4 below shipping limit4.25. Final fixture clears owned support blocks and requests H4.5."
+      },
+      {
+        "case": "candidate07 1.21.11 full01",
+        "classification": "Fixture ACK-stage assertion",
+        "detail": "Before the first held PONG is acknowledged, retained impulse and acknowledged candidate queue correctly remain unchanged. The fixture incorrectly expected pending1. Final staged test verifies unchanged preACK, nonzero decoded retained impulse after orderedACK, actual positive native response and clean enabled VelocityA/B/D."
+      },
+      {
+        "case": "candidate07 1.21.11 full02",
+        "classification": "Fixture retained-cache transition",
+        "detail": "The descending clean window reset VL while retained raw mountedDY/previousDY still described the preceding suspicious hover. Bukkit callbacks legitimately read this cache. Final fixture first sends two actual descending vehicle packets and asserts retained DY and previousDY<=-1.15 before reset and the measured clean window."
+      },
+      {
+        "case": "candidate07 Paper full01/full02",
+        "classification": "Fixture Bukkit geometry refresh",
+        "detail": "The wall-stage X primer pointed into the solid wall. Paper rejected the move, retaining prior ladder geometry: climb-materials1/climbAge0, BukkitY90 and repeated rawDY0. FreeZ alone still failed at the exact collision boundary. The final Paper adapter uses physically clear rawX64.69 (inside the recovered .67-.73 band), primes along freeZ and asserts fresh non-climbable geometry before the vertical trace."
+      }
+    ]
+  },
+  "dependencyCoverage": {
+    "originalEnumInventory": 139,
+    "consumerEnumCandidates": 129,
+    "unbound": [],
+    "numericGlideHeadingBudgetKeys": 106
+  },
+  "processAudit": {
+    "recordedAt": "2026-10-26T13:34:33.9262202Z",
+    "ports": [
+      25860,
+      25863
+    ],
+    "listeners": [],
+    "matchingOwnedRuntimeProcesses": [],
+    "clean": true
+  },
+  "temporaryTestingFilesRemoved": true,
+  "notes": [
+    "Pure assertion counts include repeated unknown-state/convergence sequences and are not distinct detector counts.",
+    "Original-versus-reconstruction runtime replay, field accuracy, comparative performance, live optional services and translated client certification were not performed.",
+    "Temporary fixtures are removed after recording results at the human request; CI compiles source without claiming to run the removed suites."
+  ],
+  "cleanup": {
+    "method": "Windows Recycle Bin for eleven exact verified workspace-owned temporary directories",
+    "remainingWorkEntries": 0,
+    "ownedRuntimeProcesses": 0,
+    "ownedPortsFree": true,
+    "reparsePoints": 0
+  }
+}

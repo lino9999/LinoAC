@@ -1,10 +1,10 @@
 [CENTER][SIZE=6][B]LinoAC Documentation[/B][/SIZE]
-[COLOR=#808080]Version 0.5.0 • By Lino • Spigot & Paper 1.21.11–26.3[/COLOR][/CENTER]
+[COLOR=#808080]Version 0.6.0 • By Lino • Spigot & Paper 1.21.11–26.3[/COLOR][/CENTER]
 
 [SIZE=5][B]1. Installation[/B][/SIZE]
 Install [URL=https://github.com/retrooper/packetevents/releases/tag/v2.14.0]PacketEvents 2.14.0[/URL] separately. Use Java 21 for Spigot/Paper 1.21.11 and Java 25 for 26.x, according to the distribution. The same LinoAC JAR uses Java 21 bytecode. Folia is unsupported.
 
-Put LinoAC-0.5.0.jar and PacketEvents in plugins, restart, review plugins/LinoAC/config.yml and run /lac status. Restart when replacing plugin JARs. The [URL=https://github.com/lino9999/LinoAC/blob/main/docs/VALIDATION.md]validation report[/URL] distinguishes tested startup, protocol-client and synthetic evaluator coverage.
+Put LinoAC-0.6.0.jar and PacketEvents in plugins, restart, review plugins/LinoAC/config.yml and run /lac status. Restart when replacing plugin JARs. The [URL=https://github.com/lino9999/LinoAC/blob/main/docs/VALIDATION.md]validation report[/URL] distinguishes tested startup, protocol-client and synthetic evaluator coverage.
 
 [SIZE=5][B]2. Commands and permissions[/B][/SIZE]
 Main command: [B]/linoac[/B]. Aliases: [B]/lac[/B], [B]/linoanticheat[/B]. Staff permissions and linoac.admin default to operators. The admin permission grants staff access; [B]linoac.bypass[/B] is separate and defaults to false, including for operators.
@@ -72,7 +72,7 @@ Main command: [B]/linoac[/B]. Aliases: [B]/lac[/B], [B]/linoanticheat[/B]. Staff
 Player arguments require an online player except log lookup and wave removal. Sender-location, preference and GUI commands require a player sender. Never grant staff permissions to ordinary players.
 
 [SIZE=5][B]3. Catalogue and applicability[/B][/SIZE]
-Version 0.5.0 has [B]203 catalogue entries, 179 registered original classes and 175 reconstructed executable rule paths[/B]. Four original registered callbacks are no-ops; 24 configured slots have no registered detector. These 28 entries remain visible and disabled. The previous 195 count omitted eight numeric BadPackets variants.
+Version 0.6.0 has [B]203 catalogue entries, 179 registered original classes and 175 reconstructed executable rule paths[/B]. Four original registered callbacks are no-ops; 24 configured slots have no registered detector. These 28 entries remain visible and disabled. The previous 195 count omitted eight numeric BadPackets variants.
 
 Combat covers aim/click statistics, reach, hitboxes, attack sequences, criticals, bow speed and acknowledged velocity response. Movement covers speed, flight, jump, step, climbing, strafe, liquids, ground claims, elytra and vehicles. Player/world modules cover packet order, timing, abilities, hotbar, accepted placement/mining, scaffold patterns, automation and combined violations.
 
@@ -206,11 +206,15 @@ LinoAPI is registered with Bukkit ServicesManager. It exposes immutable profiles
 
 [CENTER][URL=https://github.com/lino9999/LinoAC]Source[/URL] • [URL=https://github.com/lino9999/LinoAC/releases]Releases[/URL] • [URL=https://github.com/lino9999/LinoAC/issues]Issues[/URL][/CENTER]
 
-[B]0.4.0 reconstruction update:[/B] Recovered click windows/exclusions, camera and sensitivity state, scoped join/teleport exclusions, ordered entity acknowledgements, scaffold geometry and proxy message formats. The complete source-equivalence objective remains open; see [URL=https://github.com/lino9999/LinoAC/blob/main/docs/FIDELITY.md]the fidelity ledger[/URL]. Fresh and historical test results are separated in the validation report.
 
-[SIZE=5][B]Proxy transport[/B][/SIZE]
-LinoAC receivers use channel linoac:proxy and delimiter #LINOAC#; receivers must explicitly support this framing. Set proxy.enabled for alerts and automatic routes. Punishment commands prefixed Bungee: use the online subject as carrier. Manual routes send a plain command and remain explicit when the general switch is off; automatic routes append check metadata. Waves execute configured commands locally as console. A receiver subscription is required; successful dispatch does not prove proxy execution.
+[SIZE=5][B]12. Movement, local actions and logs in 0.6.0[/B][/SIZE]
+[LIST]
+[*]Raw flying ground/air runs include rotation-only packets. JOINED and material clocks retain their separate position cadence.
+[*]Raw VEHICLE_MOVE advances mounted state. Positional Bukkit PlayerMoveEvent reads it; NoSaddle evaluates only that Bukkit callback. Rotation-only Bukkit events do not evaluate mounted movement.
+[*]Physical Bukkit gliding, cached ELYTRA equipment and acknowledged metadata/action gliding are separate facts. Sulfur uses the acknowledged client block mirror.
+[*]Set checks.boatfly-a.dismount, checks.boatfly-b.dismount, checks.entityflight-a.dismount, checks.entityspeed-a.dismount or checks.nosaddle-a.dismount to true for that check's optional local action. Defaults are false. It requires an accepted violation and the same player session and mount; reset, logout and accepted reload cancel pending tasks.
+[*]checks.airplace-a.cancel defaults false. checks.hitbox-b.maximum-angle defaults 45 degrees. Per-check speed min-difference fields and movement-exemptions control the documented margins and exclusions.
+[*]Log commands show actual page totals, newest matching retained records and distinct read-failure/unavailable messages. Formats, retention and file quotas remain configurable; the first record also respects the quota.
+[/LIST]
 
-[B]Further 0.4.0 behavior:[/B] FastPlace uses first-placement batches with late trigger inclusion; GhostHand uses neighboring bed materials and can cancel accepted enclosed-bed breaks (checks.ghosthand-a.cancel). Set that option false for monitoring. Timer windows and millisecond balance preserve recovered packet authority. Vehicle/web/crowding ages advance only on position packets. Separate cumulative history survives successful automatic VL reset. Missing textual settings inherit shipped defaults during upgrades. The complete-fidelity ledger remains authoritative for unfinished scopes.
-
-[B]0.5.0 behavior:[/B] Combat uses raw sequence clocks, bounded relative-target history and acknowledged velocity prediction. Packet checks retain frame latches and source-specific material/event ages. FastBreak uses SURVIVAL interaction timing and actual break-event authority. Hit suppression defaults to zero damage; settings.cancel-hits-cancel-event selects cancellation. Automatic command dispatch starts a configurable player-wide cooldown; accepted reload, reset, logout and disable cancel pending automatic actions. LinoAlertEvent can cancel local staff chat independently of other violation actions. The full reconstruction remains in progress; the fidelity ledger lists unresolved behavior.
+All nonempty registered source paths now have independent evaluators. The 203-entry catalogue includes four empty callbacks and 24 missing upstream implementations, kept disabled. NoSlow A remains inactive on supported modern servers. Hitbox B, NoSlow B and Jesus D contain documented functional repairs. Read the [URL=https://github.com/lino9999/LinoAC/blob/main/docs/FIDELITY.md]fidelity ledger[/URL] and [URL=https://github.com/lino9999/LinoAC/blob/main/docs/VALIDATION.md]exact validation report[/URL] for applicability, evidence and limits.

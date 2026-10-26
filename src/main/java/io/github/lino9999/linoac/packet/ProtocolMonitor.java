@@ -29,7 +29,7 @@ public final class ProtocolMonitor extends PacketListenerAbstract {
     private final Map<UUID, Integer> selectedTargets = new ConcurrentHashMap<>();
 
     public ProtocolMonitor(LinoAC plugin) { super(PacketListenerPriority.NORMAL); this.plugin = plugin; }
-    public void add(Player player) { buffers.computeIfAbsent(player.getUniqueId(), ignored -> new PacketBuffer()); rates.remove(player.getUniqueId()); playerEntities.put(player.getUniqueId(), player.getEntityId()); }
+    public void add(Player player) { plugin.collector().registerJoin(player); buffers.computeIfAbsent(player.getUniqueId(), ignored -> new PacketBuffer()); rates.remove(player.getUniqueId()); playerEntities.put(player.getUniqueId(), player.getEntityId()); }
     public void remove(UUID id) { buffers.remove(id); rates.remove(id); selectedTargets.remove(id); Integer entity = playerEntities.remove(id); if (entity != null) rawPositions.remove(entity); }
     public void clear() { buffers.clear(); rates.clear(); playerEntities.clear(); rawPositions.clear(); selectedTargets.clear(); }
     public void serverNearby(Player player, int count) {
@@ -52,6 +52,7 @@ public final class ProtocolMonitor extends PacketListenerAbstract {
         PacketBuffer buffer = buffers.get(id);
         if (buffer == null) return;
         try {
+            buffer.sulfurCapability(PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(com.github.retrooper.packetevents.manager.server.ServerVersion.V_26_1));
             WirePacket packet = decoder.decode(event, buffer);
             var measurements = new HashMap<>(packet.values());
             measurements.put("observation-server-tick", (double) plugin.tick());
@@ -77,6 +78,9 @@ public final class ProtocolMonitor extends PacketListenerAbstract {
         if (event.isCancelled() || event.getUser() == null || event.getUser().getUUID() == null) return;
         PacketBuffer buffer = buffers.computeIfAbsent(event.getUser().getUUID(), ignored -> new PacketBuffer());
         String type = event.getPacketType().toString();
+        boolean sulfurSupported = PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(com.github.retrooper.packetevents.manager.server.ServerVersion.V_26_1);
+        buffer.sulfurCapability(sulfurSupported);
+        if (sulfurSupported) captureSulfur(event, buffer, type);
         long now = System.nanoTime();
         switch (type) {
             case "PLAYER_ABILITIES" -> buffer.ability(new WrapperPlayServerPlayerAbilities(event).isFlightAllowed());
@@ -100,8 +104,13 @@ public final class ProtocolMonitor extends PacketListenerAbstract {
                 if (packet.getEntityId() == event.getUser().getEntityId()) for (var property : packet.getProperties()) {
                     String key = property.getKey().toLowerCase(java.util.Locale.ROOT);
                     if (key.endsWith("movement_speed") || key.endsWith("movement.speed")) buffer.attribute("protocol-movement-speed", property.calcValue());
-                    if (key.endsWith("entity_interaction_range") || key.endsWith("entity.interaction.range")) buffer.attribute("protocol-attack-range", property.calcValue());
-                    if (key.endsWith("jump_strength") || key.endsWith("jump.strength")) buffer.attribute("protocol-jump-strength", property.calcValue());
+                    if (key.endsWith("entity_interaction_range") || key.endsWith("entity.interaction.range")) buffer.attribute("protocol-attack-range", attributeValue(property));
+                    if (key.endsWith("jump_strength") || key.endsWith("jump.strength")) buffer.attribute("protocol-jump-strength", attributeValue(property));
+                    if (key.endsWith("step_height") || key.endsWith("step.height")) buffer.attribute("protocol-step-height", attributeValue(property));
+                    if (key.endsWith("gravity")) buffer.attribute("protocol-gravity", attributeValue(property));
+                    if (key.endsWith("air_drag_modifier")) buffer.attribute("protocol-air-drag", attributeValue(property));
+                    if (key.endsWith("bounciness")) buffer.attribute("protocol-bounciness", attributeValue(property));
+                    if (key.endsWith("friction_modifier")) buffer.attribute("protocol-friction-modifier", attributeValue(property));
                 }
             }
             case "ENTITY_EFFECT" -> {
@@ -190,10 +199,54 @@ public final class ProtocolMonitor extends PacketListenerAbstract {
         }
     }
 
+    private static double attributeValue(WrapperPlayServerUpdateAttributes.Property property) {
+        var adjustments = property.getModifiers().stream().map(modifier -> new io.github.lino9999.linoac.detection.collector.AttributeMath.Adjustment(
+                switch (modifier.getOperation()) {
+                    case ADDITION -> io.github.lino9999.linoac.detection.collector.AttributeMath.Operation.ADD;
+                    case MULTIPLY_BASE -> io.github.lino9999.linoac.detection.collector.AttributeMath.Operation.SCALE_BASE;
+                    case MULTIPLY_TOTAL -> io.github.lino9999.linoac.detection.collector.AttributeMath.Operation.SCALE_TOTAL;
+                }, modifier.getAmount())).toList();
+        return io.github.lino9999.linoac.detection.collector.AttributeMath.evaluate(property.getValue(), adjustments);
+    }
+
+    private static void captureSulfur(PacketSendEvent event, PacketBuffer buffer, String type) {
+        try {
+            switch (type) {
+                case "CHUNK_DATA" -> {
+                    var packet = new WrapperPlayServerChunkData(event);
+                    var dimension = event.getUser().getDimensionType();
+                    if (dimension == null) { buffer.invalidateSulfur(); return; }
+                    var captured = SulfurPackets.capture(packet.getColumn(), dimension.getMinY(), dimension.getHeight(), packet.getServerVersion().toClientVersion());
+                    event.getTasksAfterSend().add(() -> buffer.sulfurChunk(captured));
+                }
+                case "BLOCK_CHANGE" -> {
+                    var packet = new WrapperPlayServerBlockChange(event); var position = packet.getBlockPosition();
+                    var captured = new SparseBlockMirror.Block(position.getX(), position.getY(), position.getZ());
+                    boolean present = packet.getBlockState().getType() == com.github.retrooper.packetevents.protocol.world.states.type.StateTypes.POTENT_SULFUR;
+                    event.getTasksAfterSend().add(() -> buffer.sulfurBlock(captured, present));
+                }
+                case "MULTI_BLOCK_CHANGE" -> {
+                    var packet = new WrapperPlayServerMultiBlockChange(event);
+                    var changes = new java.util.ArrayList<SulfurPackets.Change>();
+                    for (var block : packet.getBlocks()) changes.add(new SulfurPackets.Change(new SparseBlockMirror.Block(block.getX(), block.getY(), block.getZ()), block.getBlockState(packet.getServerVersion().toClientVersion()).getType() == com.github.retrooper.packetevents.protocol.world.states.type.StateTypes.POTENT_SULFUR));
+                    var captured = java.util.List.copyOf(changes);
+                    event.getTasksAfterSend().add(() -> buffer.sulfurBlocks(captured));
+                }
+                case "UNLOAD_CHUNK" -> {
+                    var packet = new WrapperPlayServerUnloadChunk(event);
+                    int x = packet.getChunkX(), z = packet.getChunkZ();
+                    event.getTasksAfterSend().add(() -> buffer.sulfurUnload(x, z));
+                }
+                default -> { }
+            }
+        } catch (RuntimeException failure) { buffer.invalidateSulfur(); }
+    }
+
     private static String effectKey(com.github.retrooper.packetevents.protocol.potion.PotionType type) {
         if (type == null) return null;
         return switch (type.getName().getKey()) {
             case "levitation" -> "protocol-levitation-amplifier";
+            case "slowness" -> "protocol-slowness";
             case "jump_boost" -> "protocol-jump-amplifier";
             case "conduit_power" -> "protocol-conduit-power";
             case "speed" -> "protocol-speed-amplifier";

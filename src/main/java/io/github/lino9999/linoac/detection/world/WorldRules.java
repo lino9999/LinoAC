@@ -3,8 +3,6 @@ package io.github.lino9999.linoac.detection.world;
 import io.github.lino9999.linoac.detection.DetectionMemory;
 import io.github.lino9999.linoac.detection.Observation;
 import io.github.lino9999.linoac.detection.RuleModule;
-import io.github.lino9999.linoac.detection.Statistics;
-import java.util.Arrays;
 import java.util.Set;
 
 public final class WorldRules implements RuleModule {
@@ -12,89 +10,23 @@ public final class WorldRules implements RuleModule {
             "scaffold-a", "scaffold-b", "scaffold-c", "scaffold-d", "scaffold-e", "scaffold-f", "scaffold-g", "scaffold-h", "scaffold-i", "scaffold-j", "scaffold-k", "scaffold-m", "scaffold-n",
             "improbable-a", "improbable-b", "improbable-c", "improbable-d", "improbable-e", "improbable-f");
 
+    private final PlacementPatterns patterns = new PlacementPatterns();
+
     @Override
     public Set<String> checkIds() { return IDS; }
+
+    public static boolean ownsExemptions(String id) { return PlacementPatterns.IDS.contains(id); }
 
     @Override
     public void evaluate(Observation o, DetectionMemory memory, FindingSink sink) {
         combinations(o, memory, sink);
+        patterns.evaluate(o, memory, sink);
         if (o.kind() == Observation.Kind.BREAK && o.state("bukkit-event") && o.state("fastbreak-callback")) breaking(o, sink);
         if (o.kind() == Observation.Kind.BREAK && o.state("bukkit-event") && o.state("ghosthand-callback")) ghostHand(o, sink);
         if (o.kind() == Observation.Kind.PLACE && o.state("bukkit-event")) {
             fastPlace(o, memory, sink);
             scaffoldN(o, memory, sink);
             scaffoldJ(o, sink);
-        }
-        if (o.state("teleport-grace") || o.state("creative") || o.state("spectator") || o.state("block-unloaded")) return;
-        if (o.kind() == Observation.Kind.MOVE) {
-            memory.set("world.sprint-ticks", o.state("sprinting") ? memory.get("world.sprint-ticks") + 1 : 0);
-            if (memory.get("world.bridge-active") > 0) {
-                double moves = memory.increment("world.bridge-moves");
-                if (moves < 3 && memory.get("world.bridge-interval", 1000) < 400 && o.hasAll("delta-yaw", "delta-pitch")) {
-                    sink.sample("scaffold-e", Math.abs(o.value("delta-yaw")) > 100 && Math.abs(o.value("delta-pitch")) > 8, "Large rotation immediately followed accepted bridging placement");
-                }
-            }
-        }
-        if (o.kind() == Observation.Kind.DIG && o.state("dig:CANCELLED_DIGGING")) memory.set("world.cancelled-dig-rotations", 0);
-        if (o.state("action:START_SNEAKING") || o.state("action:STOP_SNEAKING")) memory.set("world.sneak-toggle", 1);
-        if (o.kind() == Observation.Kind.ROTATION) rotations(o, memory, sink);
-        if (o.kind() == Observation.Kind.USE && o.state("block-interaction") && o.has("block-face")) {
-            sink.sample("scaffold-a", o.state("clicked-below-feet") && o.state("clicked-solid") && o.state("held-solid") && o.value("block-face") == 0, "Downward interaction with the solid block below the player");
-        }
-        if (o.kind() == Observation.Kind.PLACE && o.state("block-accepted") && o.hasAll("block-x", "block-y", "block-z", "x", "y", "z", "block-face")) placement(o, memory, sink);
-    }
-
-    private void placement(Observation o, DetectionMemory memory, FindingSink sink) {
-        double last = memory.get("world.place-time", -1);
-        double interval = last < 0 ? Double.POSITIVE_INFINITY : (o.nanos() - last) / 1_000_000d;
-        memory.set("world.place-time", o.nanos());
-        if (o.state("block-support-known") && o.hasAll("against-x", "against-y", "against-z")) {
-            boolean selfSupport = o.value("against-x") == o.value("block-x") && o.value("against-y") == o.value("block-y") && o.value("against-z") == o.value("block-z");
-            sink.sample("airplace-a", selfSupport && !o.state("block-supported") && !o.state("placement-exempt") && !o.state("block-break-grace"), "Placement referenced itself while all neighboring blocks were air");
-        }
-        double dx = o.value("block-x") - o.value("x");
-        double dz = o.value("block-z") - o.value("z");
-        double expand = Math.hypot(dx, dz);
-        boolean bridging = Boolean.TRUE.equals(PlacementContext.bridge(o));
-        memory.set("world.bridge-active", bridging ? 1 : 0);
-        memory.set("world.bridge-interval", interval);
-        memory.set("world.bridge-rotations", 0);
-        memory.set("world.bridge-moves", 0);
-        boolean sneakToggle = memory.get("world.sneak-toggle") > 0;
-        memory.set("world.sneak-toggle", 0);
-        if (o.state("placement-exempt")) return;
-        double face = o.value("block-face");
-        boolean ordinaryPlacement = o.value("block-y") < o.value("y") && o.state("placed-solid") && !o.state("liquid") && !o.state("environment-special") && !o.state("allow-flight");
-        if (ordinaryPlacement) {
-            sink.sample("scaffold-c", o.state("sprinting") && memory.get("world.sprint-ticks") > 5 && interval >= 0 && interval < 300, "Sustained sprinting during rapid accepted placements");
-            if (o.has("yaw")) sink.sample("scaffold-m", expand > 1 && expand < 6 && face == facing(o.value("yaw")), "Placement expanded forward along the yaw cardinal face by=" + expand);
-            if (o.hasAll("dy", "horizontal") && !o.state("movement-grace") && !o.state("jump-effect") && !o.state("slow-falling") && !o.state("climbing") && !o.state("explosion") && !o.state("gliding")) {
-                boolean sameColumn = Math.floor(o.value("x")) == o.value("block-x") && Math.floor(o.value("z")) == o.value("block-z");
-                sink.sample("tower-a", sameColumn && face == 1 && interval >= 0 && interval < 250 && o.value("horizontal") < .1 && o.value("dy") > 0, "Rapid accepted placements underneath upward tower movement");
-            }
-        }
-        if (!bridging) return;
-        sink.sample("scaffold-b", face == 6 && interval >= 0 && interval < 300, "Placement used the clicked block itself as the attachment face");
-        if (!o.state("swift-sneak") && !o.state("slab")) {
-            double[] bridge = memory.window("world.bridge-placements", o.nanos() / 1_000_000d, 32);
-            long bridgeRate = recent(bridge, o.nanos());
-            sink.sample("scaffold-k", bridgeRate >= o.value("bridge-placement-limit", 6), "Accepted bridging placements per second=" + bridgeRate);
-        }
-        if (o.hasAll("horizontal", "movement-speed") && o.state("physics-known") && !o.state("movement-grace") && !o.state("vehicle")) {
-            double speedLimit = .27 * Math.max(1, o.value("movement-speed") / .1);
-            sink.sample("scaffold-f", sneakToggle && interval >= 0 && interval < 400 && o.value("horizontal") > speedLimit, "Sneak transition followed rapid bridging above the movement attribute speed budget");
-        }
-        if (o.hasAll("horizontal", "previous-horizontal") && !o.state("movement-grace")) {
-            double acceleration = Math.abs(o.value("horizontal") - o.value("previous-horizontal"));
-            if (o.hasAll("dx", "dz", "yaw") && !o.state("swift-sneak") && !o.state("slab") && o.value("horizontal") > 0) {
-                double angle = movementAngle(o.value("dx"), o.value("dz"), o.value("yaw"));
-                sink.sample("scaffold-g", interval >= 0 && interval < 300 && acceleration > 0 && acceleration < .001 && angle < 2, "Constant bridging acceleration with movement direction angle=" + angle);
-            }
-            if (o.hasAll("delta-yaw", "delta-pitch")) {
-                double yaw = Math.abs(o.value("delta-yaw"));
-                double pitch = Math.abs(o.value("delta-pitch"));
-                sink.sample("scaffold-i", acceleration < .01 && yaw > 150 && pitch > 10, "Large bridging rotation with unchanged horizontal speed");
-            }
         }
     }
 
@@ -165,26 +97,6 @@ public final class WorldRules implements RuleModule {
         memory.set("world.n.chain-next", (next + 1) % 512);
     }
 
-    private void rotations(Observation o, DetectionMemory memory, FindingSink sink) {
-        if (!o.hasAll("delta-yaw", "delta-pitch")) return;
-        double yaw = Math.abs(o.value("delta-yaw"));
-        double pitch = Math.abs(o.value("delta-pitch"));
-        double sinceCancel = memory.get("world.cancelled-dig-rotations", 100) + 1;
-        memory.set("world.cancelled-dig-rotations", sinceCancel);
-        if (sinceCancel < 10) sink.sample("baritone-a", yaw > 0 && yaw < .005 && pitch > 0 && pitch < .005, "Small positive yaw and pitch rotations shortly after cancelled digging");
-        if (sinceCancel < 5 && o.has("pitch")) sink.sample("baritone-b", yaw > 95 && pitch < .15 && Math.abs(o.value("pitch")) < 70 && !o.state("piston"), "Large yaw with nearly fixed pitch shortly after cancelled digging");
-        double rotations = memory.increment("world.bridge-rotations");
-        if (memory.get("world.bridge-active") == 0 || memory.get("world.bridge-interval", 1000) >= 400 || o.state("movement-grace") || o.state("cinematic") || o.state("swift-sneak")) return;
-        if (rotations < 6 && o.has("previous-delta-pitch")) {
-            double pitchGcd = Statistics.gcd(pitch, Math.abs(o.value("previous-delta-pitch")));
-            sink.sample("scaffold-d", pitch > .5 && pitchGcd > 0 && pitchGcd < .0078125, "Bridging pitch rotation quantum=" + pitchGcd);
-        }
-        if (rotations < 5 && o.hasAll("mouse-step-pitch", "sensitivity-samples", "horizontal") && o.value("sensitivity-samples") >= 40 && o.value("mouse-step-pitch") > 0) {
-            double sensitivity = (Math.cbrt(o.value("mouse-step-pitch") / 1.2) - .2) / .6 * 200;
-            sink.sample("scaffold-h", (sensitivity < -2 || sensitivity > 200) && pitch > .55 && o.value("horizontal") > .25, "Bridging pitch sensitivity outside the legal client range=" + sensitivity);
-        }
-    }
-
     private void breaking(Observation o, FindingSink sink) {
         if (!o.state("block-accepted") || !o.state("fastbreak-context-known") || !o.state("source-survival")
                 || o.state("fastbreak-material-exempt") || o.state("fastbreak-tool-exempt") || o.state("fastbreak-ability")
@@ -228,23 +140,5 @@ public final class WorldRules implements RuleModule {
         }
     }
 
-    private static long recent(double[] times, long now) {
-        double millis = now / 1_000_000d;
-        return Arrays.stream(times).filter(time -> millis >= time && millis - time < 1000).count();
-    }
-
     private static boolean scientific(double value) { return value > 0 && value < 1 && Double.toString(value).contains("E"); }
-
-    private static double movementAngle(double dx, double dz, double yaw) {
-        double length = Math.hypot(dx, dz);
-        if (length == 0) return Math.PI;
-        double radians = Math.toRadians(yaw);
-        double cosine = (dx * -Math.sin(radians) + dz * Math.cos(radians)) / length;
-        return Math.acos(Math.max(-1, Math.min(1, cosine)));
-    }
-
-    private static int facing(double yaw) {
-        int quadrant = Math.floorMod((int) Math.floor(yaw / 90 + .5), 4);
-        return switch (quadrant) { case 0 -> 3; case 1 -> 4; case 2 -> 2; default -> 5; };
-    }
 }

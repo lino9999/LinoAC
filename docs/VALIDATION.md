@@ -1,54 +1,68 @@
-# Validation report — LinoAC 0.5.0
+# Validation report - LinoAC 0.6.0
 
-Date: 26 October 2026. The supplied reference artifact and static derivatives were never executed or loaded as plugins. Earlier version reports remain historical: [0.4.0](VALIDATION_0.4.0.md), [0.3.0](VALIDATION_0.3.0.md), [0.2.0](VALIDATION_0.2.0.md).
+Date: 26 October 2026. The original and static derivatives were never executed or loaded as plugins. Historical results remain separate: [0.5.0](VALIDATION_0.5.0.md), [0.4.0](VALIDATION_0.4.0.md), [0.3.0](VALIDATION_0.3.0.md), [0.2.0](VALIDATION_0.2.0.md).
 
 ## Final artifact
 
-- `LinoAC-0.5.0.jar`, 448,289 bytes, SHA-256 `d461e0ba70214786b9aaa08f11135f6ea93848cdf75e5a9b782acdd323325828`.
-- 160 project classes, all Java class version 65; 96 comment-free Java source files. Author Lino; version 0.5.0. Dependencies remain provided.
-- Static archive audit found no identical reference members, reference brand literals, foreign class namespaces, temporary probes or identical long configuration lines. None of 757 strings recovered in 14 local static ledgers matched a compiled UTF-8 constant longer than forty characters; common API/material identifiers are outside that authored-message comparison. This bounded audit does not prove legal permission or complete behavior equivalence.
-- Maven 3.9.11/JDK 25 `mvnw.cmd -B -ntp clean verify` passed, targeting Java 21. Maven compilation itself has no permanent test suite; the temporary suites below ran separately.
+- LinoAC-0.6.0.jar: **577,002 bytes**, SHA-256 **`55d46c95d32208d4b52775a1e7360df85be55cf8b87727fae3210df3d1309f32`**.
+- 205 project classes, all Java class version 65; 125 comment-free Java source files. Author Lino, version 0.6.0. Dependencies remain provided.
+- Maven 3.9.11/JDK 25 clean verify passed, targeting Java 21. Maven has no permanent test suite; the independent temporary suites below ran separately against the exact immutable final JAR.
+- Catalogue/config coverage is 203/203, with 175 available nonempty paths. Four no-ops and 24 unregistered slots stay disabled. NoSlow A is inactive on supported servers.
+- Fresh archive/source audit found no identical reference members, old branding, foreign class namespaces, temporary probes or original annotation descriptions longer than ten characters. The reference SHA remained unchanged. This is a bounded content/provenance audit, not whole-artifact legal or malware certification.
 
 ## Source-model tests
 
-All nine temporary suites were recompiled against the final compiled production classes with `javac --release 21` and executed on Java 25.0.1: **3,861 assertions passed, zero failed**.
+All thirteen suites were freshly compiled with javac --release 21 against the exact final JAR and executed on Java 25.0.1: **2,987 assertions passed, zero failed suites**.
 
 | Suite | Passed |
 | --- | ---: |
-| Raw combat clocks, finding modes and activation |115|
-| Combat tri-state exemptions |18|
-| Material predicates |36|
-| Velocity acknowledgement/history and geometry |77|
-| Finite velocity candidates |28|
-| Cooldown, buffers, alert selection and pending ownership |2,652|
-| Protocol frame latches, gates and ground claims |59|
-| Invalid-motion budgets and strict boundaries |74|
-| World/event/ability producers, transport loss and constructor knowledge |802|
+| Shared position, event, ability and ACK producers | 1469 |
+| Sixteen position/vertical movement contracts | 225 |
+| Placement windows and event authority | 139 |
+| Hitbox B finite angular geometry | 41 |
+| UTF-8 logs, pages, quotas and accumulation | 43 |
+| Mounted predicates, subtype budgets and authority | 72 |
+| Liquid, climbing and NoSlow predicates/repairs | 86 |
+| Damage and soul-placement clocks | 11 |
+| Glide, heading, phase and impulse budgets | 240 |
+| Mounted/surface/gliding state and uncertainty | 398 |
+| Vehicle-coordinate sulfur/ACK stages | 10 |
+| Firework, campfire, flower pot and projectile enums | 94 |
+| Swimming, submersion and nearby-solid enums | 159 |
 
-The geometry suite contains two aggregate assertions over 256 independently generated Spigot Vector cases; these are not inflated into 256 assertions. The target-boat tests distinguish proven initial false, actual contact, and unknown state after geometry loss. These finite traces are not original-versus-reconstruction replays, field accuracy tests or proof of all 175 rule paths.
+Counts are assertions, not unique detectors or cheat categories. Producer tests include repeated continuously-unknown and consecutive-known-negative convergence sequences. Model observations are synthetic; the server evidence below is reported separately. The final dependency audit covers 106 new numeric glide/heading/budget keys and the conservative set of 129 consumed enum candidates drawn from the 139-entry reference enum inventory, with no unbound provider candidates.
 
-## Actual Spigot runtime
+## Actual runtime matrix
 
-The identical final artifact passed **103/103** checks on Spigot 1.21.11 (`4598-Spigot-56165ca-d74c5d8`), Java 21.0.7. The loopback server stopped gracefully, saved all three dimensions and reported no plugin exceptions.
+Every row ran the identical final SHA above. **756/756 assertions passed**: Spigot 511, Paper 245.
 
-The run covered real packet clients, relative-target attacks, Reach/Hitbox suspicious and clean controls, PING/velocity acknowledgement stages, cooldowns, API veto, delayed-action cancellation, successful/failed reload, hit suppression modes, mining and projectile authority. An independent consumer dispatched real Bukkit mining/projectile/damage callbacks; those events were not all generated naturally by client gameplay. Controlled check buffers, cooldowns and TPS configuration isolate the paths; this does not certify default tuning.
+| Platform | Java | Passed | Scope |
+| --- | --- | ---: | --- |
+| Spigot 1.21.11 | 21.0.7 | 240/240 | Full native protocol and controlled Bukkit/API suite |
+| Spigot 26.3 | 25.0.1 | 243/243 | Full native protocol and controlled Bukkit/API suite |
+| Paper 26.3 build 223 | 25.0.1 | 245/245 | Full native protocol and controlled Bukkit/API suite |
+| Spigot 26.1.1 | 25.0.1 | 10/10 | Native 775 startup/API/position profile |
+| Spigot 26.1.2 | 25.0.1 | 10/10 | Native 775 startup/API/position profile |
+| Spigot 26.2 | 25.0.1 | 8/8 | Startup/API/reload/status; no native 776 client |
 
-The same JAR also passed **106/106** checks on actual Spigot 26.3 (`4663-Spigot-bed90fc-c4db4c3`), Java 25.0.1. Two offline protocol-777 clients completed login, movement, attacks, relative-target history and PING/velocity acknowledgement tests, plus the shared API/enforcement/Bukkit-callback suite. Both profiles reported complete source state. No client decoder errors or plugin exceptions were observed; the server exited through its normal shutdown path. It emitted save lines for overworld, nether and end at shutdown; no independent chunk-integrity claim is made.
+Each full suite independently proved suspicious and clean controls for all **50 operative movement IDs** on the supported native client, plus CamelHusk subtype behavior. The remaining movement ID, NoSlow A, requires a pre-1.9 server/client and stays dormant. Full suites also cover fifteen world patterns, Reach/Hitbox A/B, velocity acknowledgement and clean A/B/D response, raw-versus-position clocks, gliding, mounted raw/Bukkit authority, water/lava/bubble contact, dismount veto/reset/mount replacement, accepted versus cancelled projectile damage, log pages/read failure and first-file quotas.
 
-The 26.3 client used official [MCProtocolLib](https://github.com/GeyserMC/MCProtocolLib), version 26.3, artifact SHA-256 `c4ff8bd92ca84240b0ec772e09e4a1d9f6d756b03a9d923bbbad894b17c38a96`, matching the repository checksum. It is a protocol fixture, not a vanilla physics client. A missing ClientTickEnd packet in an early fixture caused vanilla movement rejection; adding the required tick marker resolved it without changing LinoAC. A separate initial whitelist rejection was also a fixture configuration failure. Failed attempts remain identified in local evidence. Across the two final runs, **209/209** runtime assertions passed.
+Clients send real protocol packets over loopback. The 26.3 fixtures use official MCProtocolLib protocol 777; 1.21.11 and the two 26.1 smokes use native protocol 775. Selected world actions, damage and PlayerMoveEvent cases dispatch actual Bukkit events against real players/blocks through a temporary consumer. Optional dismount guards also use the public finding API. These controlled callbacks and protocol clients do not simulate complete vanilla gameplay or establish field false-positive rates.
 
-The full PacketEvents 2.14.0 runtime hash is `060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7`.
+Temporary test policy used buffer 1, core-sixteen buffer multiplier 0, new-family/combat multiplier 1, decay 0, minimum TPS 1 and maximum ping 100000, with automatic punishments off and checks not punishable. Packaged shipping configuration was unchanged. Results therefore establish the exercised logic and authority, rather than default tuning.
+
+Full-suite snapshot TPS minima were 19.9967 on Spigot 1.21.11, 19.9975 on Spigot 26.3 and 19.2852 on Paper; final readings were approximately 20. Paper is official 26.3 build 223, implementation name Paper. All six servers disabled the plugin and exited normally with code 0, no lifecycle/event exceptions and three dimension-saving lines. The extra all-dimensions marker is absent on modern 26.3/Paper and is not invented. No independent disk-integrity or load benchmark claim is made.
+
+The full PacketEvents 2.14.0 runtime SHA is `060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7`. The official MCProtocolLib artifact SHA is `c4ff8bd92ca84240b0ec772e09e4a1d9f6d756b03a9d923bbbad894b17c38a96`.
 
 ## Failed attempts and corrections
 
-Candidate01 exposed a genuine producer prerequisite bug: Hitbox A unnecessarily required LIQUID telemetry, and proven initial exemption values were unavailable before the first world cache. The final implementation separates Hitbox prerequisites and constructor knowledge from actual geometry. An additional source audit fixed the same initial BOAT state for targets without inventing clean values after geometry loss.
+Earlier candidates remain bound to their original hashes and are not counted as final evidence. Native tests exposed eight missing named exemption producers that the numeric-only audit missed. They were implemented and tested before the final candidate. SDK/source control review also fixed CamelHusk family selection and preserved the active inherited Llama budget for TraderLlama.
 
-A fixed 350 ms Conduit wait in candidate02 ran before the real client acknowledgement and produced one failed mining exemption test. The final fixture waits for actual acknowledged Conduit state, records the active Bukkit effect, and then observes zero VL. No production change was needed for this fixture race. Earlier attempts remain in the local evidence ledger.
+Fixture corrections remained separate: Motion A/B/C initially ran before liquid contact uncertainty had recovered; velocity incorrectly expected an acknowledged queue before the first held PONG; a mounted clean window began before two real descending packets replaced the previous hover; and Paper rejected a wall primer at an exact collision boundary, leaving prior ladder geometry cached. Final fixtures qualify actual state. Paper uses physically clear X 64.69 inside the recovered fraction band, with fresh non-climbable geometry, equal air counts and no near-ground exemption. No detection threshold was weakened to pass it. A missing fixture module and invalid early identity assertions are recorded separately in local evidence.
 
-The first velocity fixture expected the requested Bukkit Y value 0.5; actual wire decoding was 0.5000305194408838. The corrected oracle uses captured wire velocity and confirms both acknowledgement stages. An ordinary concurrent Speed A reward interfered with an early fixed-decay probe; its isolated atomic recheck passed. The actual low-TPS provider condition was unobserved (TPS 20), so no physical low-TPS gate claim is made; pure boundary tests remain separate.
+## Scope and cleanup
 
-## Limits and cleanup
+[FIDELITY.md](FIDELITY.md) records recovered behavior and deliberate repairs. All known remaining movement/world branches have independent implementations. Field accuracy, translated legacy clients, custom mechanics, live optional integrations and a connected proxy receiver retain their documented validation boundaries. Folia is unsupported.
 
-The complete objective remains open in [FIDELITY.md](FIDELITY.md). Remaining movement/world paths, real optional integrations, connected proxy execution, translated clients and multiplayer field accuracy require further work. Versions between the tested boundaries were not retested in this phase. Main-thread ownership and conservative unknown-state handling are deliberate safeguards, not equivalence claims.
-
-Temporary harnesses, compiled fixtures, protocol clients, isolated servers and worlds were removed from the workspace through Windows Recycle Bin after recording these results. `.work` is empty. The ignored local evidence ledger retains reports, not executable test fixtures. CI compiles source and does not claim to run the deleted standalone suites. The [machine report](fidelity-validation-0.5.0.json) preserves exact final assertions and artifact identity.
+Temporary harnesses, protocol clients, isolated servers/worlds and compiled testing files were removed through Windows Recycle Bin after preserving verification. All eleven owned temporary directories were verified inside this workspace, with no reparse points. `.work` is empty; owned ports 25860/25863 are free and no owned runtime process remains. The ignored local evidence manifest retains 36 raw report/log files, including failed attempts, and a clean final process/port audit. The [machine report](fidelity-validation-0.6.0.json) preserves exact counts, IDs, artifact identity and scope. CI compiles source and does not claim to run the removed suites.

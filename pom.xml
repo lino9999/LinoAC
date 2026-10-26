@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.lino9999</groupId>
   <artifactId>linoac</artifactId>
-  <version>0.5.0</version>
+  <version>0.6.0</version>
   <name>LinoAC</name>
   <description>Modular Minecraft anti-cheat and staff moderation tools.</description>
   <url>https://github.com/lino9999/LinoAC</url>

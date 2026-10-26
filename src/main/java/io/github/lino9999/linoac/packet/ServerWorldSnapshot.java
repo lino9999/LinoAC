@@ -3,19 +3,31 @@ package io.github.lino9999.linoac.packet;
 public record ServerWorldSnapshot(int nearbyEntities, boolean complete, boolean cobweb, int airBelow, boolean twoBelowAir,
                                   java.util.List<Cell> cells, double borderCenterX, double borderCenterZ, double borderSize,
                                   long generation, boolean waterlogged, boolean thirdBelowSlime, Nearby nearby,
-                                  java.util.Map<String, Double> materialFacts) {
+                                  Boolean lowerPlaneAir, Boolean thirdBelowAir, java.util.Map<String, Double> materialFacts, String secondBelowMaterial) {
     public static java.util.Set<String> materialFactKeys() { return WorldMaterialFacts.keys(); }
     public ServerWorldSnapshot {
         if (nearbyEntities < -1 || complete && (nearbyEntities < 0 || airBelow < 0 || airBelow > 9)) throw new IllegalArgumentException("Invalid server world snapshot.");
         cells = java.util.List.copyOf(cells);
         nearby = java.util.Objects.requireNonNull(nearby);
         if (!cells.isEmpty() && cells.size() != 36) throw new IllegalArgumentException("A complete material grid needs 36 cells.");
-        materialFacts = complete ? WorldMaterialFacts.sample(cells, twoBelowAir, thirdBelowSlime) : java.util.Map.of();
+        materialFacts = complete ? WorldMaterialFacts.sample(cells, twoBelowAir, thirdBelowSlime, lowerPlaneAir, thirdBelowAir, secondBelowMaterial) : java.util.Map.of();
+    }
+    public ServerWorldSnapshot(int nearbyEntities, boolean complete, boolean cobweb, int airBelow, boolean twoBelowAir,
+                               java.util.List<Cell> cells, double borderCenterX, double borderCenterZ, double borderSize,
+                               long generation, boolean waterlogged, boolean thirdBelowSlime, Nearby nearby,
+                               Boolean lowerPlaneAir, Boolean thirdBelowAir, java.util.Map<String, Double> materialFacts) {
+        this(nearbyEntities, complete, cobweb, airBelow, twoBelowAir, cells, borderCenterX, borderCenterZ, borderSize,
+                generation, waterlogged, thirdBelowSlime, nearby, lowerPlaneAir, thirdBelowAir, materialFacts, null);
     }
     public ServerWorldSnapshot(int nearbyEntities, boolean complete, boolean cobweb, int airBelow, boolean twoBelowAir,
                                java.util.List<Cell> cells, double borderCenterX, double borderCenterZ, double borderSize,
                                long generation, boolean waterlogged, boolean thirdBelowSlime, Nearby nearby) {
-        this(nearbyEntities, complete, cobweb, airBelow, twoBelowAir, cells, borderCenterX, borderCenterZ, borderSize, generation, waterlogged, thirdBelowSlime, nearby, null);
+        this(nearbyEntities, complete, cobweb, airBelow, twoBelowAir, cells, borderCenterX, borderCenterZ, borderSize, generation, waterlogged, thirdBelowSlime, nearby, null, null, null);
+    }
+    public ServerWorldSnapshot(int nearbyEntities, boolean complete, boolean cobweb, int airBelow, boolean twoBelowAir,
+                               java.util.List<Cell> cells, double borderCenterX, double borderCenterZ, double borderSize,
+                               long generation, boolean waterlogged, boolean thirdBelowSlime, Nearby nearby, Boolean lowerPlaneAir, Boolean thirdBelowAir) {
+        this(nearbyEntities, complete, cobweb, airBelow, twoBelowAir, cells, borderCenterX, borderCenterZ, borderSize, generation, waterlogged, thirdBelowSlime, nearby, lowerPlaneAir, thirdBelowAir, null);
     }
     public ServerWorldSnapshot(int nearbyEntities, boolean complete, boolean cobweb, int airBelow, boolean twoBelowAir,
                                java.util.List<Cell> cells, double borderCenterX, double borderCenterZ, double borderSize,

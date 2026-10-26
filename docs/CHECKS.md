@@ -1,6 +1,6 @@
 # Check catalogue and applicability
 
-LinoAC 0.5.0 contains 203 catalogue entries, 179 registered upstream classes and 175 independently reconstructed executable rule paths. Four registered original callbacks are no-ops; 24 configured slots have no registered detector. They remain visible and disabled rather than receiving invented behavior. The original 195 count omitted eight numeric BadPackets entries.
+LinoAC 0.6.0 contains 203 catalogue entries, 179 registered upstream classes and 175 independently reconstructed executable rule paths. Four registered original callbacks are no-ops; 24 configured slots have no registered detector. They remain visible and disabled rather than receiving invented behavior. The original 195 count omitted eight numeric BadPackets entries.
 
 A registered rule is evaluated only when its actual observations, protocol and exemption conditions apply. The historical 0.2.0 direct-feed suite covered all 175 paths; fresh suites and changed contracts are reported separately in VALIDATION.md. These tests do not prove cheat accuracy or equivalence to the obfuscated original. NoSlow A requires both a pre-1.9 server and client, so it intentionally cannot run on the supported modern server range. Nine additional paths require legacy clients; translators were not certified. BadPackets 7 uses pre-1.21.2 swing ordering; BadPackets 9 uses the modern client-tick-end marker.
 
@@ -222,6 +222,10 @@ FastPlace uses a batch beginning with the first eligible placement, strictly mor
 
 ## Further behavioral recovery in 0.5.0
 
-Combat sequence rules use raw packet clocks and independent eligible batches. Criticals preserve signed vertical remainders; FastBow observes eligible arrow launches at MONITOR, including cancelled launches, with crossbow and multishot exclusions. Velocity A/B/D use two-stage PING acknowledgements, retained impulse state and independently generated candidate motion rather than elapsed-time surrogates. Hitbox B preserves its proven dormant reference path.
+Combat sequence rules use raw packet clocks and independent eligible batches. Criticals preserve signed vertical remainders; FastBow observes eligible arrow launches at MONITOR, including cancelled launches, with crossbow and multishot exclusions. Velocity A/B/D use two-stage PING acknowledgements, retained impulse state and independently generated candidate motion rather than elapsed-time surrogates. In 0.5.0 Hitbox B followed the dormant reference path; 0.6.0 restores actual attack-target angular evaluation as a documented repair.
 
 Packet rules retain actual frame latches and modern/legacy applicability gates. Invalid motion uses acknowledged effects, impulse bounds, position-only ages and per-rule material allowances. Ground claims use the recovered cached air domains and strict predicates. FastBreak uses SURVIVAL interaction/start timing and LOWEST uncancelled break authority; public Bukkit break speed replaces the obsolete material hardness table. These additions do not close all 51 movement paths or remaining scaffold/world branches.
+
+## Complete movement and placement implementation in 0.6.0
+
+All 51 movement IDs have explicit owners: sixteen position/vertical paths, ten surface paths, seven mounted paths, nine glide paths, three heading paths, five shared horizontal-budget paths and the legacy-only NoSlow A path. The previous generic movement branches were removed. The fifteen remaining placement-pattern variants now have their own recovered windows and event authority. Hitbox B, NoSlow B and Jesus D include the intentional functional repairs described in FIDELITY.md. These counts describe code and source-contract coverage; actual test scopes remain in VALIDATION.md.

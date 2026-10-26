@@ -21,6 +21,7 @@ public final class SequenceContext {
     private boolean reachA;
     private boolean reachB;
     private boolean hitboxA;
+    private String angularTarget;
     private int previousTarget;
     private int targetChanges;
     private int flyingSinceAttack;
@@ -37,6 +38,7 @@ public final class SequenceContext {
         states.removeIf(key -> key.startsWith("sequence-"));
         states.add("sequence-context-known");
         if (input.state("nonfinite-position") || input.state("nonfinite-rotation") || input.state("outside-world") || input.state("invalid-pitch")) {
+            if (!input.state("bukkit-event") && input.kind() == Observation.Kind.MOVE) angularTarget = null;
             return observation(input, values, states);
         }
         if (input.state("source-arrow-launch")) {
@@ -64,6 +66,8 @@ public final class SequenceContext {
     }
 
     private void movement(Observation input, Map<String, Double> values, Set<String> states) {
+        if (angularTarget != null && angularTarget.equals(AngularTarget.identity(input))) states.add("sequence-hitbox-b-ready");
+        angularTarget = null;
         long now = (long) input.value("packet-time-ms");
         long elapsed = now - lastMovementMillis;
         fast = elapsed <= 5;
@@ -92,6 +96,7 @@ public final class SequenceContext {
     }
 
     private void attack(Observation input, Map<String, Double> values) {
+        angularTarget = input.state("target-player") && input.has("target-id") ? AngularTarget.identity(input) : null;
         long now = (long) input.value("packet-time-ms");
         values.put("sequence-autoblock-a", placed ? 1d : 0d);
         values.put("sequence-autoblock-b", released ? 1d : 0d);

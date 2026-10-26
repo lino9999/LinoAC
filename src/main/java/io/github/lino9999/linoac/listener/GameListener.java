@@ -28,6 +28,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 public final class GameListener implements Listener {
     private final LinoAC plugin;
     private final java.util.Map<java.util.UUID, BlockBreakEvent> activeBedBreaks = new java.util.HashMap<>();
+    private final java.util.Map<java.util.UUID, BlockPlaceEvent> activePlacements = new java.util.HashMap<>();
 
     public GameListener(LinoAC plugin) { this.plugin = plugin; }
 
@@ -82,23 +83,21 @@ public final class GameListener implements Listener {
         if (event.getTo() != null && (event.getFrom().getX() != event.getTo().getX() || event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() != event.getTo().getZ())) {
             if (event.isCancelled()) plugin.collector().sourceEvent(event.getPlayer(), Age.CANCELLED_MOVE);
             plugin.serverMoved(event.getPlayer(), event.getTo());
+            plugin.collector().mountedMovement(event.getPlayer(), event.getTo(), event.isCancelled());
         }
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR) public void clickPlacement(BlockPlaceEvent event) {
-        plugin.collector().clickContext(event.getPlayer()).placement();
-        plugin.collector().placementEvent(event.getPlayer(), event.getBlockPlaced().getType().name(), event.isCancelled());
     }
 
     @EventHandler(priority = EventPriority.MONITOR) public void sourceDamage(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Player player && !player.hasMetadata("NPC") && !player.hasMetadata("npc")) plugin.collector().sourceDamage(player, event.getDamager().getType().name());
     }
 
-    @EventHandler(priority = EventPriority.MONITOR) public void sourceDamageCause(EntityDamageEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true) public void sourceDamageCause(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player && !player.hasMetadata("NPC") && !player.hasMetadata("npc")) plugin.collector().sourceDamageCause(player, event.getCause().name());
     }
 
     @EventHandler(priority = EventPriority.LOWEST) public void clickBreak(BlockBreakEvent event) {
+        plugin.collector().blockBreakAnchor(event.getPlayer(), event.getBlock().getX(), event.getBlock().getY(), event.getBlock().getZ());
+        if (event.isCancelled()) plugin.collector().sourceEvent(event.getPlayer(), Tick.CANCELLED_BREAK);
         plugin.collector().clickContext(event.getPlayer()).blockBreak(plugin.tick(), event.getBlock().getX(), event.getBlock().getZ(), event.isCancelled());
         plugin.collector().sourceEvent(event.getPlayer(), Age.BLOCK_BREAK);
         if (!io.github.lino9999.linoac.detection.world.GhostHandContext.bed(event.getBlock().getType().name())) return;
@@ -112,6 +111,29 @@ public final class GameListener implements Listener {
         if (event.getCheck() != CheckType.GHOSTHAND_A || !plugin.settings().enabled("checks.ghosthand-a.cancel")) return;
         BlockBreakEvent active = activeBedBreaks.get(event.getPlayerId());
         if (active != null) active.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR) public void acceptedPlacementViolation(io.github.lino9999.linoac.api.LinoPostViolationEvent event) {
+        if (event.getCheck() != CheckType.AIRPLACE_A || !plugin.settings().enabled("checks.airplace-a.cancel")) return;
+        BlockPlaceEvent active = activePlacements.get(event.getPlayerId());
+        if (active != null) active.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR) public void acceptedMountedViolation(io.github.lino9999.linoac.api.LinoPostViolationEvent event) {
+        String id = event.getCheck().id();
+        if (!java.util.Set.of("boatfly-a", "boatfly-b", "entityflight-a", "entityspeed-a", "nosaddle-a").contains(id)) return;
+        if (!plugin.settings().enabled("checks." + id + ".dismount")) return;
+        Player player = org.bukkit.Bukkit.getPlayer(event.getPlayerId());
+        if (player == null || player.getVehicle() == null) return;
+        var mountId = player.getVehicle().getUniqueId();
+        PlayerData data = plugin.data(player);
+        plugin.actions().schedulePunishment(data.id, "dismount:" + id, 1, () -> {
+            Player online = org.bukkit.Bukkit.getPlayer(data.id);
+            if (online == null || plugin.data(online) != data || !plugin.settings().policy(event.getCheck()).enabled()
+                    || !plugin.settings().enabled("checks." + id + ".dismount") || online.getVehicle() == null
+                    || !online.getVehicle().getUniqueId().equals(mountId)) return;
+            online.leaveVehicle();
+        });
     }
 
     @EventHandler(priority = EventPriority.MONITOR) public void clickInteraction(PlayerInteractEvent event) {
@@ -143,6 +165,7 @@ public final class GameListener implements Listener {
     @EventHandler public void clickFishing(PlayerFishEvent event) { plugin.collector().clickContext(event.getPlayer()).fishing(plugin.tick()); }
     @EventHandler(priority = EventPriority.MONITOR) public void caughtByHook(PlayerFishEvent event) {
         if (event.getCaught() instanceof Player caught) plugin.collector().sourceEvent(caught, Age.FISHING_ROD);
+        if (event.getCaught() instanceof org.bukkit.entity.Boat boat) plugin.collector().vehicleHook(boat.getUniqueId(), event.getHook().getUniqueId());
     }
     @EventHandler(priority = EventPriority.MONITOR) public void consumed(PlayerItemConsumeEvent event) {
         if (event.getItem().getType().name().equals("CHORUS_FRUIT")) plugin.collector().sourceEvent(event.getPlayer(), Age.CHORUS_FRUIT);
@@ -150,8 +173,11 @@ public final class GameListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR) public void bedEntered(PlayerBedEnterEvent event) { plugin.collector().sourceEvent(event.getPlayer(), Tick.BED_ENTER); }
     @EventHandler(priority = EventPriority.MONITOR) public void bedLeft(PlayerBedLeaveEvent event) { plugin.collector().sourceEvent(event.getPlayer(), Tick.BED_LEAVE); }
 
-    @EventHandler public void clickEntityInteraction(PlayerInteractEntityEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR) public void clickEntityInteraction(PlayerInteractEntityEvent event) {
         plugin.collector().clickContext(event.getPlayer()).entityInteraction(System.currentTimeMillis(), event.getRightClicked().getType().name());
+        if (event.getRightClicked().getType() == org.bukkit.entity.EntityType.ITEM_FRAME) {
+            plugin.collector().event(event.getPlayer(), Observation.Kind.USE, java.util.Map.of(), java.util.Set.of("world-item-frame-interaction"));
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true) public void acceptedAttack(EntityDamageByEntityEvent event) {
@@ -164,6 +190,8 @@ public final class GameListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR) public void place(BlockPlaceEvent event) {
         Player player = event.getPlayer();
+        plugin.collector().clickContext(player).placement();
+        plugin.collector().placementEvent(player, event.getBlockPlaced().getType().name(), event.isCancelled());
         PlayerData data = plugin.data(player);
         if (data.frozen) return;
         var values = coordinates(event.getBlockPlaced());
@@ -171,13 +199,21 @@ public final class GameListener implements Listener {
         values.put("against-y", (double) event.getBlockAgainst().getY());
         values.put("against-z", (double) event.getBlockAgainst().getZ());
         values.put("block-face", (double) face(event.getBlockAgainst().getFace(event.getBlockPlaced())));
+        values.put("event-player-floor-x", (double) player.getLocation().getBlockX());
+        values.put("event-player-floor-z", (double) player.getLocation().getBlockZ());
+        Integer airNeighbors = airNeighbors(event.getBlockPlaced());
+        if (airNeighbors != null) values.put("world-air-neighbors", airNeighbors.doubleValue());
         java.util.Set<String> states = new java.util.HashSet<>();
         if (!event.isCancelled()) states.add("block-accepted");
         else states.add("block-cancelled");
         if (event.getBlockPlaced().getType().isSolid()) states.add("placed-solid");
         String material = event.getBlockPlaced().getType().name();
+        states.addAll(io.github.lino9999.linoac.detection.world.PlacementContext.materialStates(material));
         if (material.contains("LILY") || material.contains("SCAFFOLD") || material.contains("SIGN")) states.add("placement-exempt");
-        plugin.collector().event(player, Observation.Kind.PLACE, values, states);
+        java.util.UUID id = player.getUniqueId();
+        BlockPlaceEvent previous = activePlacements.put(id, event);
+        try { plugin.collector().event(player, Observation.Kind.PLACE, values, states); }
+        finally { if (previous == null) activePlacements.remove(id); else activePlacements.put(id, previous); }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true) public void freezePlace(BlockPlaceEvent event) {
@@ -206,14 +242,15 @@ public final class GameListener implements Listener {
     @EventHandler public void interact(PlayerInteractEvent event) {
         PlayerData data = plugin.data(event.getPlayer());
         if (data.frozen) { event.setCancelled(true); return; }
-        if (event.getItem() == null || event.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_AIR
-                && event.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK) return;
-        String type = event.getItem().getType().name();
-        if (event.getClickedBlock() != null) {
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true) public void acceptedInteraction(PlayerInteractEvent event) {
+        if (event.getAction() == org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
             var values = coordinates(event.getClickedBlock()); values.put("block-face", (double) face(event.getBlockFace()));
-            java.util.Set<String> states = new java.util.HashSet<>(); states.add("block-interaction");
+            values.put("world-player-created-ms", (double) plugin.data(event.getPlayer()).joinedMillis);
+            java.util.Set<String> states = new java.util.HashSet<>(); states.add("block-interaction"); states.add("world-right-click-block");
             if (event.getClickedBlock().getType().isSolid()) states.add("clicked-solid");
-            if (event.getItem().getType().isSolid()) states.add("held-solid");
+            if (event.getPlayer().getInventory().getItemInMainHand().getType().isSolid()) states.add("held-solid");
             if (event.getClickedBlock().equals(event.getPlayer().getLocation().subtract(0, 1, 0).getBlock())) states.add("clicked-below-feet");
             plugin.collector().event(event.getPlayer(), Observation.Kind.USE, values, states);
         }
@@ -223,6 +260,18 @@ public final class GameListener implements Listener {
         java.util.Map<String, Double> values = new java.util.HashMap<>();
         values.put("block-x", (double) block.getX()); values.put("block-y", (double) block.getY()); values.put("block-z", (double) block.getZ());
         return values;
+    }
+
+    private Integer airNeighbors(Block block) {
+        var world = block.getWorld();
+        int air = 0;
+        for (BlockFace face : new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST}) {
+            int x = block.getX() + face.getModX(), y = block.getY() + face.getModY(), z = block.getZ() + face.getModZ();
+            if (y < world.getMinHeight() || y >= world.getMaxHeight() || !world.isChunkLoaded(x >> 4, z >> 4)) return null;
+            String material = world.getBlockAt(x, y, z).getType().name();
+            if (material.equals("AIR") || material.equals("CAVE_AIR") || material.equals("VOID_AIR")) air++;
+        }
+        return air;
     }
 
     private int face(BlockFace face) {

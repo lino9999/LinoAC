@@ -69,6 +69,14 @@ public final class WireDecoder {
                 values.put("steer-forward", (double) packet.getForward()); values.put("steer-sideways", (double) packet.getSideways());
                 if (packet.isJump()) states.add("vehicle-jump");
             }
+            case "VEHICLE_MOVE" -> {
+                var packet = new WrapperPlayClientVehicleMove(event);
+                var position = packet.getPosition();
+                values.put("vehicle-x", position.getX()); values.put("vehicle-y", position.getY()); values.put("vehicle-z", position.getZ());
+                if (!Double.isFinite(position.getX()) || !Double.isFinite(position.getY()) || !Double.isFinite(position.getZ())) {
+                    states.add("nonfinite-position"); event.setCancelled(true);
+                }
+            }
             case "PLAYER_INPUT" -> {
                 var packet = new WrapperPlayClientPlayerInput(event);
                 values.put("steer-forward", (packet.isForward() ? 1d : 0d) - (packet.isBackward() ? 1d : 0d));

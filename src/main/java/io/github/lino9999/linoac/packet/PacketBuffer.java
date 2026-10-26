@@ -13,13 +13,18 @@ public final class PacketBuffer {
     private final Map<Long, Long> pings = new LinkedHashMap<>();
     private final java.util.LinkedHashSet<Long> completedKeepAlives = new java.util.LinkedHashSet<>();
     private final EntityPositionTracker entities = new EntityPositionTracker(16384);
+    private final SparseBlockMirror sulfur = new SparseBlockMirror(8192, 131072);
+    private boolean sulfurSupported;
     private final io.github.lino9999.linoac.detection.collector.TeleportState teleports = new io.github.lino9999.linoac.detection.collector.TeleportState();
     private final Map<Long, java.util.ArrayList<Runnable>> acknowledgedUpdates = new LinkedHashMap<>();
     private final java.util.ArrayList<Runnable> awaitingProbe = new java.util.ArrayList<>();
     private final Map<String, Double> acknowledgedState = new HashMap<>(Map.ofEntries(Map.entry("protocol-flight-allowed", 0d),
             Map.entry("protocol-movement-speed", .1), Map.entry("protocol-attack-range", 3d), Map.entry("protocol-levitation-amplifier", 0d),
             Map.entry("protocol-jump-amplifier", 0d), Map.entry("protocol-conduit-power", 0d), Map.entry("protocol-speed-amplifier", 0d),
-            Map.entry("protocol-jump-strength", .42), Map.entry("protocol-last-speed-amplifier", 0d), Map.entry("protocol-cached-creative", 0d), Map.entry("protocol-cached-spectator", 0d),
+            Map.entry("protocol-jump-strength", .42), Map.entry("protocol-previous-jump-strength", .42), Map.entry("protocol-jump-revision", 0d),
+            Map.entry("protocol-step-height", .6), Map.entry("protocol-gravity", .08), Map.entry("protocol-previous-gravity", .08), Map.entry("protocol-gravity-revision", 0d),
+            Map.entry("protocol-air-drag", 1d), Map.entry("protocol-bounciness", 0d), Map.entry("protocol-friction-modifier", 1d), Map.entry("protocol-slowness", 0d),
+            Map.entry("protocol-last-speed-amplifier", 0d), Map.entry("protocol-cached-creative", 0d), Map.entry("protocol-cached-spectator", 0d),
             Map.entry("protocol-slow-falling", 0d), Map.entry("protocol-metadata-gliding", 0d), Map.entry("protocol-gliding-revision", 0d), Map.entry("protocol-metadata-riptide", 0d), Map.entry("protocol-metadata-swimming", 0d)));
     private int pendingEntityUpdates;
     private int serverNearbyEntities = -1;
@@ -65,6 +70,9 @@ public final class PacketBuffer {
             }
             if (!corrupt && packet.states().contains("position-packet") && values.keySet().containsAll(java.util.Set.of("x", "y", "z"))) {
                 playerX = values.get("x"); playerY = values.get("y"); playerZ = values.get("z"); positionKnown = true;
+                Boolean contact = sulfurSupported ? sulfur.below(playerX, playerY, playerZ) : Boolean.FALSE;
+                if (contact != null) values.put("source-sulfur-contact", contact ? 1d : 0d);
+                else values.remove("source-sulfur-contact");
                 int nearby = entities.nearby(values.get("x"), values.get("y"), values.get("z"));
                 if (nearby >= 0) { values.put("mirrored-nearby-entities", (double) nearby); states.add("entity-mirror-known"); }
                 int boats = entities.nearbyBoats(playerX, playerY, playerZ);
@@ -78,6 +86,13 @@ public final class PacketBuffer {
                 if (teleport.matched()) states.add("server-teleport-match");
             }
             packet = new WirePacket(packet.kind(), packet.type(), packet.nanos(), packet.token(), values, states);
+        }
+        if (packet.type().equals("VEHICLE_MOVE") && !packet.state("nonfinite-position")
+                && packet.values().keySet().containsAll(java.util.Set.of("vehicle-x", "vehicle-y", "vehicle-z"))) {
+            var values = new HashMap<>(packet.values());
+            Boolean contact = sulfurSupported ? sulfur.below(values.get("vehicle-x"), values.get("vehicle-y"), values.get("vehicle-z")) : Boolean.FALSE;
+            if (contact != null) values.put("source-mounted-sulfur-contact", contact ? 1d : 0d);
+            packet = new WirePacket(packet.kind(), packet.type(), packet.nanos(), packet.token(), values, packet.states());
         }
         if (packets.size() == 512) { dropped = Math.min(1_000_000, dropped + 1); invalidateEntities(); return; }
         packets.addLast(packet);
@@ -129,6 +144,15 @@ public final class PacketBuffer {
     public synchronized void entity(EntityPositionTracker.Update update) {
         queueAcknowledgement(() -> entities.apply(update));
     }
+    public synchronized void sulfurCapability(boolean supported) { sulfurSupported = supported; }
+    public synchronized void sulfurChunk(SulfurPackets.Chunk chunk) { queueAcknowledgement(() -> sulfur.replace(chunk.x(), chunk.z(), chunk.blocks())); }
+    public synchronized void sulfurBlock(SparseBlockMirror.Block block, boolean present) { queueAcknowledgement(() -> sulfur.change(block, present)); }
+    public synchronized void sulfurBlocks(List<SulfurPackets.Change> changes) {
+        List<SulfurPackets.Change> captured = List.copyOf(changes);
+        queueAcknowledgement(() -> captured.forEach(change -> sulfur.change(change.block(), change.present())));
+    }
+    public synchronized void sulfurUnload(int x, int z) { queueAcknowledgement(() -> sulfur.unload(x, z)); }
+    public synchronized void invalidateSulfur() { sulfur.invalidate(); }
 
     public synchronized void bracketImpulse(boolean explosion, double x, double y, double z) {
         if (!Double.isFinite(x) || !Double.isFinite(y) || !Double.isFinite(z)) return;
@@ -182,6 +206,7 @@ public final class PacketBuffer {
     }
 
     public synchronized void resetEntities() {
+        sulfur.reset();
         acknowledgedUpdates.clear(); awaitingProbe.clear(); pendingEntityUpdates = 0; entities.reset(); teleports.reset(); positionKnown = false;
         occupiedVehicleId = -1; vehicleTypeKnown = true; vehicleTypePresent = false;
         serverWorld = ServerWorldSnapshot.unknown(-1); serverNearbyEntities = -1;
@@ -216,17 +241,29 @@ public final class PacketBuffer {
         });
     }
     public synchronized void attribute(String key, double value) {
-        if (!java.util.Set.of("protocol-movement-speed", "protocol-attack-range", "protocol-jump-strength").contains(key) || !Double.isFinite(value) || value < 0) return;
-        queueAcknowledgement(() -> acknowledgedState.put(key, value));
+        if (!java.util.Set.of("protocol-movement-speed", "protocol-attack-range", "protocol-jump-strength", "protocol-step-height", "protocol-gravity", "protocol-air-drag", "protocol-bounciness", "protocol-friction-modifier").contains(key) || !Double.isFinite(value)) return;
+        queueAcknowledgement(() -> {
+            if (key.equals("protocol-gravity") || key.equals("protocol-jump-strength")) {
+                Double previous = acknowledgedState.get(key);
+                String previousKey = key.equals("protocol-gravity") ? "protocol-previous-gravity" : "protocol-previous-jump-strength";
+                String revisionKey = key.equals("protocol-gravity") ? "protocol-gravity-revision" : "protocol-jump-revision";
+                if (previous != null) {
+                    acknowledgedState.put(previousKey, previous);
+                    if (previous != value) acknowledgedState.computeIfPresent(revisionKey, (ignored, revision) -> Math.min(9_007_199_254_740_991d, revision + 1));
+                } else acknowledgedState.remove(previousKey);
+            }
+            acknowledgedState.put(key, value);
+        });
     }
     public synchronized void effect(String key, int amplifier) {
-        if (!java.util.Set.of("protocol-levitation-amplifier", "protocol-jump-amplifier", "protocol-conduit-power", "protocol-speed-amplifier", "protocol-slow-falling").contains(key) || amplifier < 0) return;
+        if (!java.util.Set.of("protocol-levitation-amplifier", "protocol-jump-amplifier", "protocol-conduit-power", "protocol-speed-amplifier", "protocol-slow-falling", "protocol-slowness").contains(key) || amplifier < 0) return;
         queueAcknowledgement(() -> {
             acknowledgedState.put(key, (double) amplifier);
             if (key.equals("protocol-speed-amplifier") && amplifier > 0) acknowledgedState.put("protocol-last-speed-amplifier", (double) amplifier);
         });
     }
     private void invalidateEntities() {
+        sulfur.invalidate();
         acknowledgedUpdates.clear(); awaitingProbe.clear(); pendingEntityUpdates = 0; entities.invalidate(); vehicleTypeKnown = false; acknowledgedState.clear();
         impulseControl("ACK_INVALID_IMPULSES");
     }

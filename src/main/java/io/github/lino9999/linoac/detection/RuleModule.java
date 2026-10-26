@@ -11,6 +11,7 @@ public interface RuleModule {
         void sample(String checkId, boolean suspicious, String detail);
         default void direct(String checkId, String detail) { sample(checkId, true, detail); }
         default void reset(String checkId, String detail) { sample(checkId, false, detail); }
+        default void accumulate(String checkId, String detail) { throw new UnsupportedOperationException("This finding sink does not support accumulation."); }
         default void decay(String checkId, double amount, String detail) { sample(checkId, false, detail); }
         default void sampleAbove(String checkId, boolean suspicious, String detail) { sample(checkId, suspicious, detail); }
         default void sampleAboveThenDecay(String checkId, String detail) { sampleAbove(checkId, true, detail); }

@@ -5,6 +5,22 @@ import io.github.lino9999.linoac.detection.Observation;
 public final class PlacementContext {
     private PlacementContext() {}
 
+    public static java.util.Set<String> materialStates(String material) {
+        var states = new java.util.HashSet<String>();
+        states.add("world-material-known");
+        if (material.contains("SLAB") || material.contains("STEP")) states.add("world-slab-material");
+        if (material.equals("SCAFFOLDING")) states.add("world-scaffolding-material");
+        if (material.contains("SLAB") || material.contains("STEP") || material.contains("SAND") || material.contains("STONE")
+                || material.contains("GRAVEL") || material.contains("PATH") || material.contains("ANCHOR") || material.contains("CONCRETE")
+                || material.contains("POWDER") || material.contains("STRIPPED") || material.contains("FARMLAND")
+                || java.util.Set.of("ANVIL", "DAMAGED_ANVIL", "CHIPPED_ANVIL", "TNT", "GLOWSTONE").contains(material)) states.add("world-airplace-material-exempt");
+        if (material.contains("TURTLE") || material.contains("EGG") || material.contains("SLAB") || material.contains("STEP")
+                || material.contains("CONCRETE") || material.contains("POWDER") || material.equals("TNT")) states.add("world-face-material-exempt");
+        if (material.equals("SCAFFOLDING") || material.contains("WIRE") || material.contains("STRING") || material.contains("TURTLE")
+                || material.contains("EGG") || material.contains("LADDER") || material.contains("VINE")) states.add("world-tower-material-exempt");
+        return java.util.Set.copyOf(states);
+    }
+
     public static boolean fastPlaceMaterialExempt(String material) {
         return material.equals("SCAFFOLDING") || material.contains("SCULK");
     }

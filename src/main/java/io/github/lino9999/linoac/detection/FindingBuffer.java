@@ -31,6 +31,11 @@ public final class FindingBuffer {
 
     public record Result(double amount, boolean ready) {}
 
+    public static double accumulated(double current) {
+        if (!Double.isFinite(current) || current < 0) throw new IllegalArgumentException("Invalid finding buffer state.");
+        return Math.min(10000, current + 1);
+    }
+
     public static double decayed(double current, double amount) {
         if (!Double.isFinite(current) || current < 0 || !Double.isFinite(amount) || amount < 0) throw new IllegalArgumentException("Invalid finding decay.");
         return Math.max(0, current - amount);

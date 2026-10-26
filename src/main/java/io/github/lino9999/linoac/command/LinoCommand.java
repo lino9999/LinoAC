@@ -148,6 +148,7 @@ public final class LinoCommand implements CommandExecutor, TabCompleter, Listene
         if (kind.equals("connection")) {
             plugin.messages().send(sender, "&7Acknowledgement ping: &f" + metric(metrics, "transaction-ping") + "ms &7| Pending: &f" + metric(metrics, "pending-transactions")
                     + " &7| Oldest pending: &f" + metric(metrics, "transaction-age-ms") + "ms &7| Last movement interval: &f" + metric(metrics, "move-interval-ms") + "ms");
+            plugin.messages().send(sender, "&7Packet state complete: &f" + stateMetric(metrics, "source-profile-complete"));
         }
         if (kind.equals("profile")) {
             plugin.messages().send(sender, "&7UUID: &f" + data.id + " &7| Movement speed: &f" + metric(metrics, "movement-speed")
@@ -155,6 +156,8 @@ public final class LinoCommand implements CommandExecutor, TabCompleter, Listene
             plugin.messages().send(sender, "&7Category VL: &fcombat=" + categoryViolations(player, "combat") + " movement=" + categoryViolations(player, "movement")
                     + " player=" + categoryViolations(player, "player"));
             plugin.messages().send(sender, "&7Effects: &f" + player.getActivePotionEffects().stream().map(effect -> effect.getType().getKey().getKey() + ":" + (effect.getAmplifier() + 1)).sorted().toList());
+            plugin.messages().send(sender, "&7Cached collisions: &fbody=" + stateMetric(metrics, "source-body-obstructed")
+                    + " ceiling=" + stateMetric(metrics, "source-ceiling-obstructed") + " &7| Nearby entities: &f" + metric(metrics, "server-nearby-entities"));
         }
         if (kind.equals("profile") || kind.equals("cps")) plugin.messages().send(sender, "&7Eligible swing CPS: &f" + String.format(Locale.ROOT, "%.2f", data.clicksPerSecond));
         if (kind.equals("profile") || kind.equals("violations")) {
@@ -166,6 +169,11 @@ public final class LinoCommand implements CommandExecutor, TabCompleter, Listene
     private String metric(Map<String, Double> values, String key) {
         Double value = values.get(key);
         return value == null || !Double.isFinite(value) ? "unknown" : String.format(Locale.ROOT, "%.3f", value);
+    }
+
+    private String stateMetric(Map<String, Double> values, String key) {
+        Double value = values.get(key);
+        return value == null || !Double.isFinite(value) ? "unknown" : value == 1 ? "yes" : value == 0 ? "no" : "unknown";
     }
 
     private int categoryViolations(Player player, String category) {
@@ -205,14 +213,23 @@ public final class LinoCommand implements CommandExecutor, TabCompleter, Listene
         int page = args.length > 2 ? Integer.parseInt(args[2]) : 1;
         int limit = plugin.settings().integer("settings.recent-log-limit");
         if (page < 1 || page > (limit + 7) / 8) throw new IllegalArgumentException("Page is outside the configured recent-log limit.");
-        plugin.audit().read(kind.equals("logs") ? "violations" : "punishments", args[1], page, limit, lines -> {
+        plugin.audit().readPage(kind.equals("logs") ? "violations" : "punishments", args[1], page, limit, result -> {
             if (!plugin.isEnabled()) return;
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (sender instanceof Player player && !player.isOnline()) return;
                 if (!sender.hasPermission("linoac.logs")) return;
-                plugin.messages().send(sender, "&7" + kind + " for &f" + args[1] + " &7| Page " + page);
-                if (lines.isEmpty()) plugin.messages().send(sender, "&7No records found.");
-                for (String line : lines) plugin.messages().send(sender, "&7" + line.replace('\t', ' '));
+                var placeholders = Map.of("player", args[1], "channel", kind, "page", Integer.toString(page), "pages", Integer.toString(result.totalPages()),
+                        "records", Integer.toString(result.availableRecords()), "shown", Integer.toString(result.lines().size()));
+                if (!result.available() || !result.inRange()) {
+                    String path = result.available() ? "logs.page-range-error" : "logs.read-failure";
+                    plugin.messages().send(sender, plugin.actions().render(plugin.settings().text(path), placeholders));
+                    return;
+                }
+                String header = plugin.settings().text("logs.page-header"), footer = plugin.settings().text("logs.page-footer");
+                if (!header.isBlank()) plugin.messages().send(sender, plugin.actions().render(header, placeholders));
+                if (result.lines().isEmpty()) plugin.messages().send(sender, "&7No records found.");
+                for (String line : result.lines()) plugin.messages().send(sender, "&7" + line.replace('\t', ' '));
+                if (!footer.isBlank()) plugin.messages().send(sender, plugin.actions().render(footer, placeholders));
             });
         });
     }

@@ -9,9 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.Instant;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -63,11 +60,14 @@ public final class AuditLog implements AutoCloseable {
             }
             Path path = directory.resolve(date + "-" + kind + ".log");
             try {
-                if (Files.exists(path) && Files.size(path) + line.getBytes(StandardCharsets.UTF_8).length > maximumBytes) {
+                byte[] encoded = line.getBytes(StandardCharsets.UTF_8);
+                long existing = Files.exists(path) ? Files.size(path) : 0;
+                long capacity = maximumBytes;
+                if (existing > capacity || encoded.length > capacity - existing) {
                     warning("Daily " + kind + " log reached its configured size limit; further entries will be dropped today.");
                     return;
                 }
-                Files.writeString(path, line, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+                Files.write(path, encoded, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
             } catch (IOException e) {
                 warning("Unable to write audit log: " + e.getMessage());
             }
@@ -75,35 +75,23 @@ public final class AuditLog implements AutoCloseable {
     }
 
     public void read(String kind, String name, int page, int limit, Consumer<List<String>> callback) {
-        submit(() -> {
-            ArrayDeque<String> lines = new ArrayDeque<>(limit);
-            try (Stream<Path> paths = Files.list(directory)) {
-                List<Path> files = paths.filter(p -> p.getFileName().toString().endsWith("-" + kind + ".log"))
-                        .sorted(Comparator.comparing(Path::toString).reversed()).toList();
-                int maximum = Math.min(limit, page * 8);
-                for (Path file : files) {
-                    ArrayDeque<String> perFile = new ArrayDeque<>();
-                    try (Stream<String> source = Files.lines(file, StandardCharsets.UTF_8)) {
-                        source.filter(line -> {
-                            String[] parts = line.split("\t", 4);
-                            return parts.length == 4 && parts[2].equalsIgnoreCase(name);
-                        }).forEach(line -> {
-                            perFile.addLast(line);
-                            if (perFile.size() > maximum) perFile.removeFirst();
-                        });
-                    }
-                    while (!perFile.isEmpty() && lines.size() < maximum) lines.addLast(perFile.removeLast());
-                    if (lines.size() >= maximum) break;
-                }
-                List<String> all = new ArrayList<>(lines);
-                int start = Math.min(all.size(), (page - 1) * 8);
-                List<String> result = List.copyOf(all.subList(start, Math.min(all.size(), start + 8)));
-                callback.accept(result);
+        readPage(kind, name, page, limit, result -> callback.accept(result.lines()));
+    }
+
+    public void readPage(String kind, String name, int page, int limit, Consumer<LogPage> callback) {
+        if (page < 1) throw new IllegalArgumentException("Log page must be positive.");
+        if (!kind.equals("violations") && !kind.equals("punishments")) throw new IllegalArgumentException("Unknown audit channel.");
+        if (limit < 1 || limit > 1000) throw new IllegalArgumentException("Invalid recent log limit.");
+        java.util.Objects.requireNonNull(callback);
+        boolean accepted = submit(() -> {
+            try {
+                callback.accept(LogPage.of(RecentLogReader.read(directory, kind, name, limit), page));
             } catch (IOException e) {
                 warning("Unable to read audit log: " + e.getMessage());
-                callback.accept(List.of());
+                callback.accept(LogPage.unavailable(page));
             }
         });
+        if (!accepted) callback.accept(LogPage.unavailable(page));
     }
 
     private void prune() {
@@ -118,9 +106,9 @@ public final class AuditLog implements AutoCloseable {
         } catch (IOException e) { warning("Unable to prune audit logs: " + e.getMessage()); }
     }
 
-    private void submit(Runnable action) {
-        try { worker.execute(action); }
-        catch (java.util.concurrent.RejectedExecutionException e) { warning("Audit queue is full or shutting down."); }
+    private boolean submit(Runnable action) {
+        try { worker.execute(action); return true; }
+        catch (java.util.concurrent.RejectedExecutionException e) { warning("Audit queue is full or shutting down."); return false; }
     }
 
     private synchronized void warning(String text) {

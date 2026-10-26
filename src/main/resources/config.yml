@@ -59,8 +59,16 @@ ghost-blocks:
   enabled: false
   minimum-ticks: 20
   setback: false
+movement-exemptions:
+  nearby-placement: true
+  liquid-residuals: true
+  low-altitude-translations: true
 logs:
   maximum-file-mib: 32
+  page-header: '&7%channel% records for &f%player% &8| &7Page &f%page%/%pages%'
+  page-footer: '&8Showing %shown% of %records% recent records.'
+  page-range-error: '&cAvailable pages: 1 through %pages%.'
+  read-failure: '&cLog records could not be read. Check the server log.'
   violations:
     enabled: true
     format: '%player% failed %check% VL=%vl% ping=%ping% %info%'
@@ -127,7 +135,7 @@ alerts:
   severity:
     enabled: true
 messages:
-  prefix: '&2&lLinoAC &8»'
+  prefix: '&2&lLinoAC &8Â»'
   alert: '&f%player% &7failed &a%check% &8[&fVL %vl%&8]'
   no-permission: '&cYou do not have permission to use this command.'
   unknown-command: '&cUnknown command. Use /linoac help.'
@@ -436,6 +444,7 @@ checks:
     decay: 0.125
     max-violations: 10
   hitbox-b:
+    maximum-angle: 45
     buffer: 6
     buffer-multiplier: 0.25
     decay: 0.125
@@ -548,11 +557,13 @@ checks:
     buffer-multiplier: 0.25
     max-violations: 15
   boatfly-a:
+    dismount: false
     buffer: 4
     buffer-multiplier: 0.33
     decay: 0.125
     max-violations: 15
   boatfly-b:
+    dismount: false
     buffer: 5
     buffer-multiplier: 0.25
     decay: 0.25
@@ -563,6 +574,7 @@ checks:
     decay: 0.125
     max-violations: 15
   entityflight-a:
+    dismount: false
     buffer: 5
     decay: 0.25
     max-violations: 15
@@ -576,10 +588,13 @@ checks:
     decay: 0.075
     max-violations: 15
   nosaddle-a:
+    dismount: false
     buffer: 6
     decay: 0.125
     max-violations: 15
   entityspeed-a:
+    dismount: false
+    min-difference: 0.01
     buffer: 5
     decay: 0.25
     max-violations: 15
@@ -638,6 +653,7 @@ checks:
     decay: 0.045
     minimum-alert-violations: 2
   speed-c:
+    min-difference: 0.001
     buffer: 3
     buffer-multiplier: 0.25
     decay: 0.045
@@ -645,6 +661,7 @@ checks:
     alert-interval: 2
     minimum-alert-violations: 2
   speed-d:
+    min-difference: 0.0025
     buffer: 3
     buffer-multiplier: 0.25
     decay: 0.045
@@ -691,6 +708,7 @@ checks:
     max-violations: 15
     alert-interval: 2
   flight-a:
+    ignore-unconfirmed-ground: true
     buffer: 3
     buffer-multiplier: 0.65
     decay: 0.275
@@ -704,6 +722,7 @@ checks:
     alert-interval: 2
     webhook-interval: 5
   flight-c:
+    ignore-unconfirmed-ground: true
     buffer: 4
     buffer-multiplier: 0.75
     decay: 0.225
@@ -711,6 +730,7 @@ checks:
     alert-interval: 2
     webhook-interval: 5
   flight-d:
+    ignore-unconfirmed-ground: true
     buffer: 4
     buffer-multiplier: 0.35
     decay: 0.275
@@ -718,6 +738,7 @@ checks:
     alert-interval: 2
     webhook-interval: 5
   flight-e:
+    ignore-unconfirmed-ground: true
     buffer: 3
     buffer-multiplier: 0.4
     decay: 0.5
@@ -847,6 +868,7 @@ checks:
     cancel: true
     max-violations: 3
   airplace-a:
+    cancel: false
     max-violations: 10
   badpackets-a:
     buffer: 2
