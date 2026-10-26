@@ -1,0 +1,216 @@
+[CENTER][SIZE=6][B]LinoAC Documentation[/B][/SIZE]
+[COLOR=#808080]Version 0.5.0 • By Lino • Spigot & Paper 1.21.11–26.3[/COLOR][/CENTER]
+
+[SIZE=5][B]1. Installation[/B][/SIZE]
+Install [URL=https://github.com/retrooper/packetevents/releases/tag/v2.14.0]PacketEvents 2.14.0[/URL] separately. Use Java 21 for Spigot/Paper 1.21.11 and Java 25 for 26.x, according to the distribution. The same LinoAC JAR uses Java 21 bytecode. Folia is unsupported.
+
+Put LinoAC-0.5.0.jar and PacketEvents in plugins, restart, review plugins/LinoAC/config.yml and run /lac status. Restart when replacing plugin JARs. The [URL=https://github.com/lino9999/LinoAC/blob/main/docs/VALIDATION.md]validation report[/URL] distinguishes tested startup, protocol-client and synthetic evaluator coverage.
+
+[SIZE=5][B]2. Commands and permissions[/B][/SIZE]
+Main command: [B]/linoac[/B]. Aliases: [B]/lac[/B], [B]/linoanticheat[/B]. Staff permissions and linoac.admin default to operators. The admin permission grants staff access; [B]linoac.bypass[/B] is separate and defaults to false, including for operators.
+
+[SPOILER=Every command and required permission]
+[B]linoac.status[/B]
+[LIST]
+[*]/lac help — show permitted commands.
+[*]/lac status — version, TPS estimate, check count and enforcement mode.
+[*]/lac checks — list IDs and enabled states.
+[*]/lac describe <check> — show a check description.
+[*]/lac menu [page] — open the paginated GUI; changing a setting also requires linoac.manage.
+[/LIST]
+[B]linoac.alerts[/B]
+[LIST][*]/lac alerts — toggle saved clickable alerts. Click commands run as the viewing staff member with normal permission checks.[/LIST]
+[B]linoac.verbose[/B]
+[LIST][*]/lac verbose — toggle diagnostic samples for this session.[/LIST]
+[B]linoac.profile[/B]
+[LIST]
+[*]/lac profile <player> — client, ping, arm-swing average, frozen state and violations.
+[*]/lac violations <player> — current per-check violation levels.
+[*]/lac cps <player> — CPS from twenty eligible swing intervals.
+[*]/lac connection <player> — protocol, ping, pending acknowledgements and movement interval.
+[*]/lac top [total|combat|movement|player] — ten online players ranked by category.
+[/LIST]
+[B]linoac.manage[/B]
+[LIST]
+[*]/lac enable <check> or /lac disable <check> — save the state and reload. Unavailable slots cannot be enabled.
+[*]/lac reload — validate and replace settings. Successful reloads reset detection history and grant short grace; rejected settings leave the active configuration intact.
+[*]/lac reset <player|all> — clear online violations and buffers.
+[/LIST]
+[B]linoac.freeze[/B]
+[LIST][*]/lac freeze <player> — toggle movement, block-action and inventory-click restrictions. freeze.logout-commands configures frozen-disconnect actions.[/LIST]
+[B]linoac.teleport[/B]
+[LIST][*]/lac teleport <player> — teleport yourself to an online player.[/LIST]
+[B]linoac.punish[/B]
+[LIST][*]/lac ban <player> — run punishments.manual-commands; the default bans the target. Explicit staff actions are independent of automatic enforcement.[/LIST]
+[B]linoac.wave[/B]
+[LIST]
+[*]/lac wave add <player> — add an online player and save.
+[*]/lac wave remove <player> — remove a queued name, including offline players.
+[*]/lac wave list — list queued names.
+[*]/lac wave execute — begin processing the persistent queue.
+[/LIST]
+[B]linoac.logs[/B]
+[LIST]
+[*]/lac logs <player> [page] — retained violation records.
+[*]/lac punishlogs <player> [page] — retained punishment records.
+[/LIST]
+[B]linoac.test[/B]
+[LIST]
+[*]/lac knockback <player> — apply a small test velocity.
+[*]/lac rotate <player> — randomize yaw and pitch.
+[*]/lac shuffle <player> — randomize nine hotbar slots.
+[*]/lac testalert [player] — test local alerts and both configured webhook channels without enforcement. Console must specify a player.
+[/LIST]
+[/SPOILER]
+
+[CODE]
+/lacalerts      alias /lalerts       = /lac alerts
+/lacwave        alias /lwave         = /lac wave
+/laclogs        alias /llogs         = /lac logs
+/lacpunishments alias /lpunishlogs   = /lac punishlogs
+[/CODE]
+Player arguments require an online player except log lookup and wave removal. Sender-location, preference and GUI commands require a player sender. Never grant staff permissions to ordinary players.
+
+[SIZE=5][B]3. Catalogue and applicability[/B][/SIZE]
+Version 0.5.0 has [B]203 catalogue entries, 179 registered original classes and 175 reconstructed executable rule paths[/B]. Four original registered callbacks are no-ops; 24 configured slots have no registered detector. These 28 entries remain visible and disabled. The previous 195 count omitted eight numeric BadPackets variants.
+
+Combat covers aim/click statistics, reach, hitboxes, attack sequences, criticals, bow speed and acknowledged velocity response. Movement covers speed, flight, jump, step, climbing, strafe, liquids, ground claims, elytra and vehicles. Player/world modules cover packet order, timing, abilities, hotbar, accepted placement/mining, scaffold patterns, automation and combined violations.
+
+Each rule needs its measurements and exemptions. NoSlow A requires both a pre-1.9 server and client and is inactive throughout the supported range. Nine additional paths require legacy clients. BadPackets 7 uses pre-1.21.2 swing order; BadPackets 9 uses the modern client-tick-end marker. The count of 175 describes implemented paths, not simultaneous applicability to every client.
+
+Use /lac describe <canonical-id> and the [URL=https://github.com/lino9999/LinoAC/blob/main/docs/CHECKS.md]complete per-entry catalogue[/URL]. Recovered bugs were corrected deliberately. Opaque exemptions, field accuracy and exact original equivalence remain unverified.
+
+[SIZE=5][B]4. Shared policies and enforcement[/B][/SIZE]
+The [URL=https://github.com/lino9999/LinoAC/blob/main/src/main/resources/config.yml]default config[/URL] is authoritative. checks.defaults supplies shared fields; checks.<canonical-id> overrides only defined fields. Version 1 settings migrate to canonical variants with config-v1-backup.yml retained.
+
+[CODE]
+checks:
+  defaults:
+    enabled: true
+    buffer: 1
+    buffer-multiplier: 0.5
+    decay: 0.1
+    max-violations: 20
+    setback: false
+    punishable: false
+    commands:
+      - 'kick %player% LinoAC: Unfair advantage (%check%)'
+  speed-a:
+    buffer: 3
+    decay: 0.25
+    setback: false
+    punishable: false
+[/CODE]
+Suspicious samples raise the buffer; evaluated clean samples reduce it by decay. Reaching the threshold records a violation subject to eligibility and cancellation, then retains buffer multiplied by buffer-multiplier. Each check flags at most once per server tick. Alert minimums, intervals and cooldowns are separate.
+
+[LIST]
+[*]Automatic commands require settings.automatic-punishments: true and the check's punishable: true at max-violations. Per-check cooldown limits repeated dispatch.
+[*]settings.punishment-delay-ticks delays qualifying automatic actions. Reset, reload or logout revokes pending actions; conditions are checked again before dispatch.
+[*]setback and minimum-setback-violations control returns to an approved safe location. Setbacks default off.
+[*]maximum-ping, minimum-tps, minimum-alert-violations, alert-interval and webhook-interval refine shared gates.
+[*]Optional rotate/shuffle thresholds, broadcasts, severity and hit suppression are independently configurable.
+[*]Manual commands and waves remain explicit staff actions.
+[/LIST]
+
+Alert/action templates include %player%, %uuid%, %check%, %check-family%, %description%, %vl%, %max-vl%, %ping%, %tps%, %version%, %client-brand%, %world%, %x%, %y%, %z%, %info% and %severity%. Punishment commands support %player%, %uuid% and %check%. Commands dispatch as console; messages accept ampersand colors.
+
+[SIZE=5][B]5. Exemptions, connection and ghost repair[/B][/SIZE]
+[LIST]
+[*]Global minimum TPS, maximum ping, join grace, excluded worlds and linoac.bypass gate detection. Floodgate-recognized Bedrock players can be exempted.
+[*]Teleports grant global grace. Actual velocity, damage and riptide grant movement grace. Merely right-clicking a movement item grants no exemption.
+[*]Movement uses attributes and loaded collision geometry. Dedicated gliding, vehicle, liquid and climbing paths apply where appropriate; ordinary physics is exempt in unknown or special conditions.
+[*]Velocity bounds require an actual outgoing impulse and a known acknowledgement sent after it. Candidate intervals account for input and response timing uncertainty. Missing observations are not fabricated.
+[*]Reach uses current/recent server boxes and latency allowance, not a replicated per-client world.
+[*]connection controls the outgoing ping ledger, pending count, timeout and flood handling. Connection limits can disconnect a stalled/flooded connection independently of cheat-punishment settings.
+[*]ghost-blocks.enabled defaults false. Repeated-ground-mismatch resynchronization and its separate setback option can be enabled after evaluation.
+[*]settings.violation-reset-enabled and violation-reset-seconds control periodic online resets; default interval: 480 seconds.
+[/LIST]
+Invalid movement sanitation remains active for exempt players. Custom mechanics and translated clients require independent evaluation. Cinematic camera state is not directly observable; mouse steps are estimates.
+
+[SIZE=5][B]6. Waves and statistics[/B][/SIZE]
+[CODE]
+wave:
+  automatic: false
+  interval-seconds: 3600
+  queue-automatic-punishments: false
+  entry-delay-ticks: 20
+  started-broadcast: []
+  ended-broadcast: []
+  entry-broadcast: []
+  commands:
+    - 'ban %player% Unfair advantage'
+[/CODE]
+Queue entries persist in state.yml. wave.automatic schedules execution; wave.queue-automatic-punishments routes qualifying automatic actions into the queue. entry-delay-ticks controls spacing.
+
+Entries are removed and saved before dispatch. A crash between save and dispatch can skip an entry. Failed/cancelled dispatches require review and requeueing; cancelling a wave-entry event preserves that entry. This is a moderation queue, not a transactional ban database.
+
+statistics.yml stores accepted punishment-command dispatch counts. Optional broadcasts use settings.statistics-interval-seconds and messages.statistics-broadcast. Counts do not independently confirm that another plugin completed a ban.
+
+[SIZE=5][B]7. Alerts, logs and storage[/B][/SIZE]
+alerts configures format, hover, click-command, custom commands, severity, console presentation and optional maximum-VL suppression. Click commands run as the viewing staff member. Alert preferences persist; verbose is session-only.
+
+Daily violation/punishment logs live in plugins/LinoAC/logs with independent switches/formats. Disk work has a bounded 4,096-job queue. Default daily cap: 32 MiB; retention: fourteen days. In-game pages show eight records within the configured recent limit. Queue/size limits may drop entries with warnings.
+
+state.yml stores alert preferences and waves. statistics.yml stores punishment statistics. Violations, freeze and verbose state are session-only. Back up the plugin directory with the server stopped.
+
+[SIZE=5][B]8. Brands and webhooks[/B][/SIZE]
+brands.resolve controls resolution; brands.alerts and brands.console control notices. Ignored, blocked and whitelist entries use configured substring matching; blocked entries take precedence. Client-reported brands can be spoofed.
+
+Enable webhook and set HTTPS alert-url/punishment-url endpoints, with webhook.url as a fallback. Alerts and punishments have independent switches/rate limits. Delivery uses a bounded 32-job queue, three-second timeouts and mention suppression. /lac testalert [player] tests both channels. Delivery is best effort; disabled integrations send no requests.
+
+[SIZE=5][B]9. PlaceholderAPI[/B][/SIZE]
+Install PlaceholderAPI to expose:
+[CODE]
+%linoac_violations%
+%linoac_violations_combat%
+%linoac_violations_movement%
+%linoac_violations_player%
+%linoac_cps%
+%linoac_ping%
+%linoac_brand%
+%linoac_client%
+%linoac_uuid%
+%linoac_frozen%
+%linoac_alerts%
+%linoac_transaction_ping%
+%linoac_pending_transactions%
+%linoac_transaction_age_ms%
+%linoac_movement_speed%
+%linoac_mouse_step_yaw%
+%linoac_mouse_step_pitch%
+%linoac_tps%
+%linoac_version%
+%linoac_total_punishments%
+%linoac_total_violations%
+%linoac_combat_violations%
+%linoac_movement_violations%
+%linoac_player_violations%
+%linoac_client_brand%
+[/CODE]
+Online player values are immutable snapshots; unobserved measurements say unknown. CPS is an arm-swing average, not physical mouse clicks.
+
+[SIZE=5][B]10. Developer API[/B][/SIZE]
+LinoAPI is registered with Bukkit ServicesManager. It exposes immutable profiles, policies and check state, alert/freeze/reset controls, safe setbacks, explicit flags, waves and statistics. Synchronous lifecycle events support observation/cancellation where specified. Bukkit-facing calls require the main thread. See [URL=https://github.com/lino9999/LinoAC/blob/main/docs/API.md]API contracts and events[/URL] for exact cancellation effects. The namespace intentionally replaces the original API.
+
+[SIZE=5][B]11. Troubleshooting[/B][/SIZE]
+[LIST]
+[*]Startup fails: verify Java, PacketEvents 2.14.0 and startup errors.
+[*]No alerts: check permission, preference, applicability, enabled state, exemptions, buffer and intervals.
+[*]A check cannot enable: missing/no-op slots remain disabled; inspect the catalogue.
+[*]No automatic action: check both opt-ins, threshold, delay, cancellation and wave routing.
+[*]Connection kick: inspect acknowledgements, latency, pending limits and flood settings.
+[*]Reload rejected: fix reported YAML/range errors; existing settings remain active.
+[*]Unexpected detection: retain exact ID, server/client versions, ping, environment and audit details; disable the affected rule while investigating.
+[*]Compatibility: consult the validation matrix. Other forks, translators, custom physics and multiplayer accuracy need their own evidence.
+[/LIST]
+
+[CENTER][URL=https://github.com/lino9999/LinoAC]Source[/URL] • [URL=https://github.com/lino9999/LinoAC/releases]Releases[/URL] • [URL=https://github.com/lino9999/LinoAC/issues]Issues[/URL][/CENTER]
+
+[B]0.4.0 reconstruction update:[/B] Recovered click windows/exclusions, camera and sensitivity state, scoped join/teleport exclusions, ordered entity acknowledgements, scaffold geometry and proxy message formats. The complete source-equivalence objective remains open; see [URL=https://github.com/lino9999/LinoAC/blob/main/docs/FIDELITY.md]the fidelity ledger[/URL]. Fresh and historical test results are separated in the validation report.
+
+[SIZE=5][B]Proxy transport[/B][/SIZE]
+LinoAC receivers use channel linoac:proxy and delimiter #LINOAC#; receivers must explicitly support this framing. Set proxy.enabled for alerts and automatic routes. Punishment commands prefixed Bungee: use the online subject as carrier. Manual routes send a plain command and remain explicit when the general switch is off; automatic routes append check metadata. Waves execute configured commands locally as console. A receiver subscription is required; successful dispatch does not prove proxy execution.
+
+[B]Further 0.4.0 behavior:[/B] FastPlace uses first-placement batches with late trigger inclusion; GhostHand uses neighboring bed materials and can cancel accepted enclosed-bed breaks (checks.ghosthand-a.cancel). Set that option false for monitoring. Timer windows and millisecond balance preserve recovered packet authority. Vehicle/web/crowding ages advance only on position packets. Separate cumulative history survives successful automatic VL reset. Missing textual settings inherit shipped defaults during upgrades. The complete-fidelity ledger remains authoritative for unfinished scopes.
+
+[B]0.5.0 behavior:[/B] Combat uses raw sequence clocks, bounded relative-target history and acknowledged velocity prediction. Packet checks retain frame latches and source-specific material/event ages. FastBreak uses SURVIVAL interaction timing and actual break-event authority. Hit suppression defaults to zero damage; settings.cancel-hits-cancel-event selects cancellation. Automatic command dispatch starts a configurable player-wide cooldown; accepted reload, reset, logout and disable cancel pending automatic actions. LinoAlertEvent can cancel local staff chat independently of other violation actions. The full reconstruction remains in progress; the fidelity ledger lists unresolved behavior.

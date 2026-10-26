@@ -1,0 +1,14 @@
+Plugin Originale/
+.work/
+.analysis/
+target/
+dist/
+.git/
+.idea/
+.vscode/
+*.log
+docs/validation-results.json
+docs/fidelity-validation.json
+docs/fidelity-validation-0.3.0.json
+docs/fidelity-validation-0.4.0.json
+docs/fidelity-validation-0.5.0.json

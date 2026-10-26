@@ -1,0 +1,1036 @@
+config-version: 2
+settings:
+  minimum-tps: 1.0
+  maximum-ping: 100000
+  join-grace-ticks: 100
+  join-check-wait-time: 2500
+  min-ticks-existed: 3
+  violation-reset-enabled: true
+  violation-reset-seconds: 480
+  alert-cooldown-ms: 1000
+  log-retention-days: 14
+  recent-log-limit: 200
+  console-alerts: true
+  alerts-on-join: true
+  automatic-punishments: false
+  excluded-worlds: []
+  ignore-bedrock: true
+  cinematic: false
+  entity-collision: true
+  velocity-world-border: false
+  flight-cooldown: 40
+  cancel-hits: false
+  cancel-hits-ms: 3000
+  cancel-hits-cancel-event: false
+  cancel-hits-checks: []
+  punishment-delay-ticks: 0
+  automatic-punishment-cooldown-ms: 10000
+  statistics-interval-seconds: 900
+  statistics-broadcast: false
+  server-name: 'Minecraft Server'
+limits:
+  reach-margin: 0.45
+  maximum-cps: 25
+  maximum-placements: 15
+  maximum-packets: 500
+  bridge-placements: 6
+  minimum-break-difference: -125
+  elytra-speed: 4.25
+  improbable-combat: 25
+  improbable-movement: 30
+  improbable-player: 30
+  improbable-autoclicker: 30
+  improbable-total: 50
+  improbable-scaffold: 25
+integrations:
+  mcmmo: true
+  entity-cram:
+    enabled: false
+    maximum-entities: 10
+    grace-ticks: 30
+connection:
+  enabled: true
+  maximum-pending: 128
+  timeout-seconds: 30
+  maximum-ping: 20000
+  flood-kick: true
+  kick-message: 'Connection verification timed out. Please reconnect.'
+ghost-blocks:
+  enabled: false
+  minimum-ticks: 20
+  setback: false
+logs:
+  maximum-file-mib: 32
+  violations:
+    enabled: true
+    format: '%player% failed %check% VL=%vl% ping=%ping% %info%'
+  punishments:
+    enabled: true
+    format: 'reason=%check% command=%command% dispatched=%dispatched%'
+brands:
+  resolve: true
+  alerts: true
+  console: false
+  message: '&f%player% &7joined using &f%brand%&7.'
+  ignored: [vanilla]
+  blocked: []
+  whitelist-enabled: false
+  whitelist: []
+punishments:
+  manual-commands:
+    - 'ban %player% Unfair advantage'
+freeze:
+  logout-commands: []
+wave:
+  automatic: false
+  interval-seconds: 3600
+  queue-automatic-punishments: false
+  skip-queued-automatic-punishments: false
+  entry-delay-ticks: 20
+  started-broadcast: []
+  ended-broadcast: []
+  entry-broadcast: []
+  commands:
+    - 'ban %player% Unfair advantage'
+proxy:
+  enabled: true
+  channel: 'linoac:proxy'
+  alert-separator: '#LINOAC#'
+webhook:
+  enabled: false
+  url: ''
+  alert-url: ''
+  punishment-url: ''
+  alerts: true
+  punishments: true
+  embed: true
+  include-context: true
+  username: LinoAC
+  avatar-url: ''
+  footer: 'LinoAC by Lino'
+  alert-title: 'LinoAC Alert'
+  alert-color: '#35B879'
+  punishment-title: 'LinoAC Punishment'
+  punishment-color: '#DB4B4B'
+alerts:
+  experimental-symbol: '*'
+  maximum-violations: 0
+  console-format: '%player% failed %check% VL=%vl% ping=%ping% %info%'
+  format: '&f%player% &7failed &a%check% &8[&fVL %vl%&8]'
+  hover:
+    - 'Ping: %ping%ms | TPS: %tps% | Client: %version%'
+    - '%description%'
+    - '%info%'
+    - 'Click to teleport.'
+  click-command: '/linoac teleport %player%'
+  custom-commands: []
+  severity:
+    enabled: true
+messages:
+  prefix: '&2&lLinoAC &8»'
+  alert: '&f%player% &7failed &a%check% &8[&fVL %vl%&8]'
+  no-permission: '&cYou do not have permission to use this command.'
+  unknown-command: '&cUnknown command. Use /linoac help.'
+  blocked-brand: '&cThis client brand is not allowed on this server.'
+  violation-reset: ''
+  punishment-broadcast: '&c%player% was punished for %check%.'
+  statistics-broadcast: '&7LinoAC recorded %amount% punishments in the past seven days.'
+checks:
+  defaults:
+    enabled: true
+    buffer: 1
+    buffer-multiplier: 0.5
+    decay: 0.1
+    max-violations: 20
+    setback: false
+    minimum-setback-violations: 1
+    punishable: false
+    alert-interval: 1
+    minimum-alert-violations: 1
+    maximum-ping: 100000
+    minimum-tps: 19
+    webhook-interval: 1
+    broadcast-punishment: false
+    shuffle-minimum: 0
+    shuffle-interval: 1
+    rotate-minimum: 0
+    rotate-interval: 1
+    commands:
+      - 'kick %player% LinoAC: Unfair advantage (%check%)'
+  aim-a:
+    buffer: 3
+    buffer-multiplier: 0.75
+    decay: 0.5
+    max-violations: 1
+    minimum-tps: 1
+  aim-b:
+    buffer: 6
+    decay: 0.65
+    max-violations: 8
+    minimum-tps: 1
+  aim-c:
+    buffer: 5
+    decay: 0.75
+    max-violations: 5
+    minimum-tps: 1
+  aim-d:
+    buffer: 8
+    decay: 0.75
+    max-violations: 10
+    minimum-tps: 1
+  aim-e:
+    buffer: 4
+    buffer-multiplier: 0.75
+    decay: 0.25
+    max-violations: 3
+    minimum-tps: 1
+  aim-f:
+    buffer: 12
+    decay: 0.45
+    max-violations: 10
+    minimum-tps: 1
+  aim-g:
+    buffer: 4
+    decay: 0.75
+    max-violations: 5
+    minimum-tps: 1
+  aim-h:
+    buffer: 7
+    decay: 0.75
+    max-violations: 10
+    minimum-tps: 1
+  aim-i:
+    buffer: 7
+    decay: 0.75
+    max-violations: 10
+    minimum-tps: 1
+  aim-k:
+    buffer: 6
+    decay: 0.25
+    max-violations: 15
+    minimum-tps: 1
+  aim-l:
+    buffer: 10
+    buffer-multiplier: 0.45
+    max-violations: 5
+    minimum-tps: 1
+  aim-m:
+    enabled: false
+    buffer: 2
+    buffer-multiplier: 0.4
+    decay: 0.25
+    max-violations: 3
+    minimum-tps: 1
+  aim-n:
+    buffer: 5
+    decay: 0.5
+    max-violations: 10
+    minimum-tps: 1
+  aim-o:
+    buffer: 5
+    decay: 0.25
+    max-violations: 10
+    minimum-tps: 1
+  aim-p:
+    buffer: 2
+    buffer-multiplier: 0.4
+    decay: 0.25
+    max-violations: 5
+    minimum-tps: 1
+  aim-q:
+    buffer: 6
+    decay: 0.25
+    max-violations: 5
+    minimum-tps: 1
+  aim-r:
+    enabled: false
+    buffer: 20
+    buffer-multiplier: 0.3
+    decay: 0.5
+    max-violations: 5
+    minimum-tps: 1
+  aim-s:
+    buffer: 20
+    buffer-multiplier: 0.25
+    decay: 0.5
+    max-violations: 5
+    minimum-tps: 1
+  aim-u:
+    max-violations: 1
+    minimum-tps: 1
+  aim-w:
+    buffer: 20
+    buffer-multiplier: 0.25
+    decay: 0.125
+    max-violations: 5
+    minimum-tps: 1
+  aim-x:
+    buffer: 12
+    buffer-multiplier: 0.25
+    decay: 0.125
+    max-violations: 5
+    minimum-tps: 1
+  aim-y:
+    max-violations: 5
+    minimum-tps: 1
+  autoblock-a:
+    max-violations: 3
+  autoblock-b:
+    max-violations: 3
+  autoblock-c:
+    buffer: 2
+    decay: 0.5
+    max-violations: 3
+  autoblock-d:
+    max-violations: 3
+  autoclicker-a:
+    max-cps: 25
+    max-violations: 5
+  autoclicker-b:
+    buffer: 3
+    decay: 0.5
+    max-violations: 25
+  autoclicker-c:
+    buffer: 3
+    decay: 1
+    max-violations: 25
+  autoclicker-d:
+    buffer: 3
+    decay: 0.5
+    max-violations: 25
+  autoclicker-e:
+    buffer: 3
+    decay: 0.75
+    max-violations: 25
+  autoclicker-f:
+    buffer: 4
+    decay: 1.25
+    max-violations: 25
+  autoclicker-g:
+    buffer: 5
+    buffer-multiplier: 0.25
+    decay: 1.25
+    max-violations: 25
+  autoclicker-h:
+    buffer: 4
+    decay: 1
+    max-violations: 25
+  autoclicker-i:
+    buffer: 5
+    decay: 1.25
+    max-violations: 25
+  autoclicker-j:
+    buffer: 4
+    decay: 1.25
+    max-violations: 25
+  autoclicker-k:
+    buffer: 4
+    decay: 0.75
+    max-violations: 25
+  autoclicker-l:
+    buffer: 4
+    buffer-multiplier: 0.25
+    decay: 1
+    max-violations: 25
+  autoclicker-m:
+    buffer: 4
+    buffer-multiplier: 0.25
+    decay: 0.75
+    max-violations: 25
+  autoclicker-n:
+    buffer: 25
+    buffer-multiplier: 0.15
+    decay: 0.75
+    max-violations: 25
+  autoclicker-o:
+    buffer: 5
+    buffer-multiplier: 0.25
+    decay: 1.25
+    max-violations: 25
+  autoclicker-p:
+    buffer: 2
+    buffer-multiplier: 0.25
+    max-violations: 25
+  autoclicker-q:
+    buffer: 35
+    buffer-multiplier: 0.3
+    decay: 2
+    max-violations: 25
+  autoclicker-r:
+    buffer: 50
+    buffer-multiplier: 0.15
+    decay: 10
+    max-violations: 25
+  autoclicker-s:
+    buffer: 30
+    buffer-multiplier: 0.15
+    decay: 0.825
+    max-violations: 25
+  autoclicker-t:
+    min-kurtosis: 13
+    buffer: 25
+    buffer-multiplier: 0.15
+    decay: 0.75
+    max-violations: 25
+  reach-a:
+    max-reach: 3.03
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.035
+    max-violations: 8
+  reach-b:
+    buffer: 6
+    buffer-multiplier: 0.25
+    decay: 0.225
+    max-violations: 15
+  fastbow-a:
+    buffer: 3
+    decay: 0.125
+    max-violations: 5
+  criticals-a:
+    decay: 0.05
+    max-violations: 10
+  criticals-b:
+    decay: 0.05
+    max-violations: 10
+  killaura-a:
+    buffer: 3
+    decay: 0.5
+    max-violations: 3
+  killaura-b:
+    buffer: 5
+    buffer-multiplier: 0.6
+    decay: 0.5
+    max-violations: 3
+  killaura-c:
+    buffer: 2
+    decay: 0.25
+    max-violations: 2
+  killaura-d:
+    max-violations: 1
+  killaura-f:
+    enabled: false
+    buffer: 10
+    buffer-multiplier: 0.25
+    decay: 2
+    max-violations: 3
+  killaura-h:
+    enabled: false
+    max-violations: 1
+  killaura-j:
+    decay: 0.5
+    max-violations: 5
+  killaura-k:
+    buffer: 3
+    decay: 0.75
+    max-violations: 5
+  killaura-l:
+    buffer: 5
+    buffer-multiplier: 0.6
+    decay: 0.5
+    max-violations: 5
+  hitbox-a:
+    max-angle: 0.36
+    buffer: 4
+    buffer-multiplier: 0.25
+    decay: 0.125
+    max-violations: 10
+  hitbox-b:
+    buffer: 6
+    buffer-multiplier: 0.25
+    decay: 0.125
+    max-violations: 15
+  velocity-a:
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.075
+    max-violations: 15
+  velocity-b:
+    buffer: 4
+    buffer-multiplier: 0.35
+    decay: 0.125
+    max-violations: 15
+  velocity-c:
+    enabled: false
+    buffer: 5
+    buffer-multiplier: 0.25
+    decay: 0.175
+    max-violations: 15
+  velocity-d:
+    buffer: 4
+    buffer-multiplier: 0.25
+    decay: 0.05
+    max-violations: 15
+  noslow-a:
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.15
+    max-violations: 5
+  noslow-b:
+    buffer: 7
+    buffer-multiplier: 0.25
+    decay: 0.075
+    max-violations: 15
+  noslow-c:
+    buffer: 7
+    buffer-multiplier: 0.25
+    decay: 0.15
+    max-violations: 15
+  noslow-d:
+    enabled: false
+    buffer: 7
+    buffer-multiplier: 0.25
+    decay: 0.15
+    max-violations: 15
+  noslow-e:
+    enabled: false
+    buffer: 7
+    buffer-multiplier: 0.25
+    decay: 0.15
+    max-violations: 15
+  motion-a:
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.25
+    max-violations: 15
+  motion-b:
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.25
+    max-violations: 15
+  motion-c:
+    decay: 0.05
+    max-violations: 5
+  motion-d:
+    enabled: false
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.05
+    max-violations: 15
+  motion-e:
+    decay: 0.05
+    max-violations: 3
+  motion-g:
+    enabled: false
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.15
+  motion-h:
+    enabled: false
+    buffer: 4
+    buffer-multiplier: 0.25
+    decay: 0.15
+  jump-a:
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.15
+    max-violations: 25
+  jump-b:
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.15
+    max-violations: 25
+  jump-c:
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.15
+    max-violations: 10
+  step-a:
+    max-violations: 5
+  step-b:
+    enabled: false
+    buffer: 6
+    buffer-multiplier: 0.25
+    decay: 0.35
+    max-violations: 15
+  step-c:
+    buffer: 4
+    buffer-multiplier: 0.25
+    max-violations: 15
+  boatfly-a:
+    buffer: 4
+    buffer-multiplier: 0.33
+    decay: 0.125
+    max-violations: 15
+  boatfly-b:
+    buffer: 5
+    buffer-multiplier: 0.25
+    decay: 0.25
+    max-violations: 15
+  boatfly-c:
+    buffer: 5
+    buffer-multiplier: 0.25
+    decay: 0.125
+    max-violations: 15
+  entityflight-a:
+    buffer: 5
+    decay: 0.25
+    max-violations: 15
+  entityflight-b:
+    buffer: 5
+    decay: 0.25
+    max-violations: 15
+  antilevitation-a:
+    buffer: 8
+    buffer-multiplier: 0.25
+    decay: 0.075
+    max-violations: 15
+  nosaddle-a:
+    buffer: 6
+    decay: 0.125
+    max-violations: 15
+  entityspeed-a:
+    buffer: 5
+    decay: 0.25
+    max-violations: 15
+  elytra-a:
+    decay: 0.25
+    max-violations: 15
+  elytra-b:
+    buffer: 8
+    buffer-multiplier: 0.25
+    decay: 0.125
+    max-violations: 15
+  elytra-c:
+    buffer: 6
+    decay: 0.125
+    max-violations: 15
+  elytra-f:
+    buffer: 6
+    buffer-multiplier: 0.25
+    decay: 0.125
+    max-violations: 10
+  elytra-g:
+    buffer: 3
+    buffer-multiplier: 0.25
+    max-violations: 25
+  elytra-i:
+    buffer: 4
+    buffer-multiplier: 0.25
+    max-violations: 15
+  elytra-k:
+    buffer: 4
+    buffer-multiplier: 0.25
+    max-violations: 15
+  elytra-l:
+    buffer: 4
+    buffer-multiplier: 0.25
+    max-violations: 15
+  elytra-m:
+    buffer: 4
+    buffer-multiplier: 0.25
+    max-violations: 15
+  elytra-n:
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.045
+    minimum-alert-violations: 2
+  speed-a:
+    buffer: 5
+    buffer-multiplier: 0.35
+    decay: 0.125
+    max-violations: 12
+    minimum-alert-violations: 2
+  speed-b:
+    min-difference: 0.0025
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.045
+    minimum-alert-violations: 2
+  speed-c:
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.045
+    max-violations: 15
+    alert-interval: 2
+    minimum-alert-violations: 2
+  speed-d:
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.045
+    minimum-alert-violations: 2
+  speed-e:
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.025
+    minimum-alert-violations: 2
+  fastclimb-a:
+    buffer: 4
+    decay: 0.125
+    max-violations: 15
+  wallclimb-a:
+    buffer: 4
+    buffer-multiplier: 0.35
+    decay: 0.225
+    max-violations: 15
+  jesus-a:
+    buffer: 3
+    decay: 0.025
+    max-violations: 15
+    alert-interval: 2
+  jesus-b:
+    buffer: 4
+    decay: 0.175
+    max-violations: 15
+    alert-interval: 2
+  jesus-c:
+    buffer: 10
+    buffer-multiplier: 0.45
+    decay: 0.75
+    max-violations: 15
+    alert-interval: 2
+  jesus-d:
+    buffer: 4
+    buffer-multiplier: 0.45
+    decay: 0.175
+    max-violations: 15
+  jesus-e:
+    buffer: 10
+    buffer-multiplier: 0.25
+    decay: 0.175
+    max-violations: 15
+    alert-interval: 2
+  flight-a:
+    buffer: 3
+    buffer-multiplier: 0.65
+    decay: 0.275
+    max-violations: 30
+    alert-interval: 2
+    webhook-interval: 5
+  flight-b:
+    buffer: 3
+    decay: 0.275
+    max-violations: 30
+    alert-interval: 2
+    webhook-interval: 5
+  flight-c:
+    buffer: 4
+    buffer-multiplier: 0.75
+    decay: 0.225
+    max-violations: 30
+    alert-interval: 2
+    webhook-interval: 5
+  flight-d:
+    buffer: 4
+    buffer-multiplier: 0.35
+    decay: 0.275
+    max-violations: 30
+    alert-interval: 2
+    webhook-interval: 5
+  flight-e:
+    buffer: 3
+    buffer-multiplier: 0.4
+    decay: 0.5
+    max-violations: 30
+    alert-interval: 2
+    webhook-interval: 5
+  flight-f:
+    buffer: 2
+    buffer-multiplier: 0.4
+    decay: 0.04
+    max-violations: 30
+    alert-interval: 2
+    webhook-interval: 5
+  vclip-a: {}
+  sprint-a:
+    buffer: 6
+    buffer-multiplier: 0.25
+    decay: 0.4
+    max-violations: 15
+  strafe-a:
+    buffer: 2
+    decay: 0.05
+    max-violations: 15
+    alert-interval: 2
+  strafe-b:
+    enabled: false
+    buffer: 4
+    buffer-multiplier: 0.15
+    decay: 0.075
+    max-violations: 15
+  fastuse-a:
+    enabled: false
+    max-violations: 5
+  fastplace-a:
+    max-blocks: 15
+    max-violations: 5
+  fastplace-b:
+    enabled: false
+    buffer-multiplier: 0.25
+    decay: 0.5
+    max-violations: 5
+  fastbreak-a:
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.5
+    max-violations: 15
+  tower-a:
+    buffer: 4
+    decay: 0.75
+    max-violations: 5
+  scaffold-a:
+    max-violations: 3
+  scaffold-b:
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.25
+    max-violations: 10
+  scaffold-c:
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.5
+    max-violations: 5
+  scaffold-d:
+    buffer: 4
+    buffer-multiplier: 0.25
+    decay: 0.5
+    max-violations: 10
+  scaffold-e:
+    buffer: 4
+    buffer-multiplier: 0.25
+    decay: 0.5
+    max-violations: 10
+  scaffold-f:
+    buffer: 3
+    max-violations: 3
+  scaffold-g:
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.25
+    max-violations: 15
+  scaffold-h:
+    buffer: 8
+    buffer-multiplier: 0.25
+    decay: 0.35
+    max-violations: 15
+  scaffold-i:
+    max-violations: 10
+  scaffold-j:
+    max-violations: 15
+  scaffold-k:
+    decay: 0.35
+    max-violations: 15
+  scaffold-m:
+    decay: 0.25
+    max-violations: 12
+  scaffold-n:
+    buffer: 3
+    decay: 0.25
+    max-violations: 12
+  scaffold-o:
+    enabled: false
+    max-violations: 12
+  timer-a:
+    max-speed: 1.05
+    buffer: 35
+    buffer-multiplier: 0.425
+    decay: 1.85
+    max-violations: 15
+    alert-interval: 2
+    minimum-alert-violations: 3
+    minimum-tps: 19.8
+  timer-d:
+    max-balance: 75
+    buffer: 3
+    decay: 0.25
+    max-violations: 35
+    alert-interval: 2
+    minimum-alert-violations: 8
+    minimum-tps: 19.8
+  baritone-a:
+    buffer: 20
+    decay: 0.25
+  baritone-b:
+    buffer: 2
+    decay: 0.05
+  ghosthand-a:
+    cancel: true
+    max-violations: 3
+  airplace-a:
+    max-violations: 10
+  badpackets-a:
+    buffer: 2
+    decay: 0.25
+    max-violations: 3
+  badpackets-b:
+    max-violations: 1
+  badpackets-c:
+    max-violations: 1
+  badpackets-d:
+    enabled: false
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.01
+    max-violations: 5
+  badpackets-e:
+    max-violations: 1
+  badpackets-f:
+    max-violations: 1
+  badpackets-g:
+    max-violations: 3
+  badpackets-h:
+    max-violations: 3
+  badpackets-i:
+    max-violations: 3
+  badpackets-j:
+    max-violations: 3
+  badpackets-k:
+    buffer: 3
+    decay: 0.4
+    max-violations: 5
+  badpackets-m:
+    buffer: 5
+    buffer-multiplier: 0.33
+    decay: 0.25
+    max-violations: 5
+  badpackets-n:
+    buffer: 20
+    buffer-multiplier: 0.25
+    decay: 2.5
+    max-violations: 10
+  badpackets-o:
+    buffer: 3
+    decay: 0.15
+    max-violations: 1
+  badpackets-p:
+    buffer: 3
+    decay: 0.15
+    max-violations: 10
+  badpackets-q:
+    buffer: 3
+    decay: 0.15
+    max-violations: 1
+  badpackets-r:
+    buffer: 6
+    decay: 0.25
+    max-violations: 10
+  badpackets-s:
+    enabled: false
+    max-violations: 5
+  badpackets-t:
+    max-violations: 1
+  badpackets-u:
+    enabled: false
+    max-violations: 1
+  badpackets-v:
+    enabled: false
+    buffer: 8
+    decay: 0.075
+    max-violations: 15
+  badpackets-w:
+    enabled: false
+    buffer: 8
+    decay: 0.75
+    max-violations: 10
+  badpackets-x:
+    buffer: 6
+    decay: 0.35
+    max-violations: 10
+  badpackets-y:
+    max-violations: 1
+  badpackets-z:
+    max-violations: 3
+  badpackets-1:
+    enabled: false
+    buffer: 12
+    buffer-multiplier: 0.25
+    decay: 0.25
+    max-violations: 15
+  badpackets-2:
+    enabled: false
+    buffer: 12
+    buffer-multiplier: 0.25
+    decay: 0.25
+    max-violations: 15
+  badpackets-4:
+    enabled: false
+    buffer: 4
+    buffer-multiplier: 0.25
+    decay: 0.025
+    max-violations: 5
+  badpackets-5:
+    max-violations: 5
+  badpackets-6:
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.05
+    max-violations: 5
+  badpackets-7:
+    max-violations: 10
+  badpackets-8:
+    buffer: 5
+    buffer-multiplier: 0.25
+    decay: 0.05
+    max-violations: 10
+  badpackets-9:
+    max-violations: 10
+  inventory-a:
+    enabled: false
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.25
+    max-violations: 5
+  inventory-b:
+    enabled: false
+    buffer: 2
+    buffer-multiplier: 0.25
+    decay: 0.25
+    max-violations: 5
+  invalid-a:
+    max-violations: 1
+  invalid-b:
+    max-violations: 1
+  invalid-c:
+    buffer: 3
+    buffer-multiplier: 0.25
+    decay: 0.045
+    max-violations: 8
+  invalid-d:
+    enabled: false
+    buffer: 8
+    buffer-multiplier: 0.25
+    decay: 0.5
+    max-violations: 10
+  invalid-e:
+    decay: 0.01
+    max-violations: 8
+  invalid-f:
+    decay: 0.01
+    max-violations: 5
+  invalid-g:
+    enabled: false
+    buffer: 2
+    decay: 0.025
+  invalid-h:
+    enabled: false
+    buffer: 3
+    decay: 0.05
+  invalid-i:
+    buffer: 3
+    decay: 0.05
+  invalid-j:
+    decay: 0.05
+  groundspoof-a:
+    buffer: 4
+    decay: 0.125
+    max-violations: 15
+  groundspoof-b:
+    buffer: 4
+    decay: 0.125
+    max-violations: 5
+  groundspoof-c:
+    buffer: 4
+    decay: 0.125
+    max-violations: 15
+  improbable-a:
+    max-violations: 1
+  improbable-b:
+    max-violations: 1
+  improbable-c:
+    max-violations: 1
+  improbable-d:
+    max-violations: 1
+  improbable-e:
+    max-violations: 1
+  improbable-f:
+    max-violations: 1

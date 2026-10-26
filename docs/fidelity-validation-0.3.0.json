@@ -1,0 +1,837 @@
+{
+  "date": "2026-10-25",
+  "release": "0.3.0",
+  "artifactAudit": {
+    "artifact": "LinoAC-0.3.0.jar",
+    "sha256": "76c01ce3353b9d36a1115434f50b9aa2a1811b954d59ac18f253093842f5f8f5",
+    "bytes": 317530,
+    "classes": 109,
+    "javaClassMajor": 65,
+    "sourceFiles": 74,
+    "catalogueEntries": 203,
+    "registeredOriginalClasses": 179,
+    "implementedPaths": 175,
+    "inertOriginalCallbacks": 4,
+    "missingOriginalSlots": 24,
+    "originalExecuted": false,
+    "sourceContainsComments": false,
+    "suites": [
+      {
+        "name": "click-rules",
+        "assertions": 2038,
+        "passed": 2038
+      },
+      {
+        "name": "click-context",
+        "assertions": 85,
+        "passed": 85
+      },
+      {
+        "name": "exemption-state-aim",
+        "assertions": 395,
+        "passed": 395
+      },
+      {
+        "name": "global-eligibility-aim-modes",
+        "assertions": 425,
+        "passed": 425
+      },
+      {
+        "name": "world-placement",
+        "assertions": 75,
+        "passed": 75
+      },
+      {
+        "name": "proxy-codec-relay",
+        "assertions": 45,
+        "passed": 45
+      },
+      {
+        "name": "telemetry",
+        "assertions": 48,
+        "passed": 48
+      },
+      {
+        "name": "combination",
+        "assertions": 35,
+        "passed": 35
+      },
+      {
+        "name": "calibration-bit-goldens",
+        "assertions": 201,
+        "passed": 201
+      }
+    ],
+    "pureAssertions": 3347,
+    "limits": [
+      "Independent finite traces are not original-versus-reconstruction runtime equivalence",
+      "Original was inspected statically only",
+      "Full reconstruction objective remains open; docs/FIDELITY.md records gaps"
+    ],
+    "finalRecheck": true
+  },
+  "network": {
+    "runtime": {
+      "version": "0.3.0",
+      "java": "21.0.7",
+      "ready": true
+    },
+    "sourceCounts": {
+      "moves": 9,
+      "rotations": 3,
+      "positionPackets": 3
+    },
+    "autoclickerB": {
+      "received": 180,
+      "events": [
+        {
+          "vl": 1,
+          "check": "autoclicker-b",
+          "detail": "dispersion-ms=12.186057606953941",
+          "cancelled": false
+        }
+      ],
+      "profile": {
+        "id": "caa425e0-8cdf-3c5b-a067-8422f55467bc",
+        "name": "FidelityBot",
+        "ping": 0,
+        "brand": "unknown",
+        "clientVersion": "1.21.11",
+        "armSwingsPerSecond": 8,
+        "totalViolations": 1,
+        "categoryViolations": {
+          "combat": 1,
+          "movement": 0,
+          "player": 0
+        },
+        "violations": {
+          "autoclicker-b": 1
+        },
+        "buffers": {
+          "autoclicker-l": 3,
+          "autoclicker-m": 3,
+          "autoclicker-n": 105.5,
+          "autoclicker-q": 127,
+          "autoclicker-r": 151,
+          "autoclicker-s": 124,
+          "autoclicker-t": 156,
+          "autoclicker-d": 0.5,
+          "autoclicker-e": 3,
+          "autoclicker-f": 3,
+          "autoclicker-g": 3,
+          "autoclicker-h": 6,
+          "autoclicker-i": 3,
+          "autoclicker-j": 18,
+          "autoclicker-k": 2
+        },
+        "frozen": false,
+        "alerts": true,
+        "verbose": false
+      },
+      "sharedCps": 64.30868167202573,
+      "eligibleContext": true
+    },
+    "proxyPackets": [
+      {
+        "channel": "vulcan:bungee",
+        "hex": "0005616c657274008a41696d2356554c43414e23412356554c43414e23372356554c43414e23466964656c697479426f742356554c43414e2331322356554c43414e23312e32312e31312356554c43414e2332302e30302356554c43414e2334352356554c43414e23526f746174696f6e2356554c43414e2364656c74613d312356554c43414e232356554c43414e23c2a763",
+        "fields": [
+          "alert",
+          "Aim#VULCAN#A#VULCAN#7#VULCAN#FidelityBot#VULCAN#12#VULCAN#1.21.11#VULCAN#20.00#VULCAN#45#VULCAN#Rotation#VULCAN#delta=1#VULCAN##VULCAN#Â§c"
+        ]
+      },
+      {
+        "channel": "vulcan:bungee",
+        "hex": "000a70756e6973686d656e74005062616e20466964656c697479426f7420726561736f6e2356554c43414e2341696d2356554c43414e23412356554c43414e23372356554c43414e23466964656c697479426f742356554c43414e233132",
+        "fields": [
+          "punishment",
+          "ban FidelityBot reason#VULCAN#Aim#VULCAN#A#VULCAN#7#VULCAN#FidelityBot#VULCAN#12"
+        ]
+      },
+      {
+        "channel": "vulcan:bungee",
+        "hex": "000a70756e6973686d656e7400176b69636b20466964656c697479426f7420726561736f6e",
+        "fields": [
+          "punishment",
+          "kick FidelityBot reason"
+        ]
+      }
+    ],
+    "disabledProxy": {
+      "result": {
+        "alert": false,
+        "manual": true,
+        "automatic": false
+      },
+      "packets": [
+        {
+          "channel": "vulcan:bungee",
+          "hex": "000a70756e6973686d656e7400176b69636b20466964656c697479426f7420726561736f6e",
+          "fields": [
+            "punishment",
+            "kick FidelityBot reason"
+          ]
+        }
+      ]
+    },
+    "assertions": [
+      {
+        "label": "Temporary consumer enabled",
+        "passed": true
+      },
+      {
+        "label": "Server runs Java21",
+        "passed": true
+      },
+      {
+        "label": "Protocol player has no bypass permission",
+        "passed": true
+      },
+      {
+        "label": "Runtime policy uses recovered buffer and multiplier",
+        "passed": true
+      },
+      {
+        "label": "Nine wire movements create exactly nine MOVE observations",
+        "passed": true,
+        "detail": 9
+      },
+      {
+        "label": "Only three look packets create ROTATION observations",
+        "passed": true,
+        "detail": 3
+      },
+      {
+        "label": "Position and flying packets preserve absent rotation source",
+        "passed": true
+      },
+      {
+        "label": "Nonrotation movements do not fabricate angular deltas",
+        "passed": true
+      },
+      {
+        "label": "Nonrotation movements do not advance sensitivity samples",
+        "passed": true
+      },
+      {
+        "label": "Rotation observations preserve wire source markers",
+        "passed": true
+      },
+      {
+        "label": "Position source count remains distinct from look and flying",
+        "passed": true
+      },
+      {
+        "label": "Movement observations include real decode wall clock",
+        "passed": true
+      },
+      {
+        "label": "Movement timing uses positive received packet intervals",
+        "passed": true
+      },
+      {
+        "label": "Strict-above mode does not flag at equality",
+        "passed": true
+      },
+      {
+        "label": "Strict-above mode flags on fourth sample over buffer3",
+        "passed": true
+      },
+      {
+        "label": "Flag retains buffer4 multiplied by0.25",
+        "passed": true
+      },
+      {
+        "label": "Strict-above mode emits one public violation event",
+        "passed": true
+      },
+      {
+        "label": "Direct findings increment independently in same server tick",
+        "passed": true
+      },
+      {
+        "label": "Direct findings do not invent buffer accumulation",
+        "passed": true
+      },
+      {
+        "label": "Cancelled violation event blocks VL mutation",
+        "passed": true
+      },
+      {
+        "label": "Cancelled event retains pre-dispatch accumulated buffer",
+        "passed": true
+      },
+      {
+        "label": "Public reset API succeeds",
+        "passed": true
+      },
+      {
+        "label": "Reset clears runtime VL and buffers",
+        "passed": true
+      },
+      {
+        "label": "Three actual arm packets create three swing observations",
+        "passed": true
+      },
+      {
+        "label": "Actual swings carry known click context",
+        "passed": true
+      },
+      {
+        "label": "Raw swing timing preserves millisecond packet spacing",
+        "passed": true,
+        "detail": [
+          null,
+          29.7461,
+          46.679
+        ]
+      },
+      {
+        "label": "Swing timestamps originate in packet decoder",
+        "passed": true
+      },
+      {
+        "label": "Settled clean context has no invented statistical exemption",
+        "passed": true,
+        "detail": [
+          [
+            "unobstructed",
+            "physics-known",
+            "client-ground",
+            "previous-packet:PLAYER_POSITION",
+            "ground",
+            "packet:ANIMATION",
+            "previous-ground",
+            "client-previous-ground",
+            "support-known",
+            "transaction-tracked",
+            "near-ground",
+            "client-tick-end-supported",
+            "click-context-known",
+            "velocity-physics-known"
+          ],
+          [
+            "unobstructed",
+            "physics-known",
+            "previous-packet:ANIMATION",
+            "client-ground",
+            "ground",
+            "packet:ANIMATION",
+            "previous-ground",
+            "client-previous-ground",
+            "support-known",
+            "transaction-tracked",
+            "near-ground",
+            "client-tick-end-supported",
+            "click-context-known",
+            "velocity-physics-known"
+          ],
+          [
+            "unobstructed",
+            "physics-known",
+            "previous-packet:ANIMATION",
+            "client-ground",
+            "ground",
+            "packet:ANIMATION",
+            "previous-ground",
+            "client-previous-ground",
+            "support-known",
+            "transaction-tracked",
+            "near-ground",
+            "client-tick-end-supported",
+            "click-context-known",
+            "velocity-physics-known"
+          ]
+        ]
+      },
+      {
+        "label": "Actual held firework swing activates recovered movement exemption",
+        "passed": true
+      },
+      {
+        "label": "Network autoclicker-B fixture uses recovered strict buffer and zero multiplier",
+        "passed": true
+      },
+      {
+        "label": "All180 network arm packets reach actual SWING collector",
+        "passed": true
+      },
+      {
+        "label": "Autoclicker-B network batch has eligible source context throughout",
+        "passed": true
+      },
+      {
+        "label": "Actual autoclicker-B evaluator raises live VL after three50sample batches",
+        "passed": true
+      },
+      {
+        "label": "Actual autoclicker-B rule emits public event with statistical finding",
+        "passed": true
+      },
+      {
+        "label": "Shared CPS derives from actual eligible swing timing",
+        "passed": true,
+        "detail": 64.30868167202573
+      },
+      {
+        "label": "Observation CPS and shared player CPS use same recovered clock",
+        "passed": true
+      },
+      {
+        "label": "Public CPS placeholder reads shared eligible swing CPS",
+        "passed": true
+      },
+      {
+        "label": "Real position has known outgoing entity mirror",
+        "passed": true
+      },
+      {
+        "label": "Real server sends multiple acknowledgement probes",
+        "passed": true
+      },
+      {
+        "label": "Unacknowledged outgoing spawn remains gated",
+        "passed": true,
+        "detail": {
+          "base": 0,
+          "before": 0
+        }
+      },
+      {
+        "label": "Out-of-order real PONG does not flush entity updates",
+        "passed": true
+      },
+      {
+        "label": "FIFO acknowledgement makes actual outgoing spawn visible",
+        "passed": true
+      },
+      {
+        "label": "Protocol client received entity spawn packet",
+        "passed": true
+      },
+      {
+        "label": "Actual outgoing destroy removes mirrored entity",
+        "passed": true
+      },
+      {
+        "label": "Protocol client received entity destroy packet",
+        "passed": true
+      },
+      {
+        "label": "Actual outgoing velocity reaches collector",
+        "passed": true
+      },
+      {
+        "label": "Real PONG reaches known acknowledgement observation",
+        "passed": true
+      },
+      {
+        "label": "Server teleport reaches protocol client and is acknowledged",
+        "passed": true
+      },
+      {
+        "label": "Post-ACK position matches actual outgoing server teleport",
+        "passed": true
+      },
+      {
+        "label": "Matched outgoing teleport resets then increments movement age to1",
+        "passed": true
+      },
+      {
+        "label": "Next real unmatched position increments teleport movement age to2",
+        "passed": true
+      },
+      {
+        "label": "Real online carrier sends all proxy modes",
+        "passed": true
+      },
+      {
+        "label": "Protocol client receives exactly three real plugin messages",
+        "passed": true
+      },
+      {
+        "label": "Every real proxy packet contains exactly two UTF fields",
+        "passed": true
+      },
+      {
+        "label": "Actual alert uses recovered twelve-field protocol",
+        "passed": true
+      },
+      {
+        "label": "Actual automatic command appends recovered metadata",
+        "passed": true
+      },
+      {
+        "label": "Actual manual command stays a plain command payload",
+        "passed": true
+      },
+      {
+        "label": "Runtime gate fixture changes actual proxy.enabled setting",
+        "passed": true
+      },
+      {
+        "label": "Disabled proxy.enabled blocks automatic modes and preserves explicit manual route",
+        "passed": true
+      },
+      {
+        "label": "Disabled automatic relay emits only actual manual network packet",
+        "passed": true
+      }
+    ],
+    "passed": 60,
+    "failed": 0,
+    "failures": [],
+    "limits": [
+      "Protocol client is synthetic; no human gameplay accuracy test",
+      "Temporary probe wraps actual collector callback for observation capture without changing engine dispatch",
+      "No Bungee/Velocity proxy receiver provided; network message bytes verified at Minecraft client"
+    ],
+    "artifact_sha256": "76c01ce3353b9d36a1115434f50b9aa2a1811b954d59ac18f253093842f5f8f5",
+    "packetevents_sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+    "spigot_version_line": "[08:59:48] [Server thread/INFO]: This server is running CraftBukkit version 4598-Spigot-56165ca-d74c5d8 (MC: 1.21.11 Unobfuscated) (Implementing API version 1.21.11-R0.2-SNAPSHOT)",
+    "fixture_minimum_tps": 1,
+    "fixture_alert_cooldown_ms": 100,
+    "rechecks": "Initial fixture failures and first53/57 proxy subscription attempt retained separately; final60/60 run uses final frozen artifact",
+    "server_stopped": true,
+    "server_exit_code": 0,
+    "frozen_artifact_unchanged": true
+  },
+  "spigotMatrix": {
+    "artifact": "LinoAC-0.3.0.jar",
+    "artifact_sha256": "76c01ce3353b9d36a1115434f50b9aa2a1811b954d59ac18f253093842f5f8f5",
+    "all_staged_plugin_hashes_match": true,
+    "servers": [
+      {
+        "minecraft": "1.21.11",
+        "java": "21.0.7",
+        "server_jar": "<maven-cache>\\repository\\org\\spigotmc\\spigot\\1.21.11-R0.2-SNAPSHOT\\spigot-1.21.11-R0.2-SNAPSHOT.jar",
+        "server_sha256": "4fbfbda1ed6db150275c291059e3aac65d9619b907d3f2a8407dd96dcab746fd",
+        "plugin_sha256": "76c01ce3353b9d36a1115434f50b9aa2a1811b954d59ac18f253093842f5f8f5",
+        "checks": [
+          {
+            "label": "Spigot completes startup",
+            "passed": true
+          },
+          {
+            "label": "LinoAC0.3.0 registry starts with175operative203catalogue",
+            "passed": true
+          },
+          {
+            "label": "Version command reports frozen release",
+            "passed": true
+          },
+          {
+            "label": "Status primary alias and postreload report175checks203catalogue safe punishment default",
+            "passed": true
+          },
+          {
+            "label": "Configuration reload succeeds",
+            "passed": true
+          },
+          {
+            "label": "Checks command lists203entries",
+            "passed": true
+          },
+          {
+            "label": "Describe command returns check details",
+            "passed": true
+          },
+          {
+            "label": "Plugin disables during stop",
+            "passed": true
+          },
+          {
+            "label": "Server exits cleanly",
+            "passed": true
+          },
+          {
+            "label": "No LinoAC or PacketEvents startup command or shutdown exceptions",
+            "passed": true
+          }
+        ],
+        "passed": 10,
+        "failed": 0,
+        "listed_checks": 203,
+        "errors": [],
+        "exit_code": 0,
+        "version_line": "[08:59:48] [Server thread/INFO]: This server is running CraftBukkit version 4598-Spigot-56165ca-d74c5d8 (MC: 1.21.11 Unobfuscated) (Implementing API version 1.21.11-R0.2-SNAPSHOT)",
+        "status_lines": [
+          "[09:02:30] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 19.00 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false",
+          "[09:02:30] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 19.00 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false",
+          "[09:02:30] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 19.00 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false"
+        ],
+        "log_sha256": "dc985891e74093d6eed3e4fa25edd43d6f8715b1ad627a1008283d7406fa14d1",
+        "stopped": true,
+        "configuration_note": "Extended protocol fixture enables only one check at command phase; registry catalogue remains175operative203slots",
+        "all_log_error_free": true,
+        "host_diagnostics": [],
+        "plugin_errors": []
+      },
+      {
+        "minecraft": "26.1.1",
+        "java": "25.0.1",
+        "server_jar": "<maven-cache>\\repository\\org\\spigotmc\\spigot\\26.1.1-R0.1-SNAPSHOT\\spigot-26.1.1-R0.1-SNAPSHOT.jar",
+        "server_sha256": "8e41fa7b93ccd88b97039a65c599f3ba14112689e1b2baab65f91759269beea1",
+        "plugin_sha256": "76c01ce3353b9d36a1115434f50b9aa2a1811b954d59ac18f253093842f5f8f5",
+        "packetevents_sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+        "checks": [
+          {
+            "label": "Spigot completes startup",
+            "passed": true
+          },
+          {
+            "label": "LinoAC0.3.0 registry starts with175operative203catalogue",
+            "passed": true
+          },
+          {
+            "label": "Version command reports frozen release",
+            "passed": true
+          },
+          {
+            "label": "Status primary alias and postreload report175checks203catalogue safe punishment default",
+            "passed": true
+          },
+          {
+            "label": "Configuration reload succeeds",
+            "passed": true
+          },
+          {
+            "label": "Checks command lists203entries",
+            "passed": true
+          },
+          {
+            "label": "Describe command returns check details",
+            "passed": true
+          },
+          {
+            "label": "Plugin disables during stop",
+            "passed": true
+          },
+          {
+            "label": "Server exits cleanly",
+            "passed": true
+          },
+          {
+            "label": "No LinoAC or PacketEvents startup command or shutdown exceptions",
+            "passed": true
+          }
+        ],
+        "passed": 10,
+        "failed": 0,
+        "listed_checks": 203,
+        "errors": [],
+        "exit_code": 0,
+        "version_line": "[09:03:00] [Server thread/INFO]: This server is running Spigot version dev-Spigot-4a90bec-d74c5d8 (MC: 26.1.1) (Implementing API version 26.1.1-R0.1-SNAPSHOT)",
+        "log_sha256": "71880530c0465f5dde3fd1bd257c455d6e3e1da18de521631f6ae50942194301",
+        "stopped": true,
+        "fixture_parser_correction": "Original regex excluded eight numeric badpackets IDs; reparsed same immutable server log including numeric variants, no plugin or server rerun required",
+        "status_lines": [
+          "[09:03:22] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 18.22 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false",
+          "[09:03:22] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 18.39 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false",
+          "[09:03:24] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 18.74 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false"
+        ],
+        "all_log_error_free": true,
+        "host_diagnostics": [],
+        "plugin_errors": []
+      },
+      {
+        "minecraft": "26.1.2",
+        "java": "25.0.1",
+        "server_jar": "<maven-cache>\\repository\\org\\spigotmc\\spigot\\26.1.2-R0.1-SNAPSHOT\\spigot-26.1.2-R0.1-SNAPSHOT.jar",
+        "server_sha256": "dde74eae05a861525ff6907abc9a80e0367eb1dc120c077354400f77e04cd544",
+        "plugin_sha256": "76c01ce3353b9d36a1115434f50b9aa2a1811b954d59ac18f253093842f5f8f5",
+        "packetevents_sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+        "checks": [
+          {
+            "label": "Spigot completes startup",
+            "passed": true
+          },
+          {
+            "label": "LinoAC0.3.0 registry starts with175operative203catalogue",
+            "passed": true
+          },
+          {
+            "label": "Version command reports frozen release",
+            "passed": true
+          },
+          {
+            "label": "Status primary alias and postreload report175checks203catalogue safe punishment default",
+            "passed": true
+          },
+          {
+            "label": "Configuration reload succeeds",
+            "passed": true
+          },
+          {
+            "label": "Checks command lists203entries",
+            "passed": true
+          },
+          {
+            "label": "Describe command returns check details",
+            "passed": true
+          },
+          {
+            "label": "Plugin disables during stop",
+            "passed": true
+          },
+          {
+            "label": "Server exits cleanly",
+            "passed": true
+          },
+          {
+            "label": "No LinoAC or PacketEvents startup command or shutdown exceptions",
+            "passed": true
+          }
+        ],
+        "passed": 10,
+        "failed": 0,
+        "listed_checks": 203,
+        "errors": [],
+        "exit_code": 0,
+        "version_line": "[09:03:10] [Server thread/INFO]: This server is running Spigot version 4632-Spigot-566f972-690a402 (MC: 26.1.2) (Implementing API version 26.1.2-R0.1-SNAPSHOT)",
+        "log_sha256": "1f087303fe61de0137d25d5230f64d4e4c8abbbb7367d8ce47b6eb36c099e1b4",
+        "stopped": true,
+        "status_lines": [
+          "[09:03:30] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 16.50 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false",
+          "[09:03:30] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 17.06 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false",
+          "[09:03:32] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 18.46 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false"
+        ],
+        "all_log_error_free": true,
+        "host_diagnostics": [],
+        "plugin_errors": [],
+        "fixture_parser_correction": "Initial regex omitted eight numeric badpackets IDs; same immutable server log reparsed with numeric variants, no artifact mutation or server rerun"
+      },
+      {
+        "minecraft": "26.3",
+        "java": "25.0.1",
+        "server_jar": "<maven-cache>\\repository\\org\\spigotmc\\spigot\\26.3-R0.1-SNAPSHOT\\spigot-26.3-R0.1-SNAPSHOT.jar",
+        "server_sha256": "e8d7542b1dc152fa24765c33947c4eb90b91a705449a0d1433c9b341864ec122",
+        "plugin_sha256": "76c01ce3353b9d36a1115434f50b9aa2a1811b954d59ac18f253093842f5f8f5",
+        "packetevents_sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+        "checks": [
+          {
+            "label": "Spigot completes startup",
+            "passed": true
+          },
+          {
+            "label": "LinoAC0.3.0 registry starts with175operative203catalogue",
+            "passed": true
+          },
+          {
+            "label": "Version command reports frozen release",
+            "passed": true
+          },
+          {
+            "label": "Status primary alias and postreload report175checks203catalogue safe punishment default",
+            "passed": true
+          },
+          {
+            "label": "Configuration reload succeeds",
+            "passed": true
+          },
+          {
+            "label": "Checks command lists203entries",
+            "passed": true
+          },
+          {
+            "label": "Describe command returns check details",
+            "passed": true
+          },
+          {
+            "label": "Plugin disables during stop",
+            "passed": true
+          },
+          {
+            "label": "Server exits cleanly",
+            "passed": true
+          },
+          {
+            "label": "No LinoAC or PacketEvents startup command or shutdown exceptions",
+            "passed": true
+          }
+        ],
+        "passed": 10,
+        "failed": 0,
+        "listed_checks": 203,
+        "errors": [
+          "[09:03:35] [main/ERROR]: Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: ",
+          "com.sun.jna.platform.win32.Win32Exception: Parametro non corretto.",
+          "[09:03:35] [main/ERROR]: Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: ",
+          "com.sun.jna.platform.win32.Win32Exception: Parametro non corretto."
+        ],
+        "exit_code": 0,
+        "version_line": "[09:03:46] [Server thread/INFO]: This server is running Spigot version 4663-Spigot-bed90fc-c4db4c3 (MC: 26.3) (Implementing API version 26.3-R0.1-SNAPSHOT)",
+        "log_sha256": "d7f8b14b2f16f0252cf6ed26bd06058dbb3215a8791247c2a7dc565156d2c8b4",
+        "stopped": true,
+        "status_lines": [
+          "[09:03:51] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 17.43 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false",
+          "[09:03:51] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 17.96 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false",
+          "[09:03:53] [Server thread/INFO]: LinoAC » LinoAC 0.3.0 | TPS: 18.68 | Players: 0 | Checks: 175 | Catalog: 203 | Auto punishment: false"
+        ],
+        "all_log_error_free": false,
+        "host_diagnostics": [
+          "[09:03:35] [main/ERROR]: Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: ",
+          "com.sun.jna.platform.win32.Win32Exception: Parametro non corretto.",
+          "[09:03:35] [main/ERROR]: Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: ",
+          "com.sun.jna.platform.win32.Win32Exception: Parametro non corretto."
+        ],
+        "plugin_errors": [],
+        "host_diagnostic_scope": "Nonfatal OSHI/JNA failure reading host Windows Perflib009 counters before server or plugin loading; raw diagnostics retained; startup, plugin, commands and stop still succeed"
+      }
+    ],
+    "passed_probes": 40,
+    "failed_plugin_probes": 0,
+    "raw_host_errors_retained": 4,
+    "network_proof": {
+      "minecraft": "1.21.11",
+      "passed": 60,
+      "failed": 0,
+      "report": ".analysis/runtime-fidelity.json"
+    },
+    "all_servers_stopped": true,
+    "coverage_limits": [
+      "26.1.1,26.1.2,26.3 tested startup, registry and commands; extended protocol-client proof performed on1.21.11 only",
+      "26.2 unavailable in installed Maven cache and not tested in this0.3.0 matrix",
+      "No Bungee or Velocity receiver was supplied; proxy packet delivery and exact wire bytes verified at subscribed Minecraft client",
+      "No human gameplay accuracy, false-positive-rate or full original behavioral equivalence claim"
+    ],
+    "fixture_rechecks": ".analysis/runtime-fidelity-fixture-failures.json"
+  },
+  "fixtureCorrections": {
+    "artifact_sha256": "b282ed85421262e2022c516bb7184ca300ff5127874d62e34d3ba4c30e536f7d",
+    "fixture_failures": [
+      {
+        "stage": "initial bootstrap",
+        "failure": "Consumer controls path used relative getDataFolder parent twice, yielding null; corrected toAbsolutePath",
+        "production_failure": false
+      },
+      {
+        "stage": "first network prepare",
+        "failure": "Temporary minimumTPS0 rejected by documented1–20 validator; corrected fixture1",
+        "production_failure": false
+      },
+      {
+        "stage": "second bootstrap",
+        "failure": "Temporary alertCooldown0 rejected by100–60000 validator; corrected fixture100; stale responseID also prevented reliable retry, responses now cleared",
+        "production_failure": false
+      },
+      {
+        "stage": "first extended network proof on final artifact",
+        "artifact_sha256": "76c01ce3353b9d36a1115434f50b9aa2a1811b954d59ac18f253093842f5f8f5",
+        "passed": 53,
+        "failed": 4,
+        "failure": "Synthetic client omitted minecraft:register channel subscription; real proxy delivery evidence empty despite helper returning true. Corrected client subscription before recheck.",
+        "production_failure": false
+      }
+    ],
+    "original_artifact_executed": false
+  },
+  "cleanup": {
+    "temporaryTestingFilesRemoved": true,
+    "method": "Moved verified temporary child directories to Windows Recycle Bin",
+    "allServersStopped": true,
+    "emptyIgnoredWorkDirectoryRetained": true
+  },
+  "scopeLedger": "FIDELITY.md",
+  "historicalReport": "VALIDATION_0.2.0.md"
+}

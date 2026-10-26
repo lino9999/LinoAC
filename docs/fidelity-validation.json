@@ -1,0 +1,1053 @@
+{
+  "date": "2026-10-25",
+  "release": "0.4.0",
+  "artifactAudit": {
+    "artifact": "LinoAC-0.4.0.jar",
+    "sha256": "5376acecdcdb606b44c6c2ec5db1335a04dbba0de48682594d9a0ed30e605f6e",
+    "bytes": 338320,
+    "classes": 119,
+    "sourceFiles": 78,
+    "javaClassMajor": 65,
+    "catalogueEntries": 203,
+    "operativePaths": 175,
+    "originalExecuted": false,
+    "pureAssertions": 1475,
+    "limits": [
+      "Finite source-model traces do not establish full original equivalence",
+      "Runtime report identifies final artifact separately from preserved earlier attempts"
+    ]
+  },
+  "sourceModelSuites": [
+    {
+      "name": "FastPlace",
+      "passed": 86
+    },
+    {
+      "name": "GhostHand",
+      "passed": 107
+    },
+    {
+      "name": "ViolationHistory",
+      "passed": 1017
+    },
+    {
+      "name": "TimerA/D",
+      "passed": 96
+    },
+    {
+      "name": "ServerWorldVehicleBuffer",
+      "passed": 44
+    },
+    {
+      "name": "PositionState",
+      "passed": 125
+    }
+  ],
+  "runtime": {
+    "started": "2026-10-25T09:01:34.840Z",
+    "artifactSha256": "5376acecdcdb606b44c6c2ec5db1335a04dbba0de48682594d9a0ed30e605f6e",
+    "scope": "Actual Spigot 1.21.11 wire client, Bukkit event dispatch and public API callbacks. No original artifact is executed. Bukkit break/place events are dispatched by an independent consumer against actual blocks, not naturally generated client interactions.",
+    "assertions": [
+      {
+        "name": "Actual v0.2 config upgrade inherits the new proxy channel default",
+        "pass": true,
+        "actual": "vulcan:bungee",
+        "expected": "vulcan:bungee"
+      },
+      {
+        "name": "Actual v0.2 config upgrade inherits the experimental alert marker",
+        "pass": true,
+        "actual": "*",
+        "expected": "*"
+      },
+      {
+        "name": "Actual v0.2 config upgrade preserves custom legacy maximum placements",
+        "pass": true,
+        "actual": 17,
+        "expected": 17
+      },
+      {
+        "name": "Actual PacketEvents bootstrap TPS helper returns a finite number",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Actual Main TPS equals capped PacketEvents TPS",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "name": "GhostHand unknown wire position does not manufacture wireY",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "GhostHand unknown wire position does not cancel break",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "GhostHand actual wire Y below bed level stays clean",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "GhostHand actual wire Y below bed level does not cancel break",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "GhostHand SOUTH ten actual STONE samples flag directly at buffer100",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "GhostHand SOUTH accepted post event cancels actual break",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "GhostHand WEST ten actual STONE samples flag directly at buffer100",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "GhostHand WEST accepted post event cancels actual break",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "GhostHand NORTH ten actual STONE samples flag directly at buffer100",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "GhostHand NORTH accepted post event cancels actual break",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "GhostHand EAST ten actual STONE samples flag directly at buffer100",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "GhostHand EAST accepted post event cancels actual break",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "GhostHand eight actual glass enclosure samples flag directly",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "GhostHand enclosure with an opening stays clean",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "GhostHand neighboring BEDROCK does not select a false eastern bed pair",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "Canceled LinoViolationEvent retains GhostHand VL",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "Canceled LinoViolationEvent does not cancel break",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "Canceled LinoViolationEvent does not add accepted history",
+        "pass": true,
+        "actual": {
+          "total": 6,
+          "combat": 0,
+          "movement": 0,
+          "player": 6,
+          "autoClicker": 0,
+          "scaffold": 0,
+          "timer": 0
+        },
+        "expected": {
+          "total": 6,
+          "combat": 0,
+          "movement": 0,
+          "player": 6,
+          "autoClicker": 0,
+          "scaffold": 0,
+          "timer": 0
+        }
+      },
+      {
+        "name": "Canceled LinoViolationEvent emits no accepted post callback",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "GhostHand cancel=false retains accepted VL",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "GhostHand cancel=false leaves actual break uncanceled",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "Global bypass suppresses GhostHand accepted VL",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "Global bypass leaves break uncanceled",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "Disabled GhostHand suppresses accepted VL",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "Disabled GhostHand leaves break uncanceled",
+        "pass": true,
+        "actual": false,
+        "expected": false
+      },
+      {
+        "name": "FastPlace first fifteen eligible events accumulate without a finding",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace late sixteenth event is included before phase close and flags directly",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "FastPlace successful phase closes and next eligible event starts a fresh phase",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace first fifteen eligible events accumulate without a finding",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace main hand HOE is excluded from the open phase",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace main hand HOE exclusion preserves the earlier eligible phase",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "FastPlace first fifteen eligible events accumulate without a finding",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace off hand HOE is excluded from the open phase",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace off hand HOE exclusion preserves the earlier eligible phase",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "FastPlace first fifteen eligible events accumulate without a finding",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace SCULK is excluded from the open phase",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace SCULK exclusion preserves the earlier eligible phase",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "FastPlace first fifteen eligible events accumulate without a finding",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace SCAFFOLDING is excluded from the open phase",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace SCAFFOLDING exclusion preserves the earlier eligible phase",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "FastPlace first fifteen eligible events accumulate without a finding",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace canceled place is excluded from the open phase",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace canceled place exclusion preserves the earlier eligible phase",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "FastPlace first fifteen eligible events accumulate without a finding",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "Actual Bukkit minecart passenger mount succeeds",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "FastPlace actual mounted vehicle state excludes placement",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace vehicle grace is not aged by rotation-only MOVE packets",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace vehicle grace includes first twenty-four POSITION packets",
+        "pass": true,
+        "actual": 0,
+        "expected": 0
+      },
+      {
+        "name": "FastPlace twenty-fifth POSITION packet expires vehicle grace",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "Accepted autoclicker history increments auto and total but not combat",
+        "pass": true,
+        "actual": {
+          "total": 1,
+          "combat": 0,
+          "movement": 0,
+          "player": 0,
+          "autoClicker": 1,
+          "scaffold": 0,
+          "timer": 0
+        },
+        "expected": {
+          "total": 1,
+          "combat": 0,
+          "movement": 0,
+          "player": 0,
+          "autoClicker": 1,
+          "scaffold": 0,
+          "timer": 0
+        }
+      },
+      {
+        "name": "Accepted timer history increments timer only",
+        "pass": true,
+        "actual": {
+          "total": 1,
+          "combat": 0,
+          "movement": 0,
+          "player": 0,
+          "autoClicker": 1,
+          "scaffold": 0,
+          "timer": 1
+        },
+        "expected": {
+          "total": 1,
+          "combat": 0,
+          "movement": 0,
+          "player": 0,
+          "autoClicker": 1,
+          "scaffold": 0,
+          "timer": 1
+        }
+      },
+      {
+        "name": "Accepted scaffold history increments scaffold player and total",
+        "pass": true,
+        "actual": {
+          "total": 2,
+          "combat": 0,
+          "movement": 0,
+          "player": 1,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        },
+        "expected": {
+          "total": 2,
+          "combat": 0,
+          "movement": 0,
+          "player": 1,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        }
+      },
+      {
+        "name": "Ordinary accepted categories increment their independent cumulative counters",
+        "pass": true,
+        "actual": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        },
+        "expected": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        }
+      },
+      {
+        "name": "Improbable accepted violation does not recursively feed cumulative history",
+        "pass": true,
+        "actual": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        },
+        "expected": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        }
+      },
+      {
+        "name": "Manual punishment dispatch accepted by a real registered Bukkit command",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Manual punishment retains current VL",
+        "pass": true,
+        "actual": {
+          "autoclicker-a": 1,
+          "improbable-a": 1,
+          "aim-a": 1,
+          "scaffold-a": 1,
+          "fastplace-a": 1,
+          "timer-a": 1,
+          "speed-a": 1
+        },
+        "expected": {
+          "autoclicker-a": 1,
+          "improbable-a": 1,
+          "aim-a": 1,
+          "scaffold-a": 1,
+          "fastplace-a": 1,
+          "timer-a": 1,
+          "speed-a": 1
+        }
+      },
+      {
+        "name": "Manual punishment retains accepted history",
+        "pass": true,
+        "actual": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        },
+        "expected": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        }
+      },
+      {
+        "name": "Wave-origin punishment dispatch accepted",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Wave-origin punishment retains current VL",
+        "pass": true,
+        "actual": {
+          "autoclicker-a": 1,
+          "improbable-a": 1,
+          "aim-a": 1,
+          "scaffold-a": 1,
+          "fastplace-a": 1,
+          "timer-a": 1,
+          "speed-a": 1
+        },
+        "expected": {
+          "autoclicker-a": 1,
+          "improbable-a": 1,
+          "aim-a": 1,
+          "scaffold-a": 1,
+          "fastplace-a": 1,
+          "timer-a": 1,
+          "speed-a": 1
+        }
+      },
+      {
+        "name": "Wave-origin punishment retains accepted history",
+        "pass": true,
+        "actual": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        },
+        "expected": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        }
+      },
+      {
+        "name": "Accepted automatic punishment clears all current check VL",
+        "pass": true,
+        "actual": {},
+        "expected": {}
+      },
+      {
+        "name": "Accepted automatic punishment preserves cumulative history",
+        "pass": true,
+        "actual": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        },
+        "expected": {
+          "total": 5,
+          "combat": 1,
+          "movement": 1,
+          "player": 2,
+          "autoClicker": 1,
+          "scaffold": 1,
+          "timer": 1
+        }
+      },
+      {
+        "name": "Accepted automatic punishment preserves detector buffers",
+        "pass": true,
+        "actual": {
+          "aim-a": 0.75,
+          "autoclicker-a": 0.5,
+          "fastplace-a": 0.5,
+          "improbable-a": 0.5,
+          "scaffold-a": 0.5,
+          "speed-a": 0.35,
+          "timer-a": 0.425
+        },
+        "expected": {
+          "aim-a": 0.75,
+          "autoclicker-a": 0.5,
+          "fastplace-a": 0.5,
+          "improbable-a": 0.5,
+          "scaffold-a": 0.5,
+          "speed-a": 0.35,
+          "timer-a": 0.425
+        }
+      },
+      {
+        "name": "Public reset API accepts actual reset event",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Public reset API clears all seven history counters",
+        "pass": true,
+        "actual": {
+          "total": 0,
+          "combat": 0,
+          "movement": 0,
+          "player": 0,
+          "autoClicker": 0,
+          "scaffold": 0,
+          "timer": 0
+        },
+        "expected": {
+          "total": 0,
+          "combat": 0,
+          "movement": 0,
+          "player": 0,
+          "autoClicker": 0,
+          "scaffold": 0,
+          "timer": 0
+        }
+      },
+      {
+        "name": "Public reset API clears current VL",
+        "pass": true,
+        "actual": {},
+        "expected": {}
+      },
+      {
+        "name": "Public reset API clears buffers",
+        "pass": true,
+        "actual": {},
+        "expected": {}
+      },
+      {
+        "name": "Actual policy gate reads the capped PacketEvents TPS producer",
+        "pass": true,
+        "actual": 20,
+        "expected": 20
+      },
+      {
+        "name": "Actual global flag eligibility accepts the verified TPS above configured minimum",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Canceled scheduled punishment does not dispatch its command",
+        "pass": true,
+        "actual": 3,
+        "expected": 3
+      },
+      {
+        "name": "Canceled scheduled punishment does not consume punishment cooldown",
+        "pass": true,
+        "actual": {},
+        "expected": {}
+      },
+      {
+        "name": "Canceled scheduled punishment retains accepted violation history",
+        "pass": true,
+        "actual": 1,
+        "expected": 1
+      },
+      {
+        "name": "Next accepted scheduled punishment dispatches immediately after cancellation",
+        "pass": true,
+        "actual": 4,
+        "expected": 4
+      },
+      {
+        "name": "Accepted scheduled automatic punishment clears current VL",
+        "pass": true,
+        "actual": {},
+        "expected": {}
+      },
+      {
+        "name": "Accepted scheduled automatic punishment retains cumulative history",
+        "pass": true,
+        "actual": 2,
+        "expected": 2
+      },
+      {
+        "name": "Accepted scheduled automatic punishment retains buffers",
+        "pass": true,
+        "actual": {
+          "ghosthand-a": 0
+        },
+        "expected": {
+          "ghosthand-a": 0
+        }
+      },
+      {
+        "name": "Accepted scheduled punishment records cooldown only after dispatch",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Timer A real fast wire POSITION stream produces accepted VL",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Timer D real fast wire POSITION stream produces accepted VL",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Timer actual wire finding details retain millisecond-scale delays",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Timer received monotonic nanos are exposed as millisecond move intervals",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Timer wall-clock detail and monotonic wire interval agree in milliseconds",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      },
+      {
+        "name": "Real PacketEvents TPS helper returns a finite settled value above source Timer minimum",
+        "pass": true,
+        "actual": true,
+        "expected": true
+      }
+    ],
+    "server": {
+      "tps": 20,
+      "version": "4598-Spigot-56165ca-d74c5d8 (MC: 1.21.11 Unobfuscated)",
+      "proxyChannel": "vulcan:bungee",
+      "experimentalSymbol": "*",
+      "actualPacketEventsBootTps": 0,
+      "players": [
+        "Runtime04"
+      ],
+      "fastPlaceLimit": 17,
+      "tick": 480,
+      "plugin": "0.4.0",
+      "actualPacketEventsCurrentTps": 20.012459580735417
+    },
+    "completed": "2026-10-25T09:01:59.863Z",
+    "passed": 88,
+    "failed": 0,
+    "clientEnd": "Runtime04 fixture complete",
+    "provenance": {
+      "finalArtifactSha256": "5376acecdcdb606b44c6c2ec5db1335a04dbba0de48682594d9a0ed30e605f6e",
+      "javaRuntime": "Microsoft OpenJDK 21.0.7, PrismLauncher java-runtime-delta",
+      "packetEvents": {
+        "version": "2.14.0",
+        "source": "https://github.com/retrooper/packetevents/releases/download/v2.14.0/packetevents-spigot-2.14.0.jar",
+        "sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7"
+      },
+      "consumerSha256": "b24fe17ee7c09eef7b641689b24ea5d50dec959c66162aab5b2ce7525a8b1363",
+      "originalArtifactExecuted": false,
+      "timerPositiveViolations": {
+        "timer-a": 71,
+        "timer-d": 14
+      },
+      "settledPacketEventsTps": 20.00544183937221,
+      "settledMainTps": 20,
+      "priorEvidence": ".analysis/runtime04-prior-c294-results.json",
+      "monotonicWireMoveIntervalMs": 16.3417,
+      "serverStoppedGracefully": true,
+      "limits": [
+        "Break/place callbacks are real Bukkit events dispatched by an independent plugin against real blocks; they are not naturally generated client dig/place interactions.",
+        "Fast wire movement uses an actual loopback protocol 1.21.11 client.",
+        "These bounded integration assertions do not establish full correctness of every catalogue entry."
+      ]
+    },
+    "operationCount": 73,
+    "operationEvidenceSha256": "bcccce311d1c15213af897559933067a3f1a8c9dab16cead4ad1aeb5310166d8",
+    "operationEvidenceScope": "Full responses retained in ignored local analysis; public assertions retain actual/expected values without repeating complete snapshots.",
+    "packetCount": 189,
+    "packetEvidenceSha256": "74f80b88a4b246e571bd4ed0211c268c866d32fefdb628840af171e01d19bd8e",
+    "packetShape": [
+      "time",
+      "name",
+      "data"
+    ]
+  },
+  "boundary26_3": {
+    "artifactSha256": "5376acecdcdb606b44c6c2ec5db1335a04dbba0de48682594d9a0ed30e605f6e",
+    "packetEventsSha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+    "consumerSha256": "408ffc8ac09c5a07bf9c4a0ca57b65bc646c65cf72975eb96aeb1dcb2413753c",
+    "scope": "Actual cached Spigot26.3 startup and real public PacketEvents TPS helper probe, Java25. No protocol client is used; no26.3 gameplay/check correctness claim.",
+    "status": {
+      "id": "final5376-boundary26-status",
+      "result": {
+        "actualPacketEventsBootTps": 0,
+        "experimentalSymbol": "*",
+        "proxyChannel": "vulcan:bungee",
+        "version": "4663-Spigot-bed90fc-c4db4c3 (MC: 26.3)",
+        "tps": 20,
+        "actualPacketEventsCurrentTps": 20.011702087952816,
+        "plugin": "0.4.0",
+        "tick": 376,
+        "fastPlaceLimit": 15,
+        "players": []
+      }
+    },
+    "assertions": [
+      {
+        "name": "Frozen final LinoAC artifact unchanged",
+        "pass": true
+      },
+      {
+        "name": "Official full PacketEvents2.14 unchanged",
+        "pass": true
+      },
+      {
+        "name": "Actual server identifies26.3",
+        "pass": true
+      },
+      {
+        "name": "LinoAC0.4 actual API provider registered",
+        "pass": true
+      },
+      {
+        "name": "Actual SpigotReflectionUtil getTPS bootstrap finite",
+        "pass": true
+      },
+      {
+        "name": "Actual SpigotReflectionUtil getTPS settled finite positive",
+        "pass": true
+      },
+      {
+        "name": "Actual Main TPS equals capped PacketEvents TPS",
+        "pass": true
+      },
+      {
+        "name": "Actual Bukkit shutdown requested; plugins disabled, three dimensions entered saving and owned process exited",
+        "pass": true
+      },
+      {
+        "name": "No ERROR or Exception during PacketEvents/LinoAC/consumer plugin lifecycle",
+        "pass": true
+      }
+    ],
+    "stop": {
+      "id": "final5376-boundary26-stop",
+      "result": {
+        "stopping": true
+      }
+    },
+    "shutdown": {
+      "requestedThroughActualBukkitConsumer": true,
+      "processState": "EXITED",
+      "forcedTermination": false,
+      "pluginDisableLog": true,
+      "savingWorldsLog": true,
+      "savingDimensionCount": 3
+    },
+    "log": [
+      "[10:03:18] [main/ERROR]: Unable to locate English counter names in registry Perflib 009. Counters may need to be rebuilt: ",
+      "[10:03:29] [Server thread/INFO]: [LinoAC] LinoAC 0.4.0 by Lino enabled with 175 operative checks and 203 catalog entries. Automatic punishments: false",
+      "[10:03:29] [Server thread/INFO]: [Runtime04Consumer] Actual PacketEvents SpigotReflectionUtil.getTPS=0.0",
+      "[10:03:29] [Server thread/INFO]: [Runtime04Consumer] Runtime04 consumer ready at <workspace>\\.work\\runtime04\\server26\\plugins\\Runtime04Consumer",
+      "[10:03:29] [Server thread/INFO]: Done (0.518s)! For help, type \"help\"",
+      "[10:03:48] [Server thread/INFO]: Stopping server"
+    ],
+    "environmentDiagnostic": "Host OSHI/JNA Windows Perflib registry query diagnostic before plugin loading.",
+    "javaRuntime": "Microsoft OpenJDK25.0.1+8-LTS",
+    "priorEvidence": ".analysis/runtime04-prior-c294-boundary26.3.json",
+    "passed": 9,
+    "failed": 0
+  },
+  "matrix": {
+    "artifactSha256": "5376acecdcdb606b44c6c2ec5db1335a04dbba0de48682594d9a0ed30e605f6e",
+    "rows": [
+      {
+        "server": "Spigot1.21.11-R0.2-SNAPSHOT",
+        "java": "21.0.7",
+        "scope": "Actual protocol1.21.11 client, real Bukkit block events and API enforcement callbacks",
+        "passed": 88,
+        "failed": 0,
+        "settledPacketEventsTps": 20.00544183937221,
+        "settledMainTps": 20,
+        "gracefullyStopped": true,
+        "evidence": ".analysis/runtime04-results.json"
+      },
+      {
+        "server": "Spigot26.3-R0.1-SNAPSHOT",
+        "java": "25.0.1",
+        "scope": "Startup and real public PacketEvents/Main TPS helper only; no protocol gameplay client",
+        "passed": 9,
+        "failed": 0,
+        "settledPacketEventsTps": 20.011702087952816,
+        "settledMainTps": 20,
+        "shutdown": {
+          "requestedThroughActualBukkitConsumer": true,
+          "processState": "EXITED",
+          "forcedTermination": false,
+          "pluginDisableLog": true,
+          "savingWorldsLog": true,
+          "savingDimensionCount": 3
+        },
+        "evidence": ".analysis/runtime04-boundary26.3.json"
+      }
+    ],
+    "priorArtifactMatrix": ".analysis/runtime04-prior-c294-matrix.json",
+    "limits": "Bounded integration evidence does not prove every reconstructed check or every server version."
+  },
+  "preservedAttempts": {
+    "finalArtifactSha256": "5376acecdcdb606b44c6c2ec5db1335a04dbba0de48682594d9a0ed30e605f6e",
+    "priorArtifactAttempts": {
+      "finalArtifactSha256": "c2948fca43650bc7a7523f2bf43daf171b9fc8b7e9a6a319ec8577ba533933eb",
+      "attempts": [
+        {
+          "stage": "First cold startup",
+          "artifactSha256": "dfdba1270551b516c68b690c3c52b5cda08c318145ae87f7188b6bc5b57b2ce0",
+          "result": "LinoAC refused minimal config: Invalid proxy channel.",
+          "classification": "Confirmed production upgrade bug: explicit Bukkit getString(path, default) ignored shipped YAML defaults for newly introduced proxy.channel. Parent fixed Settings lookup and rebuilt final artifact.",
+          "otherFixtureWarning": "Initial flat-world generator omitted layers, causing No key layers warning; explicit generator-settings added for later boundary fixture.",
+          "shutdown": "Graceful Bukkit shutdown scheduled by independent temporary attach helper; worlds saved."
+        },
+        {
+          "stage": "Old artifact full-config control",
+          "artifactSha256": "dfdba1270551b516c68b690c3c52b5cda08c318145ae87f7188b6bc5b57b2ce0",
+          "result": "Enabled with full shipped configuration and finite real PE bootstrap TPS0.0. No functional client assertions executed.",
+          "shutdown": "Graceful consumer stop and worlds saved."
+        },
+        {
+          "stage": "Final artifact old-v0.2-config startup",
+          "artifactSha256": "c2948fca43650bc7a7523f2bf43daf171b9fc8b7e9a6a319ec8577ba533933eb",
+          "result": "Enabled successfully; stale stop request from the previous fixture run was replayed by consumer and stopped server. Consumer now ignores persisted request on startup.",
+          "classification": "Independent test fixture lifecycle error, no production failure."
+        },
+        {
+          "stage": "First client run against final artifact",
+          "artifactSha256": "c2948fca43650bc7a7523f2bf43daf171b9fc8b7e9a6a319ec8577ba533933eb",
+          "result": "Four actual old-config upgrade/bootstrap assertions passed. Fixture attempted max-violations1000000 and Settings correctly rejected it (allowed maximum100000).",
+          "classification": "Independent test policy value outside documented validation; client now explicitly supplies100000 for all check policies before reload."
+        },
+        {
+          "stage": "Final complete 1.21.11 client run",
+          "artifactSha256": "c2948fca43650bc7a7523f2bf43daf171b9fc8b7e9a6a319ec8577ba533933eb",
+          "result": "85 assertions passed, zero failed. TimerA71 and TimerD15 accepted violations from real wire burst.",
+          "shutdown": "Graceful consumer stop; all worlds saved."
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "stage": "First cold startup",
+        "artifactSha256": "dfdba1270551b516c68b690c3c52b5cda08c318145ae87f7188b6bc5b57b2ce0",
+        "result": "LinoAC refused minimal config: Invalid proxy channel.",
+        "classification": "Confirmed production upgrade bug: explicit Bukkit getString(path, default) ignored shipped YAML defaults for newly introduced proxy.channel. Parent fixed Settings lookup and rebuilt final artifact.",
+        "otherFixtureWarning": "Initial flat-world generator omitted layers, causing No key layers warning; explicit generator-settings added for later boundary fixture.",
+        "shutdown": "Graceful Bukkit shutdown scheduled by independent temporary attach helper; worlds saved."
+      },
+      {
+        "stage": "Old artifact full-config control",
+        "artifactSha256": "dfdba1270551b516c68b690c3c52b5cda08c318145ae87f7188b6bc5b57b2ce0",
+        "result": "Enabled with full shipped configuration and finite real PE bootstrap TPS0.0. No functional client assertions executed.",
+        "shutdown": "Graceful consumer stop and worlds saved."
+      },
+      {
+        "stage": "First final5376 client attempt",
+        "artifactSha256": "5376acecdcdb606b44c6c2ec5db1335a04dbba0de48682594d9a0ed30e605f6e",
+        "passedAssertions": 5,
+        "fatal": "Error: EPERM: operation not permitted, rename '<workspace>\\.work\\runtime04\\server\\plugins\\Runtime04Consumer\\request.tmp' -> '<workspace>\\.work\\runtime04\\server\\plugins\\Runtime04Consumer\\request.json'\n    at Object.renameSync (node:fs:1074:11)\n    at request (<workspace>\\.work\\runtime04\\run-runtime.cjs:26:6)\n    at run (<workspace>\\.work\\runtime04\\run-runtime.cjs:98:20)",
+        "classification": "Independent fixture Windows transient file sharing denied request.json atomic replacement; client now retries EPERM/EACCES/EBUSY at20ms up to50times. No production failure."
+      },
+      {
+        "stage": "Final complete1.21.11 recheck",
+        "artifactSha256": "5376acecdcdb606b44c6c2ec5db1335a04dbba0de48682594d9a0ed30e605f6e",
+        "passed": 88,
+        "failed": 0,
+        "timerViolations": {
+          "timer-a": 71,
+          "timer-d": 14
+        },
+        "shutdown": "Graceful consumer stop; all worlds saved."
+      }
+    ]
+  },
+  "cleanup": {
+    "temporaryTestingFilesRemoved": true,
+    "allServersStopped": true,
+    "method": "Verified temporary child directories moved to Windows Recycle Bin",
+    "emptyIgnoredWorkDirectoryRetained": true
+  },
+  "scopeLedger": "FIDELITY.md",
+  "historicalReports": [
+    "VALIDATION_0.3.0.md",
+    "VALIDATION_0.2.0.md"
+  ]
+}

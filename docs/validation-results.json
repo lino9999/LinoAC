@@ -1,0 +1,800 @@
+{
+  "release": "0.2.0",
+  "date": "2026-10-25",
+  "artifact": {
+    "jar": "LinoAC-0.2.0.jar",
+    "bytes": 254186,
+    "sha256": "643e67cedf9dbd66c1aecd8af843be7712e43b04b289227ba962a048272117f6",
+    "classes": 79,
+    "class_versions": [
+      65
+    ],
+    "catalogue_entries": 203,
+    "project_namespace_only": true,
+    "java_comments": [],
+    "author": "Lino"
+  },
+  "synthetic": {
+    "combat": {
+      "assertions": 9,
+      "positive_ids": 61
+    },
+    "movement": {
+      "assertions": 73,
+      "positive_ids": 51
+    },
+    "player": {
+      "assertions": 12,
+      "positive_ids": 37
+    },
+    "world": {
+      "assertions": 21,
+      "positive_ids": 26
+    },
+    "velocity": {
+      "assertions": 15008,
+      "trajectories": 500
+    },
+    "packet_buffer": {
+      "assertions": 13
+    }
+  },
+  "spigot": [
+    {
+      "version": "1.21.11",
+      "java": 21,
+      "server_sha256": "fd27d4ac2baa29a1b63823e301401894c011643953d84e411110cb72ba465f99",
+      "plugin_sha256": "643e67cedf9dbd66c1aecd8af843be7712e43b04b289227ba962a048272117f6",
+      "packetevents_sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+      "ready": true,
+      "enabled": true,
+      "status": true,
+      "disable": true,
+      "enable": true,
+      "reload": true,
+      "exit_code": 0,
+      "implementation": "[07:53:20] [Server thread/INFO]: This server is running CraftBukkit version 4598-Spigot-56165ca-d74c5d8 (MC: 1.21.11 Unobfuscated) (Implementing API version 1.21.11-R0.2-SNAPSHOT)",
+      "errors": []
+    },
+    {
+      "version": "26.1.1",
+      "java": 25,
+      "server_sha256": "a43619b5a6966a82b958ad1da37e9109b9e4c3733e2265ec2c237b0c8d46b1d0",
+      "plugin_sha256": "643e67cedf9dbd66c1aecd8af843be7712e43b04b289227ba962a048272117f6",
+      "packetevents_sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+      "ready": true,
+      "enabled": true,
+      "status": true,
+      "disable": true,
+      "enable": true,
+      "reload": true,
+      "exit_code": 0,
+      "implementation": "[07:53:41] [Server thread/INFO]: This server is running Spigot version dev-Spigot-4a90bec-d74c5d8 (MC: 26.1.1) (Implementing API version 26.1.1-R0.1-SNAPSHOT)",
+      "errors": []
+    },
+    {
+      "version": "26.1.2",
+      "java": 25,
+      "server_sha256": "67ad88a82570f51516faa7b0d19b24079aca8ae85da488a408ea464a26767fed",
+      "plugin_sha256": "643e67cedf9dbd66c1aecd8af843be7712e43b04b289227ba962a048272117f6",
+      "packetevents_sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+      "ready": true,
+      "enabled": true,
+      "status": true,
+      "disable": true,
+      "enable": true,
+      "reload": true,
+      "exit_code": 0,
+      "implementation": "[07:53:15] [Server thread/INFO]: This server is running Spigot version 4632-Spigot-566f972-690a402 (MC: 26.1.2) (Implementing API version 26.1.2-R0.1-SNAPSHOT)",
+      "errors": []
+    },
+    {
+      "version": "26.2",
+      "java": 25,
+      "server_sha256": "0d242234718cbd9f8b992e644ef7f6a2c052ee027335109ad03942ff29a9bf80",
+      "plugin_sha256": "643e67cedf9dbd66c1aecd8af843be7712e43b04b289227ba962a048272117f6",
+      "packetevents_sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+      "ready": true,
+      "enabled": true,
+      "status": true,
+      "disable": true,
+      "enable": true,
+      "reload": true,
+      "exit_code": 0,
+      "implementation": "[07:53:44] [Server thread/INFO]: This server is running Spigot version 4637-Spigot-8db49a2-f5fed68 (MC: 26.2) (Implementing API version 26.2-R0.1-SNAPSHOT)",
+      "errors": []
+    },
+    {
+      "version": "26.3",
+      "java": 25,
+      "server_sha256": "e8d7542b1dc152fa24765c33947c4eb90b91a705449a0d1433c9b341864ec122",
+      "plugin_sha256": "643e67cedf9dbd66c1aecd8af843be7712e43b04b289227ba962a048272117f6",
+      "packetevents_sha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+      "ready": true,
+      "enabled": true,
+      "status": true,
+      "disable": true,
+      "enable": true,
+      "reload": true,
+      "exit_code": 0,
+      "implementation": "[07:53:25] [Server thread/INFO]: This server is running Spigot version 4663-Spigot-bed90fc-c4db4c3 (MC: 26.3) (Implementing API version 26.3-R0.1-SNAPSHOT)",
+      "errors": []
+    }
+  ],
+  "functional": {
+    "assertions_passed": 83,
+    "assertions_total": 83,
+    "distinct_assertion_names": 79,
+    "primary": {
+      "passed": 81,
+      "total": 83
+    },
+    "targeted": {
+      "passed": 7,
+      "total": 7,
+      "diagnostics": "[08:00:53] [Server thread/INFO]: [LinoProbe] FLAG_DIAGNOSTICS tps=19.022317493566433 minimumTps=19.0 ping=0 dead=false frozen=false bypass=false graceUntil=0 tick=235\r"
+    },
+    "fixture_overrides": {
+      "timer_minimum_tps": "18",
+      "bad_hotbar_minimum_tps": "18",
+      "api_speed_minimum_tps": 18
+    },
+    "notes": [
+      "The primary burst of API/config writes temporarily put the two final flag calls below the configured TPS gate. Both cases were rechecked on the identical binary after waiting for actual eligibility; original outcomes are retained.",
+      "The isolated fixture uses minimumTPS18 for timer-a, badpackets-q and the API speed-a check. Packaged defaults were validated separately by the five-server smoke matrix.",
+      "Normal idle/ground/fence cases were observed without violations. Synthetic speed, accelerated packet timer during damage/item use and malformed hotbar/pitch/NaN position packets are representative tests; they do not establish all-check field accuracy.",
+      "Client-brand and ghost-block event wiring was inspected; those two runtime event cancellation paths were not exercised.",
+      "The83count refers to assertion executions, including immutable-snapshot checks repeated at different wave lifecycle stages."
+    ],
+    "checks": [
+      {
+        "name": "server and plugin loaded",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "ground fixture exists",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "protocol client login",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "unprivileged command denied",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "idle player no violations",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "ordinary ground movement no violations",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "fence fixture exists",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "resting on fence no violations",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "operator profile command",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "check menu opens",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "freeze acknowledged",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "freeze movement corrected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "synthetic speed detected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "monitor mode leaves player connected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "invalid hotbar slots detected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "invalid hotbar slots cancelled without disconnect",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "invalid pitch detected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "invalid pitch cancelled without disconnect",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "nonfinite movement detected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "nonfinite movement cancelled without disconnect",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "damage fixture applied",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "timer detected during damage and movement-item use",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "wave entry saved",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "wave removal saved",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "invalid reload rejected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "plugin stays active after invalid reload",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "violation audit includes speed signal",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: service registered and version correct",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: actual registration and post flag events observed",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: 203 catalogue entries and 175 available",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: catalogue immutable",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: profile snapshot immutable",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: collector measurements real and immutable",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: offline profile and measurements absent",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: state APIs reject off-thread access",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: alert event cancellation respected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: alert change persists",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: freeze cancellation respected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: freeze and unfreeze accepted",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: setback locations defensively copied",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: setback cancellation respected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: setback accepts finite loaded location",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: setback rejects invalid coordinates",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: check toggle cancellation protects settings",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: check disable writes policy",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: reset cancellation retains violations",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: reset clears violations and buffers",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: placeholder substitutions are single pass",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: newline console command rejected",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: hotbar shuffle preserves item counts",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: rotation preserves coordinates",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: hit cancellation timer starts",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: punishment webhook cancellation before queue",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: alert HTTPS submission accepted",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: punishment HTTPS submission accepted",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: punishment event cancellation prevents dispatch",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: log cancellation does not prevent command dispatch",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: wave event snapshot immutable",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: wave start cancellation retains queue",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: wave event snapshot immutable",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: wave starts with immutable snapshot",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: wave commands immutable",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: accepted reset cancels delayed punishment",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: cancelled wave entry retained and end counts honest",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: wave event snapshot immutable",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: wave commands immutable",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: successful wave entry removed and counted",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: wave event snapshot immutable",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: manual removal finishes active wave once",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: hit cancellation timer expires",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: persisted punishment counters known",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: redirect fixture queued",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: violation cancellation protects VL",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: flag eligibility includes actual TPS gates",
+        "passed": true,
+        "primary_passed": false,
+        "verified_by": "targeted_retest"
+      },
+      {
+        "name": "API: API flag uses real pipeline and post event",
+        "passed": true,
+        "primary_passed": false,
+        "verified_by": "targeted_retest"
+      },
+      {
+        "name": "API: v1 config migration preserves custom values",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "API: migration creates untouched legacy backup",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "HTTPS alert and punishment endpoints received",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "cancelled punishment webhook never submitted",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "Discord payload valid and mentions suppressed",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "HTTPS redirect not followed",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "punishment statistics persisted",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      },
+      {
+        "name": "no event or task exceptions",
+        "passed": true,
+        "primary_passed": true,
+        "verified_by": "primary"
+      }
+    ]
+  },
+  "placeholderapi": {
+    "version": "1.21.11",
+    "server_sha256": "fd27d4ac2baa29a1b63823e301401894c011643953d84e411110cb72ba465f99",
+    "plugin_sha256": "643e67cedf9dbd66c1aecd8af843be7712e43b04b289227ba962a048272117f6",
+    "fixture_overrides": {
+      "timer_minimum_tps": null,
+      "bad_hotbar_minimum_tps": null,
+      "api_speed_minimum_tps": null
+    },
+    "protocol_client_version": "1.68.0",
+    "checks": [
+      {
+        "name": "server and plugin loaded",
+        "passed": true
+      },
+      {
+        "name": "ground fixture exists",
+        "passed": true
+      },
+      {
+        "name": "protocol client login",
+        "passed": true
+      },
+      {
+        "name": "PAPI: PlaceholderAPI present and enabled",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves violations",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves violations_combat",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves violations_movement",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves violations_player",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves cps",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves ping",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves brand",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves client",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves uuid",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves frozen",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves alerts",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves transaction_ping",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves pending_transactions",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves transaction_age_ms",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves movement_speed",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves mouse_step_yaw",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves mouse_step_pitch",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves tps",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves version",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves total_punishments",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves total_violations",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves combat_violations",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves movement_violations",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves player_violations",
+        "passed": true
+      },
+      {
+        "name": "PAPI: placeholder resolves client_brand",
+        "passed": true
+      },
+      {
+        "name": "PAPI: punishment history survives actual server restart",
+        "passed": true
+      },
+      {
+        "name": "PAPI: global punishment placeholder exposes persisted total",
+        "passed": true
+      },
+      {
+        "name": "PAPI: legacy placeholder aliases match",
+        "passed": true
+      },
+      {
+        "name": "no plugin event or task exceptions",
+        "passed": true
+      }
+    ],
+    "passed": 33,
+    "total": 33,
+    "implementation": "[07:55:37] [Server thread/INFO]: This server is running CraftBukkit version 4598-Spigot-56165ca-d74c5d8 (MC: 1.21.11 Unobfuscated) (Implementing API version 1.21.11-R0.2-SNAPSHOT)\r",
+    "placeholderapi_version": "2.11.7",
+    "placeholderapi_sha256": "f5a4ea718baaab6118cfe8f3983ea3a5660af1ee8572360182a3d1b6dbf2eb5d"
+  }
+}

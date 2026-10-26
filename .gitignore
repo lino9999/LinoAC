@@ -1,0 +1,12 @@
+/Plugin Originale/
+/.work/
+/.analysis/
+/target/
+/dist/
+/.idea/
+/.vscode/
+*.iml
+*.log
+*.hprof
+/.env*
+/.DS_Store

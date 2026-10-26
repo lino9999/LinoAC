@@ -1,0 +1,90 @@
+[CENTER][SIZE=7][B][COLOR=#26c98e]LinoAC[/COLOR][/B][/SIZE]
+[SIZE=4]Minecraft Anti-Cheat & Staff Tools[/SIZE]
+[COLOR=#808080]By Lino | Spigot & Paper 1.21.11–26.3 | Open source[/COLOR]
+
+[URL=https://github.com/lino9999/LinoAC/releases][B]DOWNLOAD[/B][/URL]  •  [URL=https://github.com/lino9999/LinoAC][B]SOURCE[/B][/URL]  •  [URL=https://github.com/lino9999/LinoAC/blob/main/docs/CHECKS.md][B]CHECK CATALOGUE[/B][/URL]  •  [URL=https://github.com/lino9999/LinoAC/issues][B]SUPPORT[/B][/URL][/CENTER]
+
+[SIZE=5][B]Packet analysis. Useful staff evidence. Configurable moderation.[/B][/SIZE]
+LinoAC combines combat, movement, world-action and protocol analysis with clickable alerts, detailed profiles, searchable logs and persistent punishment waves. Independent buffers, decay, ping/TPS gates and thresholds let staff tune responses to their server.
+
+[B]Version 0.5.0:[/B] 175 independently implemented rule paths across 203 catalogue entries. Static inspection found 179 registered original classes: 175 contain detection behavior and four are no-ops; 24 additional configuration entries have no registered detector. Unavailable slots remain disabled. The earlier 195 count missed eight numeric variants. Protocol gates apply, so this code-coverage count does not mean 175 rules run simultaneously on modern clients.
+
+[SIZE=5][B]Detection and monitoring[/B][/SIZE]
+[LIST]
+[*][B]Combat:[/B] aim and arm-swing statistics, attack order, multi-target sequences, reach, hitboxes, criticals, bow speed and acknowledged velocity response.
+[*][B]Movement:[/B] speed, flight, jump, step, climbing, sprint, strafe, liquids, ground claims, elytra and mounted-entity signals with attributes and environmental exemptions.
+[*][B]World actions:[/B] accepted placement and mining, scaffold patterns, tower, visibility, automation signals and combined violations.
+[*][B]Protocol:[/B] packet order, hotbar, abilities, movement timing, malformed values and actual outgoing acknowledgement tracking. Invalid numeric movement is discarded before Bukkit receives it.
+[*][B]Maintainable internals:[/B] startup-verified rule registry, bounded queues, immutable observations and modular evaluators.
+[/LIST]
+
+[SIZE=5][B]Staff tools[/B][/SIZE]
+[LIST]
+[*]Rich clickable alerts with hover details, severity, configurable actions and diagnostic samples.
+[*]Profiles, per-check violations, connection diagnostics, category rankings and a paginated check GUI.
+[*]Freeze, teleport, knockback tests, random view rotation and hotbar shuffle.
+[*]Optional hit suppression, delayed enforcement, logout/reset cancellation and frozen-disconnect commands.
+[*]Persistent punishment waves with scheduling, entry spacing and lifecycle broadcasts.
+[*]Asynchronous violation and punishment logs with independent formats, retention and in-game pages.
+[*]Persisted punishment statistics, client-brand notices and optional ghost-block resynchronization.
+[*]Separate HTTPS alert/punishment webhooks, PlaceholderAPI, Floodgate exemptions and a Bukkit service API with lifecycle events.
+[/LIST]
+
+[SIZE=5][B]Installation[/B][/SIZE]
+[LIST=1]
+[*]Use Spigot or Paper 1.21.11–26.3. Use Java 21 for 1.21.11 and Java 25 for 26.x, according to your distribution. Folia is unsupported.
+[*]Install [URL=https://github.com/retrooper/packetevents/releases/tag/v2.14.0]PacketEvents 2.14.0[/URL].
+[*]Download LinoAC-0.5.0.jar from [URL=https://github.com/lino9999/LinoAC/releases]GitHub Releases[/URL], put it in plugins and restart.
+[*]Review plugins/LinoAC/config.yml and run [B]/lac status[/B].
+[*]Use [B]/lac alerts[/B] and evaluate your own gameplay before enabling enforcement.
+[/LIST]
+
+[SIZE=5][B]Commands[/B][/SIZE]
+Main command: [B]/linoac[/B]. Aliases: [B]/lac[/B], [B]/linoanticheat[/B].
+[CODE]
+/lac help
+/lac status
+/lac alerts
+/lac verbose
+/lac profile <player>
+/lac violations <player>
+/lac cps <player>
+/lac connection <player>
+/lac top [total|combat|movement|player]
+/lac checks
+/lac describe <check>
+/lac menu [page]
+/lac enable <check>
+/lac disable <check>
+/lac reload
+/lac reset <player|all>
+/lac freeze <player>
+/lac teleport <player>
+/lac ban <player>
+/lac wave add <player>
+/lac wave remove <player>
+/lac wave list
+/lac wave execute
+/lac logs <player> [page]
+/lac punishlogs <player> [page]
+/lac knockback <player>
+/lac rotate <player>
+/lac shuffle <player>
+/lac testalert [player]
+[/CODE]
+Shortcuts: [B]/lacalerts[/B] (/lalerts), [B]/lacwave[/B] (/lwave), [B]/laclogs[/B] (/llogs), [B]/lacpunishments[/B] (/lpunishlogs).
+
+[SIZE=5][B]Permissions and defaults[/B][/SIZE]
+[B]linoac.admin[/B] grants administrative permissions and defaults to operators. [B]linoac.bypass[/B] is separate and defaults to false, including for operators. Automatic punishments and setbacks default off. Checks inherit shared policy values and can override individual fields. Invalid protocol values are still discarded for exempt players.
+
+[SIZE=5][B]Transparent scope[/B][/SIZE]
+Recovered detection cores and staff workflows have been independently rebuilt. Opaque original exemption branches, field accuracy and exact behavioral equivalence remain unverified. Legacy-only checks stay gated; NoSlow A intentionally cannot run on the supported modern server range. Custom mechanics, translators and other forks require their own validation. Review the [URL=https://github.com/lino9999/LinoAC/blob/main/docs/VALIDATION.md]validation report[/URL] and [URL=https://github.com/lino9999/LinoAC/blob/main/docs/REVERSE_ENGINEERING.md]reconstruction evidence[/URL].
+
+[CENTER][B]By Lino. English messages. MIT-licensed source. No remote licensing or telemetry.[/B]
+[URL=https://github.com/lino9999/LinoAC/releases]Download LinoAC[/URL][/CENTER]
+
+[B]0.4.0 reconstruction update:[/B] Recovered click windows/exclusions, camera and sensitivity state, scoped join/teleport exclusions, ordered entity acknowledgements, scaffold geometry and proxy message formats. The complete source-equivalence objective remains open; see [URL=https://github.com/lino9999/LinoAC/blob/main/docs/FIDELITY.md]the fidelity ledger[/URL]. Fresh and historical test results are separated in the validation report.
+
+[B]Further 0.4.0 behavior:[/B] FastPlace uses first-placement batches with late trigger inclusion; GhostHand uses neighboring bed materials and can cancel accepted enclosed-bed breaks (checks.ghosthand-a.cancel). Set that option false for monitoring. Timer windows and millisecond balance preserve recovered packet authority. Vehicle/web/crowding ages advance only on position packets. Separate cumulative history survives successful automatic VL reset. Missing textual settings inherit shipped defaults during upgrades. The complete-fidelity ledger remains authoritative for unfinished scopes.
+
+[B]0.5.0 behavior:[/B] Combat uses raw sequence clocks, bounded relative-target history and acknowledged velocity prediction. Packet checks retain frame latches and source-specific material/event ages. FastBreak uses SURVIVAL interaction timing and actual break-event authority. Hit suppression defaults to zero damage; settings.cancel-hits-cancel-event selects cancellation. Automatic command dispatch starts a configurable player-wide cooldown; accepted reload, reset, logout and disable cancel pending automatic actions. LinoAlertEvent can cancel local staff chat independently of other violation actions. The full reconstruction remains in progress; the fidelity ledger lists unresolved behavior.

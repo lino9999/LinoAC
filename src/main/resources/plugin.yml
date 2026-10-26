@@ -1,0 +1,65 @@
+name: LinoAC
+version: '${project.version}'
+main: io.github.lino9999.linoac.LinoAC
+api-version: '1.21.11'
+author: Lino
+description: Modular Minecraft anti-cheat, violation monitoring and staff tools.
+website: https://github.com/lino9999/LinoAC
+depend: [packetevents]
+softdepend: [PlaceholderAPI, floodgate, mcMMO]
+commands:
+  linoac:
+    description: LinoAC administration and detection tools.
+    aliases: [lac, linoanticheat]
+    usage: /<command> help
+  lacalerts:
+    description: Toggle LinoAC alerts.
+    aliases: [lalerts]
+  lacwave:
+    description: Manage the LinoAC punishment wave.
+    aliases: [lwave]
+  laclogs:
+    description: Read LinoAC violation logs.
+    aliases: [llogs]
+  lacpunishments:
+    description: Read LinoAC punishment logs.
+    aliases: [lpunishlogs]
+permissions:
+  linoac.admin:
+    default: op
+    children:
+      linoac.alerts: true
+      linoac.verbose: true
+      linoac.status: true
+      linoac.profile: true
+      linoac.logs: true
+      linoac.manage: true
+      linoac.freeze: true
+      linoac.punish: true
+      linoac.wave: true
+      linoac.teleport: true
+      linoac.test: true
+  linoac.alerts:
+    default: op
+  linoac.verbose:
+    default: op
+  linoac.status:
+    default: op
+  linoac.profile:
+    default: op
+  linoac.logs:
+    default: op
+  linoac.manage:
+    default: op
+  linoac.freeze:
+    default: op
+  linoac.punish:
+    default: op
+  linoac.wave:
+    default: op
+  linoac.teleport:
+    default: op
+  linoac.test:
+    default: op
+  linoac.bypass:
+    default: false

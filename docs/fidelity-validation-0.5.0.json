@@ -1,0 +1,1782 @@
+{
+  "release": "0.5.0",
+  "date": "2026-10-26",
+  "artifactAudit": {
+    "artifact": "LinoAC-0.5.0.jar",
+    "sha256": "d461e0ba70214786b9aaa08f11135f6ea93848cdf75e5a9b782acdd323325828",
+    "bytes": 448289,
+    "classCount": 160,
+    "sourceCount": 96,
+    "classVersions": [
+      65
+    ],
+    "identicalOriginalMembers": [],
+    "referenceBrandMatches": [],
+    "foreignClassNamespaces": [],
+    "temporaryMembers": [],
+    "identicalLongConfigLines": [],
+    "originalSha256": "0560adb0045b123c081caf606accbece66c4c8898a47af1d970ad9a2530177ed",
+    "originalExecuted": false,
+    "scope": "Static byte/member equality, namespace, major-version and literal-brand audit; does not prove legal permission or full behavioral equivalence.",
+    "auditCorrections": [
+      "Initial temporary-member substring matcher incorrectly matched StateStore; final matcher requires fixture-specific path components or class suffixes."
+    ],
+    "javaSourceComments": [],
+    "recoveredStringComparison": {
+      "files": 14,
+      "distinctReferenceStrings": 757,
+      "sharedLongUtf8Constants": [],
+      "scope": "Only recovered static-string ledgers; common Java API identifiers and short material literals are not authored messages."
+    },
+    "referenceCreatorTokenMatches": []
+  },
+  "pure": {
+    "artifactSha256": "d461e0ba70214786b9aaa08f11135f6ea93848cdf75e5a9b782acdd323325828",
+    "compiler": "JDK25 javac --release21",
+    "runtime": "JDK25.0.1",
+    "scope": "Pure production-helper tests, separate from real Spigot runtime",
+    "suites": [
+      {
+        "suite": "io.github.lino9999.linoac.detection.combat.Combat05Tests",
+        "exitCode": 0,
+        "stdout": "PASS 115 assertions",
+        "stderr": "",
+        "fixtureSha256": "f2f6616fc0b360db165c5038db25cd3fca845faea3a701b184598db1b60dd589"
+      },
+      {
+        "suite": "io.github.lino9999.linoac.detection.combat.CombatExemptionsTests",
+        "exitCode": 0,
+        "stdout": "PASS 18 assertions",
+        "stderr": "",
+        "fixtureSha256": "030751134a4747c13bb3d0f12d099876d2ecf1aa28a885595f648870be5b38b7"
+      },
+      {
+        "suite": "io.github.lino9999.linoac.detection.combat.CombatMaterialsTests",
+        "exitCode": 0,
+        "stdout": "PASS 36 assertions",
+        "stderr": "",
+        "fixtureSha256": "84b76ce2a9be4f44acc404d9b1cd42a7b67fbf8d076b7649ca180f3ba67c2c2e"
+      },
+      {
+        "suite": "io.github.lino9999.linoac.detection.combat.VelocityHistoryTests",
+        "exitCode": 0,
+        "stdout": "PASS 77 assertions",
+        "stderr": "",
+        "fixtureSha256": "b4a0ec9b1eda33ff73a7af3be679c1506cd829ee18ae74211e6e67e3c1c8fb02"
+      },
+      {
+        "suite": "io.github.lino9999.linoac.detection.combat.VelocityPredictionTests",
+        "exitCode": 0,
+        "stdout": "PASS 28 assertions",
+        "stderr": "",
+        "fixtureSha256": "c1a05ee7a2d53a2c152f71207c389db432b89dd88dc94376189264299a0c2b41"
+      },
+      {
+        "suite": "PipelineTrace",
+        "exitCode": 0,
+        "stdout": "{\"assertions\":2652,\"failures\":0,\"scope\":\"Pure production cooldown, finding buffers, alert selection and pending-action ownership; no Bukkit runtime asserted\"}",
+        "stderr": "",
+        "fixtureSha256": "7d3dac05f0f569a572207197f97bbe9757a382c504bbe2c005b69c5d6af5a03e"
+      },
+      {
+        "suite": "ProtocolProbe",
+        "exitCode": 0,
+        "stdout": "{\"passed\":59,\"failed\":0}",
+        "stderr": "",
+        "fixtureSha256": "1ce6afc42b68e86cf1a2cf61f1a8e2b0ceb02c494869af30a1d03f7947a03934"
+      },
+      {
+        "suite": "MotionProbe",
+        "exitCode": 0,
+        "stdout": "{\"passed\":74,\"failed\":0}",
+        "stderr": "",
+        "fixtureSha256": "1db9a9de3d1ded3cfe3e30ae42bd9451ff6462e44fb450e9390cd97c4372c2f4"
+      },
+      {
+        "suite": "Producer05Tests",
+        "exitCode": 0,
+        "stdout": "{\"suite\":\"phase05-producers\",\"passed\":802,\"failed\":0}",
+        "stderr": "",
+        "fixtureSha256": "336ecd4b76405312d5539f1d27e2326fc47b6bec43c3cf8fbb3f9a97d86a2390"
+      }
+    ]
+  },
+  "purePassed": 3861,
+  "runtime": [
+    {
+      "started": "2026-10-26T09:32:22.475Z",
+      "finished": "2026-10-26T09:33:59.433Z",
+      "version": "1.21.11",
+      "port": 25820,
+      "artifactSha256": "d461e0ba70214786b9aaa08f11135f6ea93848cdf75e5a9b782acdd323325828",
+      "serverSha256": "4fbfbda1ed6db150275c291059e3aac65d9619b907d3f2a8407dd96dcab746fd",
+      "packetEventsSha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+      "consumerSha256": "15e41962bb3a0ae7aa21a56bcec0b3a0e0364577662f65373fe9f23e17ccca4f",
+      "javaExecutable": "C:/Users/lucci/AppData/Roaming/PrismLauncher/java/java-runtime-delta/bin/javaw.exe",
+      "scope": "Actual Spigot1.21.11 protocol clients for movement, attacks, target history and PING/velocity; mining, projectile and hit tests dispatch actual Bukkit events through the independent consumer rather than naturally generated client gameplay.",
+      "fixture": {
+        "minimumTps": 1,
+        "automaticCooldownMs": 250,
+        "punishmentDelays": "1/3/5/8/20ticks",
+        "players": [
+          "ProbeOne",
+          "ProbeTwo"
+        ],
+        "allOtherChecksDisabledForPipelineIsolation": true
+      },
+      "assertions": [
+        {
+          "name": "Frozen artifact matches supplied SHA256 before copy",
+          "pass": true,
+          "actual": "d461e0ba70214786b9aaa08f11135f6ea93848cdf75e5a9b782acdd323325828",
+          "expected": "d461e0ba70214786b9aaa08f11135f6ea93848cdf75e5a9b782acdd323325828"
+        },
+        {
+          "name": "Full official PacketEvents2.14 SHA256",
+          "pass": true,
+          "actual": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+          "expected": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7"
+        },
+        {
+          "name": "Actual final API provider reports phase0.5",
+          "pass": true,
+          "actual": "0.5.0"
+        },
+        {
+          "name": "Actual server reports requested runtime version",
+          "pass": true,
+          "actual": "4598-Spigot-56165ca-d74c5d8 (MC: 1.21.11 Unobfuscated)",
+          "expected": "1.21.11"
+        },
+        {
+          "name": "Actual Java runtime matches boundary",
+          "pass": true,
+          "actual": "21.0.7"
+        },
+        {
+          "name": "Actual PacketEvents bootstrap TPS is finite",
+          "pass": true,
+          "actual": 0
+        },
+        {
+          "name": "Actual Main TPS equals capped actual PacketEvents helper",
+          "pass": true,
+          "actual": 20,
+          "expected": 20
+        },
+        {
+          "name": "Ready API sample records one accepted VL",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Ready API buffer multiplier applied once",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Accepted history records once",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "API veto prevents accepted VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "API veto still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "API veto prevents independent history",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Disabled policy still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Disabled policy prevents VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Global bypass still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Global bypass prevents VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Excluded world still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Excluded world prevents VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual player ping gate still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Actual player ping gate prevents VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Atomic immediate and strict threshold increment only once",
+          "pass": true,
+          "actual": 1.25,
+          "expected": 1.25
+        },
+        {
+          "name": "Atomic immediate and strict threshold emit one VL",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Atomic accepted history increments once",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Strict equality stays below violation",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Strict equality retains one increment",
+          "pass": true,
+          "actual": 4,
+          "expected": 4
+        },
+        {
+          "name": "Explicit fixed decay uses0.025 rather than policy0.7",
+          "pass": true,
+          "actual": 3.975,
+          "expected": 3.975
+        },
+        {
+          "name": "Successful automatic command starts shared holdoff",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Successful automatic command clears current VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Cross-check shared holdoff prevents new VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Cross-check shared holdoff prevents history growth",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Cross-check holdoff still consumes multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Flag accepted after shortened shared holdoff",
+          "pass": true,
+          "actual": 2,
+          "expected": 2
+        },
+        {
+          "name": "Cancelled punishment does not consume shared holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "Cancelled punishment dispatches no command",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Next check can dispatch after cancelled punishment",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "empty automatic command batch not accepted",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "empty automatic command batch consumes no holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "failed automatic command batch not accepted",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "failed automatic command batch consumes no holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "manual command executes",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "manual command does not start automatic holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "wave command executes",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "wave command does not start automatic holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "One pending automatic action shared across checks per player",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Different player retains independent pending action",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Accepted reload allows replacement task before old deadline",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Accepted reload invalidates old delayed task after fresh VL",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Invalid reload rejected without replacing active settings",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "Invalid reload preserves existing pending punishment",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Custom alert commands obey minimum3 interval2",
+          "pass": true,
+          "actual": [
+            "ALERT-4",
+            "ALERT-6"
+          ],
+          "expected": [
+            "ALERT-4",
+            "ALERT-6"
+          ]
+        },
+        {
+          "name": "Chat throttle does not suppress custom alert commands",
+          "pass": true,
+          "actual": 2,
+          "expected": 2
+        },
+        {
+          "name": "Alert veto preserves accepted history",
+          "pass": true,
+          "actual": 6,
+          "expected": 6
+        },
+        {
+          "name": "Alert veto preserves post callbacks",
+          "pass": true,
+          "actual": 6,
+          "expected": 6
+        },
+        {
+          "name": "LinoAlertEvent veto suppresses staff chat",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Accepted alert reaches actual protocol staff client",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "LinoAlertEvent veto does not suppress enforcement",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Fresh zero-damage hit mode leaves Bukkit event uncancelled",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "Fresh zero-damage hit mode sets Bukkit damage zero",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Explicit legacy hit mode cancels actual Bukkit event",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Legacy enabled hit setting missing mode preserves cancellation",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Frozen staff action always cancels attack",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Both real protocol clients remain connected",
+          "pass": true
+        },
+        {
+          "name": "Actual BlockDamageEvent alone does not establish mining deadline",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual LEFT_CLICK_BLOCK establishes deadline consumed at LOWEST break",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Later HIGH break cancellation still follows LOWEST mining evaluation",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Fixture uses genuine SURVIVAL and finite Bukkit break speed",
+          "pass": true,
+          "actual": {
+            "gameMode": "SURVIVAL",
+            "breakSpeed": 0.0002,
+            "material": "OBSIDIAN"
+          }
+        },
+        {
+          "name": "Actual FastBreak excludes copper main hand",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes copper off hand",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes excluded deepslate material",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes AquaAffinity helmet",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes HASTE effect",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual Conduit effect receives acknowledged protocol state before mining",
+          "pass": true,
+          "actual": {
+            "conduit": 1,
+            "effects": [
+              "minecraft:conduit_power:0"
+            ]
+          }
+        },
+        {
+          "name": "Actual FastBreak excludes Conduit effect",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes Efficiency above5",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes ADVENTURE mode",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR BOW main cancelled Arrow",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Arrow event remains cancelled BOW main cancelled Arrow",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR BOW offhand cancelled Arrow",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Arrow event remains cancelled BOW offhand cancelled Arrow",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR CROSSBOW only cancelled Arrow",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Arrow event remains cancelled CROSSBOW only cancelled Arrow",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR BOW with crossbow eitherhand",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Arrow event remains cancelled BOW with crossbow eitherhand",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR MULTISHOT held",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Arrow event remains cancelled MULTISHOT held",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR slow Arrow projectile",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Arrow event remains cancelled slow Arrow projectile",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual observer receives outgoing relative movement for player target",
+          "pass": true,
+          "actual": [
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007231398
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007231451
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007231501
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007231602
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007231700
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007231799
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007231901
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007231950
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232001
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232099
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232201
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232301
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232398
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232502
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232602
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232698
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232800
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232902
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007232999
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007233100
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007233200
+            },
+            {
+              "type": "rel_entity_move",
+              "entityId": 2,
+              "at": 1793007233300
+            }
+          ]
+        },
+        {
+          "name": "Actual protocol attack and outgoing history produce ReachA finding",
+          "pass": true,
+          "actual": {
+            "reach-a": 6,
+            "hitbox-a": 6
+          }
+        },
+        {
+          "name": "Actual protocol attack and outgoing history produce HitboxA finding",
+          "pass": true,
+          "actual": {
+            "reach-a": 6,
+            "hitbox-a": 6
+          }
+        },
+        {
+          "name": "Nearby correctly aimed real protocol target stays clean for ReachA",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Nearby correctly aimed real protocol target stays clean for HitboxA",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual outgoing velocity has real PING bracket wire evidence",
+          "pass": true,
+          "actual": {
+            "beforeId": -1056964406,
+            "trace": [
+              {
+                "type": "ping",
+                "id": -1056964406,
+                "at": 1793007237548
+              },
+              {
+                "type": "velocity",
+                "entityId": 1,
+                "velocity": {
+                  "x": 0.39998779222364655,
+                  "y": 0.5000305194408838,
+                  "z": 0
+                },
+                "at": 1793007237698
+              },
+              {
+                "type": "ping",
+                "id": -1056964404,
+                "at": 1793007237699
+              }
+            ]
+          }
+        },
+        {
+          "name": "Before actual before-PONG no pending source velocity is manufactured",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Before actual before-PONG source Y remains prior zero",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual before-PONG enables pending original velocity",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Actual before-PONG acknowledges decoded wire velocityY",
+          "pass": true,
+          "actual": 0.5000305194408838,
+          "expected": 0.5000305194408838
+        },
+        {
+          "name": "Actual before-PONG retains decoded wire vertical maximum",
+          "pass": true,
+          "actual": 0.5000305194408838,
+          "expected": 0.5000305194408838
+        },
+        {
+          "name": "Actual after-PONG and position drain pending original velocity",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual after-PONG preserves decoded wireY",
+          "pass": true,
+          "actual": 0.5000305194408838,
+          "expected": 0.5000305194408838
+        },
+        {
+          "name": "Owned server shuts down gracefully through Bukkit",
+          "pass": true,
+          "actual": {
+            "requestedThroughConsumer": true,
+            "forced": false,
+            "exited": true,
+            "pluginDisable": true,
+            "savingWorlds": true,
+            "dimensionSavingCount": 3,
+            "allDimensionsSaved": true
+          }
+        },
+        {
+          "name": "No plugin lifecycle or task exceptions",
+          "pass": true,
+          "actual": []
+        }
+      ],
+      "passed": 103,
+      "failed": 0,
+      "shutdown": {
+        "requestedThroughConsumer": true,
+        "forced": false,
+        "exited": true,
+        "pluginDisable": true,
+        "savingWorlds": true,
+        "dimensionSavingCount": 3,
+        "allDimensionsSaved": true
+      },
+      "observations": [
+        {
+          "name": "Actual low TPS gate runtime precondition",
+          "status": "unobserved",
+          "actual": 20,
+          "required": "Actual PacketEvents/Main TPS<20",
+          "limit": "Pure FlagEligibility suite owns boundary evidence; no physical gate claim."
+        }
+      ]
+    },
+    {
+      "started": "2026-10-26T09:39:12.623Z",
+      "finished": "2026-10-26T09:40:25.062Z",
+      "version": "26.3",
+      "port": 25823,
+      "artifactSha256": "d461e0ba70214786b9aaa08f11135f6ea93848cdf75e5a9b782acdd323325828",
+      "serverSha256": "e8d7542b1dc152fa24765c33947c4eb90b91a705449a0d1433c9b341864ec122",
+      "packetEventsSha256": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+      "consumerSha256": "6e4bbf1f3eb55e8a6429abf9dfca56b078ff7f2bfee000a22234930a419230d5",
+      "javaExecutable": "C:/Users/lucci/AppData/Roaming/PrismLauncher/java/java-runtime-epsilon/bin/java.exe",
+      "scope": "Actual Spigot26.3 protocol clients for movement, attacks, target history and PING/velocity; mining, projectile and hit tests dispatch actual Bukkit events through the independent consumer rather than naturally generated client gameplay.",
+      "fixture": {
+        "minimumTps": 1,
+        "automaticCooldownMs": 250,
+        "punishmentDelays": "1/3/5/8/20ticks",
+        "players": [
+          "ProbeOne",
+          "ProbeTwo"
+        ],
+        "allOtherChecksDisabledForPipelineIsolation": true
+      },
+      "assertions": [
+        {
+          "name": "Frozen artifact matches supplied SHA256 before copy",
+          "pass": true,
+          "actual": "d461e0ba70214786b9aaa08f11135f6ea93848cdf75e5a9b782acdd323325828",
+          "expected": "d461e0ba70214786b9aaa08f11135f6ea93848cdf75e5a9b782acdd323325828"
+        },
+        {
+          "name": "Full official PacketEvents2.14 SHA256",
+          "pass": true,
+          "actual": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7",
+          "expected": "060087c58ec268eae7dd0eb1f17ac3bea1eaadda1693414141ff64e506091bd7"
+        },
+        {
+          "name": "Actual final API provider reports phase0.5",
+          "pass": true,
+          "actual": "0.5.0"
+        },
+        {
+          "name": "Actual server reports requested runtime version",
+          "pass": true,
+          "actual": "4663-Spigot-bed90fc-c4db4c3 (MC: 26.3)",
+          "expected": "26.3"
+        },
+        {
+          "name": "Actual Java runtime matches boundary",
+          "pass": true,
+          "actual": "25.0.1"
+        },
+        {
+          "name": "Actual PacketEvents bootstrap TPS is finite",
+          "pass": true,
+          "actual": 0
+        },
+        {
+          "name": "Actual Main TPS equals capped actual PacketEvents helper",
+          "pass": true,
+          "actual": 20,
+          "expected": 20
+        },
+        {
+          "name": "Actual modern protocol client ProbeOne uses26.3 protocol777",
+          "pass": true,
+          "actual": {
+            "version": "26.3",
+            "protocol": 777,
+            "username": "ProbeOne"
+          }
+        },
+        {
+          "name": "Actual modern protocol client ProbeTwo uses26.3 protocol777",
+          "pass": true,
+          "actual": {
+            "protocol": 777,
+            "version": "26.3",
+            "username": "ProbeTwo"
+          }
+        },
+        {
+          "name": "Both actual protocol clients retain complete source profiles",
+          "pass": true,
+          "actual": [
+            {
+              "name": "ProbeOne",
+              "complete": 1
+            },
+            {
+              "name": "ProbeTwo",
+              "complete": 1
+            }
+          ]
+        },
+        {
+          "name": "Ready API sample records one accepted VL",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Ready API buffer multiplier applied once",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Accepted history records once",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "API veto prevents accepted VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "API veto still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "API veto prevents independent history",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Disabled policy still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Disabled policy prevents VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Global bypass still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Global bypass prevents VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Excluded world still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Excluded world prevents VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual player ping gate still consumes ready multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Actual player ping gate prevents VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Atomic immediate and strict threshold increment only once",
+          "pass": true,
+          "actual": 1.25,
+          "expected": 1.25
+        },
+        {
+          "name": "Atomic immediate and strict threshold emit one VL",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Atomic accepted history increments once",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Strict equality stays below violation",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Strict equality retains one increment",
+          "pass": true,
+          "actual": 4,
+          "expected": 4
+        },
+        {
+          "name": "Explicit fixed decay uses0.025 rather than policy0.7",
+          "pass": true,
+          "actual": 3.975,
+          "expected": 3.975
+        },
+        {
+          "name": "Successful automatic command starts shared holdoff",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Successful automatic command clears current VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Cross-check shared holdoff prevents new VL",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Cross-check shared holdoff prevents history growth",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Cross-check holdoff still consumes multiplier",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Flag accepted after shortened shared holdoff",
+          "pass": true,
+          "actual": 2,
+          "expected": 2
+        },
+        {
+          "name": "Cancelled punishment does not consume shared holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "Cancelled punishment dispatches no command",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Next check can dispatch after cancelled punishment",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "empty automatic command batch not accepted",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "empty automatic command batch consumes no holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "failed automatic command batch not accepted",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "failed automatic command batch consumes no holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "manual command executes",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "manual command does not start automatic holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "wave command executes",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "wave command does not start automatic holdoff",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "One pending automatic action shared across checks per player",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Different player retains independent pending action",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Accepted reload allows replacement task before old deadline",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Accepted reload invalidates old delayed task after fresh VL",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Invalid reload rejected without replacing active settings",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "Invalid reload preserves existing pending punishment",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Custom alert commands obey minimum3 interval2",
+          "pass": true,
+          "actual": [
+            "ALERT-4",
+            "ALERT-6"
+          ],
+          "expected": [
+            "ALERT-4",
+            "ALERT-6"
+          ]
+        },
+        {
+          "name": "Chat throttle does not suppress custom alert commands",
+          "pass": true,
+          "actual": 2,
+          "expected": 2
+        },
+        {
+          "name": "Alert veto preserves accepted history",
+          "pass": true,
+          "actual": 6,
+          "expected": 6
+        },
+        {
+          "name": "Alert veto preserves post callbacks",
+          "pass": true,
+          "actual": 6,
+          "expected": 6
+        },
+        {
+          "name": "LinoAlertEvent veto suppresses staff chat",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Accepted alert reaches actual protocol staff client",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "LinoAlertEvent veto does not suppress enforcement",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Fresh zero-damage hit mode leaves Bukkit event uncancelled",
+          "pass": true,
+          "actual": false,
+          "expected": false
+        },
+        {
+          "name": "Fresh zero-damage hit mode sets Bukkit damage zero",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Explicit legacy hit mode cancels actual Bukkit event",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Legacy enabled hit setting missing mode preserves cancellation",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Frozen staff action always cancels attack",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Both real protocol clients remain connected",
+          "pass": true
+        },
+        {
+          "name": "Actual BlockDamageEvent alone does not establish mining deadline",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual LEFT_CLICK_BLOCK establishes deadline consumed at LOWEST break",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Later HIGH break cancellation still follows LOWEST mining evaluation",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Fixture uses genuine SURVIVAL and finite Bukkit break speed",
+          "pass": true,
+          "actual": {
+            "gameMode": "SURVIVAL",
+            "breakSpeed": 0.0002,
+            "material": "OBSIDIAN"
+          }
+        },
+        {
+          "name": "Actual FastBreak excludes copper main hand",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes copper off hand",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes excluded deepslate material",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes AquaAffinity helmet",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes HASTE effect",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual Conduit effect receives acknowledged protocol state before mining",
+          "pass": true,
+          "actual": {
+            "conduit": 1,
+            "effects": [
+              "minecraft:conduit_power:0"
+            ]
+          }
+        },
+        {
+          "name": "Actual FastBreak excludes Conduit effect",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes Efficiency above5",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual FastBreak excludes ADVENTURE mode",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR BOW main cancelled Arrow",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Arrow event remains cancelled BOW main cancelled Arrow",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR BOW offhand cancelled Arrow",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Arrow event remains cancelled BOW offhand cancelled Arrow",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR CROSSBOW only cancelled Arrow",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Arrow event remains cancelled CROSSBOW only cancelled Arrow",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR BOW with crossbow eitherhand",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Arrow event remains cancelled BOW with crossbow eitherhand",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR MULTISHOT held",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Arrow event remains cancelled MULTISHOT held",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual cancelled ProjectileLaunch MONITOR slow Arrow projectile",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Arrow event remains cancelled slow Arrow projectile",
+          "pass": true,
+          "actual": true,
+          "expected": true
+        },
+        {
+          "name": "Actual observer receives outgoing relative movement for player target",
+          "pass": true,
+          "actual": [
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617047
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617144
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617244
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617347
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617444
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617545
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617644
+            },
+            {
+              "type": "relative",
+              "entityId": 14,
+              "at": 1793007617644
+            },
+            {
+              "type": "relative",
+              "entityId": 19,
+              "at": 1793007617644
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617747
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617843
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007617945
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007618044
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007618145
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007618243
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007618344
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007618443
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007618543
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007618643
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007618745
+            },
+            {
+              "type": "relative",
+              "entityId": 2,
+              "at": 1793007618844
+            }
+          ]
+        },
+        {
+          "name": "Actual protocol attack and outgoing history produce ReachA finding",
+          "pass": true,
+          "actual": {
+            "reach-a": 6,
+            "hitbox-a": 6
+          }
+        },
+        {
+          "name": "Actual protocol attack and outgoing history produce HitboxA finding",
+          "pass": true,
+          "actual": {
+            "reach-a": 6,
+            "hitbox-a": 6
+          }
+        },
+        {
+          "name": "Nearby correctly aimed real protocol target stays clean for ReachA",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Nearby correctly aimed real protocol target stays clean for HitboxA",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual outgoing velocity has real PING bracket wire evidence",
+          "pass": true,
+          "actual": {
+            "beforeId": -1056964405,
+            "trace": [
+              {
+                "type": "ping",
+                "id": -1056964405,
+                "at": 1793007623143
+              },
+              {
+                "type": "velocity",
+                "entityId": 1,
+                "velocity": {
+                  "x": 0.39998779222364655,
+                  "y": 0.5000305194408838,
+                  "z": 0
+                },
+                "at": 1793007623294
+              },
+              {
+                "type": "ping",
+                "id": -1056964403,
+                "at": 1793007623294
+              }
+            ]
+          }
+        },
+        {
+          "name": "Before actual before-PONG no pending source velocity is manufactured",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Before actual before-PONG source Y remains prior zero",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual before-PONG enables pending original velocity",
+          "pass": true,
+          "actual": 1,
+          "expected": 1
+        },
+        {
+          "name": "Actual before-PONG acknowledges decoded wire velocityY",
+          "pass": true,
+          "actual": 0.5000305194408838,
+          "expected": 0.5000305194408838
+        },
+        {
+          "name": "Actual before-PONG retains decoded wire vertical maximum",
+          "pass": true,
+          "actual": 0.5000305194408838,
+          "expected": 0.5000305194408838
+        },
+        {
+          "name": "Actual after-PONG and position drain pending original velocity",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "Actual after-PONG preserves decoded wireY",
+          "pass": true,
+          "actual": 0.5000305194408838,
+          "expected": 0.5000305194408838
+        },
+        {
+          "name": "Owned server shuts down gracefully through Bukkit",
+          "pass": true,
+          "actual": {
+            "requestedThroughConsumer": true,
+            "forced": false,
+            "exited": true,
+            "pluginDisable": true,
+            "savingWorlds": true,
+            "dimensionSavingCount": 6,
+            "allDimensionsSaved": false
+          }
+        },
+        {
+          "name": "No plugin lifecycle or task exceptions",
+          "pass": true,
+          "actual": []
+        }
+      ],
+      "passed": 106,
+      "failed": 0,
+      "shutdown": {
+        "requestedThroughConsumer": true,
+        "forced": false,
+        "exited": true,
+        "pluginDisable": true,
+        "savingWorlds": true,
+        "dimensionSavingCount": 6,
+        "allDimensionsSaved": false
+      },
+      "observations": [
+        {
+          "name": "Actual low TPS gate runtime precondition",
+          "status": "unobserved",
+          "actual": 20,
+          "required": "Actual PacketEvents/Main TPS<20",
+          "limit": "Pure FlagEligibility suite owns boundary evidence; no physical gate claim."
+        }
+      ]
+    }
+  ],
+  "runtimePassed": 209,
+  "scope": "Finite source-model and actual protocol/Bukkit-callback evidence; full reconstruction and field accuracy remain unproven.",
+  "referenceExecuted": false,
+  "cleanup": {
+    "completed": true,
+    "method": "Exact verified direct .work phase05 children sent to Windows Recycle Bin",
+    "workDirectoryEmpty": true,
+    "portsFree": [
+      25820,
+      25823
+    ],
+    "ownedJavaProcessesStopped": true
+  },
+  "failedAttempts": [
+    "candidate01 Reach/HBA prerequisite bug fixed in source",
+    "candidate02 Conduit test fired before ACK; explicit confirmed-state fixture passed final",
+    "26.3 initial whitelist fixture rejection",
+    "26.3 missing ClientTickEnd fixture packet fixed in official-library client",
+    "Velocity wire Y oracle corrected from requested Bukkit value",
+    "LowTPS physical precondition unobserved; pure gate boundaries separate"
+  ],
+  "runtime263ShutdownNote": "Six save lines cover three startup and three shutdown dimensions. Normal Bukkit shutdown, plugin disable and process exit observed; no independent chunk integrity verification."
+}
